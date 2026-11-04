@@ -1,0 +1,30 @@
+[
+  {
+    "name": "AvalanchePug",
+    "file": "assets/export/pets/AvalanchePug.fbx",
+    "tris": 10460,
+    "tris_per_mesh": {
+      "Body": 9304,
+      "Neon": 1156
+    },
+    "parts": 274,
+    "kind": "pet",
+    "meshes": [
+      "AvalanchePug_Body",
+      "AvalanchePug_Neon"
+    ],
+    "status": "PENDING owner approval"
+  },
+  {
+    "name": "AvalanchePug_FX",
+    "file": "assets/export/pets/AvalanchePug_FX.fbx",
+    "tris": 5280,
+    "parts": 120,
+    "kind": "pet_fx",
+    "meshes": [
+      "AvalanchePug_FX"
+    ],
+    "note": "orbiters + aura ring; spin/bob in Studio",
+    "status": "PENDING owner approval"
+  }
+]

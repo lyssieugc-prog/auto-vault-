@@ -148,47 +148,47 @@ def rebirth_statue():
     # feet + toes
     for sx in (-1, 1):
         fx = sx * 1.9
-        P += [R(f"SkFoot{sx}", (1.8, 2.9, 0.9), (fx, 0.5, z0), BN, radius=0.25)]
+        P += [R(f"SkFoot{sx}", (2.2, 3.4, 1.1), (fx, 0.5, z0), BN, radius=0.3)]
         for t in range(3):
-            P.append(B(f"SkToe{sx}{t}", (0.33, 0.33, 0.3), (fx - 0.55 + t * 0.55, 2.0, z0 + 0.35), BL, segments=8, rings=5))
-    P += cartoon_bone("SkShinL", (-1.85, 0.3, z0 + 0.9), (-1.65, 0.2, z0 + 3.4), 0.45, BN)
-    P += cartoon_bone("SkShinR", (1.85, 0.3, z0 + 0.9), (1.65, 0.2, z0 + 3.4), 0.45, BN)
-    P += [B("SkKneeL", (0.6, 0.55, 0.55), (-1.65, 0.55, z0 + 3.55), BL, segments=10, rings=6),
-          B("SkKneeR", (0.6, 0.55, 0.55), (1.65, 0.55, z0 + 3.55), BL, segments=10, rings=6)]
-    P += cartoon_bone("SkFemurL", (-1.65, 0.2, z0 + 3.7), (-1.25, 0.0, z0 + 5.9), 0.5, BN)
-    P += cartoon_bone("SkFemurR", (1.65, 0.2, z0 + 3.7), (1.25, 0.0, z0 + 5.9), 0.5, BN)
+            P.append(B(f"SkToe{sx}{t}", (0.4, 0.4, 0.36), (fx - 0.65 + t * 0.65, 2.3, z0 + 0.45), BL, segments=8, rings=5))
+    P += cartoon_bone("SkShinL", (-1.85, 0.3, z0 + 0.9), (-1.65, 0.2, z0 + 3.4), 0.62, BN)
+    P += cartoon_bone("SkShinR", (1.85, 0.3, z0 + 0.9), (1.65, 0.2, z0 + 3.4), 0.62, BN)
+    P += [B("SkKneeL", (0.8, 0.7, 0.7), (-1.65, 0.75, z0 + 3.55), BL, segments=10, rings=6),
+          B("SkKneeR", (0.8, 0.7, 0.7), (1.65, 0.75, z0 + 3.55), BL, segments=10, rings=6)]
+    P += cartoon_bone("SkFemurL", (-1.65, 0.2, z0 + 3.7), (-1.25, 0.0, z0 + 5.9), 0.7, BN)
+    P += cartoon_bone("SkFemurR", (1.65, 0.2, z0 + 3.7), (1.25, 0.0, z0 + 5.9), 0.7, BN)
     # plaster cast on the right shin (on-theme: broken bones, kid-friendly)
-    P += [C("SkCast", 0.78, 0.72, 1.5, (1.78, 0.27, z0 + 1.4), "#FFFFFF", sides=12),
-          tube("SkCastBand", 0.8, 0.8, 0.25, 0.1, (1.78, 0.27, z0 + 2.3), "#FF5FA2", sides=12)]
+    P += [C("SkCast", 0.95, 0.9, 1.5, (1.78, 0.27, z0 + 1.4), "#FFFFFF", sides=12),
+          tube("SkCastBand", 0.97, 0.97, 0.25, 0.1, (1.78, 0.27, z0 + 2.3), "#FF5FA2", sides=12)]
     # pelvis (wide bowl + hip wings)
-    P += [R("SkPelvis", (3.6, 1.9, 1.3), (0, 0, z0 + 5.6), BN, radius=0.35),
-          R("SkHipWingL", (1.5, 1.6, 1.3), (-1.7, 0, z0 + 6.0), BD, radius=0.35, rot=(0, math.radians(-18), 0)),
-          R("SkHipWingR", (1.5, 1.6, 1.3), (1.7, 0, z0 + 6.0), BD, radius=0.35, rot=(0, math.radians(18), 0))]
+    P += [R("SkPelvis", (4.2, 2.8, 1.6), (0, 0, z0 + 5.4), BN, radius=0.4),
+          R("SkHipWingL", (1.7, 2.2, 1.5), (-1.7, 0, z0 + 6.0), BD, radius=0.35, rot=(0, math.radians(-18), 0)),
+          R("SkHipWingR", (1.7, 2.2, 1.5), (1.7, 0, z0 + 6.0), BD, radius=0.35, rot=(0, math.radians(18), 0))]
     # spine + ribcage + sternum + collar bar
     for i in range(6):
-        P.append(R(f"SkVert{i}", (0.95, 0.95, 0.55), (0, -0.85, z0 + 6.9 + i * 0.72), BL if i % 2 else BN, radius=0.15))
-    for i, (z, w, d) in enumerate(((z0 + 7.7, 3.4, 2.2), (z0 + 8.6, 4.0, 2.5), (z0 + 9.5, 4.4, 2.6), (z0 + 10.35, 4.6, 2.6))):
+        P.append(R(f"SkVert{i}", (1.2, 1.2, 0.6), (0, -1.35, z0 + 6.9 + i * 0.72), BL if i % 2 else BN, radius=0.15))
+    for i, (z, w, d) in enumerate(((z0 + 7.6, 3.6, 3.0), (z0 + 8.55, 4.2, 3.3), (z0 + 9.5, 4.6, 3.4), (z0 + 10.35, 4.8, 3.4))):
         col = BN if i % 2 else BL
-        t = 0.5
-        P += [R(f"SkRibBack{i}", (w, t, 0.55), (0, -d / 2 + t / 2, z), col, radius=0.15),
+        t = 0.6
+        P += [R(f"SkRibBack{i}", (w, t, 0.55), (0, -d / 2 + t / 2, z), col, radius=0.18),
               R(f"SkRibSideL{i}", (t, d - 2 * t + 0.02, 0.55), (-w / 2 + t / 2, 0, z), col, radius=0.15),
               R(f"SkRibSideR{i}", (t, d - 2 * t + 0.02, 0.55), (w / 2 - t / 2, 0, z), col, radius=0.15)]
         for sx in (-1, 1):
             P.append(R(f"SkRibFront{i}{sx}", (w / 2 - 0.4, t, 0.55), (sx * (w / 4 + 0.2), d / 2 - t / 2, z - 0.15), col, radius=0.15,
                        rot=(0, math.radians(-sx * 8), 0)))
-    P += [R("SkSternum", (0.9, 0.6, 3.6), (0, 1.15, z0 + 7.6), BD, radius=0.2),
-          R("SkCollar", (6.2, 1.8, 0.85), (0, 0, z0 + 10.95), BN, radius=0.3)]
+    P += [R("SkSternum", (1.0, 0.7, 3.6), (0, 1.5, z0 + 7.6), BD, radius=0.2),
+          R("SkCollar", (6.4, 2.6, 0.95), (0, 0, z0 + 10.9), BN, radius=0.35)]
     zs = z0 + 11.4
-    P += [B("SkShoulderL", (0.85, 0.85, 0.85), (-3.1, 0, zs), BL, segments=12, rings=8),
-          B("SkShoulderR", (0.85, 0.85, 0.85), (3.1, 0, zs), BL, segments=12, rings=8)]
+    P += [B("SkShoulderL", (1.05, 1.05, 1.05), (-3.1, 0, zs), BL, segments=12, rings=8),
+          B("SkShoulderR", (1.05, 1.05, 1.05), (3.1, 0, zs), BL, segments=12, rings=8)]
     # right arm raised with the trophy; left fist on hip
-    P += cartoon_bone("SkHumerusR", (3.2, 0, zs + 0.4), (4.2, 0.25, zs + 2.6), 0.45, BN)
-    P += cartoon_bone("SkForearmR", (4.2, 0.25, zs + 2.7), (3.9, 0.45, zs + 4.9), 0.4, BN)
-    P += cartoon_bone("SkHumerusL", (-3.2, 0, zs - 0.3), (-4.6, 0.3, zs - 2.2), 0.45, BN)
-    P += cartoon_bone("SkForearmL", (-4.6, 0.3, zs - 2.3), (-3.2, 0.7, zs - 3.9), 0.4, BN)
-    P += [R("SkHandR", (1.4, 1.3, 1.4), (3.9, 0.45, zs + 5.0), BL, radius=0.3),
+    P += cartoon_bone("SkHumerusR", (3.2, 0, zs + 0.4), (4.2, 0.25, zs + 2.6), 0.6, BN)
+    P += cartoon_bone("SkForearmR", (4.2, 0.25, zs + 2.7), (3.9, 0.45, zs + 4.9), 0.55, BN)
+    P += cartoon_bone("SkHumerusL", (-3.2, 0, zs - 0.3), (-4.6, 0.3, zs - 2.2), 0.6, BN)
+    P += cartoon_bone("SkForearmL", (-4.6, 0.3, zs - 2.3), (-3.2, 0.7, zs - 3.9), 0.55, BN)
+    P += [R("SkHandR", (1.7, 1.6, 1.5), (3.9, 0.45, zs + 5.0), BL, radius=0.3),
           R("SkThumbR", (0.45, 0.5, 0.8), (3.1, 0.75, zs + 5.3), BL, radius=0.15, rot=(0, math.radians(20), 0)),
-          R("SkFistL", (1.3, 1.3, 1.3), (-2.9, 0.75, zs - 4.75), BL, radius=0.3)]
+          R("SkFistL", (1.6, 1.6, 1.5), (-2.9, 0.75, zs - 4.75), BL, radius=0.3)]
     P += trophy("Trophy", (3.9, 0.45, zs + 6.25), 1.15)
     # neck + big skull head
     P += [C("SkNeck", 0.6, 0.6, 0.9, (0, -0.2, zs + 0.2), BD, sides=10)]
@@ -223,10 +223,27 @@ def rebirth_statue():
         xf([b], T(-1.9, fy + 0.02 + k * 0.03, hz + 4.25) @ Ry(ang))
         P.append(b)
     P.append(R("SkBandagePad", (0.7, 0.3, 0.6), (-1.9, fy + 0.1, hz + 3.95), "#FFE3C7", radius=0.08))
-    P += [beam("SkRibbonL", (-1.0, 1.0, z0 + 11.3), (-0.15, 1.5, z0 + 9.4), 0.6, 0.15, ORANGE["base"]),
-          beam("SkRibbonR", (1.0, 1.0, z0 + 11.3), (0.15, 1.5, z0 + 9.4), 0.6, 0.15, ORANGE["dark"]),
-          face_piece("SkMedal", ellipse(0.95, 0.95, 18), 0.25, GOLDS["base"], 1.5, z0 + 8.75),
-          face_piece("SkMedalStar", star_pts(0.6, 0.27), 0.1, GOLDS["light"], 1.75, z0 + 8.75)]
+    P += [beam("SkRibbonL", (-1.0, 1.35, z0 + 11.4), (-0.15, 1.85, z0 + 9.4), 0.6, 0.15, ORANGE["base"]),
+          beam("SkRibbonR", (1.0, 1.35, z0 + 11.4), (0.15, 1.85, z0 + 9.4), 0.6, 0.15, ORANGE["dark"]),
+          face_piece("SkMedal", ellipse(0.95, 0.95, 18), 0.25, GOLDS["base"], 1.85, z0 + 8.75),
+          face_piece("SkMedalStar", star_pts(0.6, 0.27), 0.1, GOLDS["light"], 2.1, z0 + 8.75)]
+    # hero cape (SNAP orange, gold trim) flowing back from the collar — side/back silhouette + story
+    for k, (zt, h, w, tilt, yb) in enumerate(((z0 + 11.2, 2.4, 5.6, 12, -1.85), (z0 + 8.95, 2.4, 6.2, 18, -2.35),
+                                             (z0 + 6.7, 2.3, 6.8, 26, -3.0))):
+        cp = S(f"SkCape{k}", (w, 0.45, h), (0, 0, -h), ORANGE["base"] if k % 2 == 0 else ORANGE["light"])
+        xf([cp], T(0, yb, zt) @ Rx(-tilt))
+        P.append(cp)
+    for i in range(7):  # scalloped gold hem
+        x = -3.0 + i * 1.0
+        P.append(B(f"SkCapeHem{i}", (0.5, 0.3, 0.4), (x, -4.05, z0 + 4.55), GOLDS["base"] if i % 2 else GOLDS["dark"], segments=10, rings=6))
+    bi = bone_icon("SkCapeBone", 0.8, BONES["light"], 0.2)
+    xf(bi, T(0, -2.98, z0 + 8.0) @ Rx(-18) @ Ry(20))
+    P += bi
+    P += [R("SkClaspL", (0.8, 0.6, 0.8), (-2.2, -1.5, z0 + 10.7), GOLDS["base"], radius=0.2),
+          R("SkClaspR", (0.8, 0.6, 0.8), (2.2, -1.5, z0 + 10.7), GOLDS["base"], radius=0.2)]
+    # back of the skull: occipital bump + band-aid so the back isn't blank
+    P += [R("SkOcciput", (4.0, 0.7, 3.0), (0, -HD / 2 - 0.25, hz + 1.2), BD, radius=0.3),
+          R("SkBackBandage", (2.4, 0.25, 0.65), (0.9, -HD / 2 - 0.65, hz + 3.4), "#F2C9A0", radius=0.08, rot=(0, math.radians(25), 0))]
     att = {"PromptAnchor": T(0, 7.5, 2.0)}
     return name, P, att
 

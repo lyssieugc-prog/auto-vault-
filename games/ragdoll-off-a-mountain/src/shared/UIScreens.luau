@@ -15,35 +15,53 @@
 
 local UIScreens = {}
 
-local C = {
-	panel = Color3.fromHex("#1E1B33"),
-	panelRaised = Color3.fromHex("#2B2748"),
-	stroke = Color3.fromHex("#1A1A1A"),
-	white = Color3.new(1, 1, 1),
-	gold = Color3.fromHex("#FFD93B"),
-	lime = Color3.fromHex("#A8F03C"),
-	green = Color3.fromHex("#7ADE43"),
-	greenLip = Color3.fromHex("#57AC35"),
-	red = Color3.fromHex("#E13A2A"),
-	redDark = Color3.fromHex("#B6261D"),
-	ice = Color3.fromHex("#5EC8FF"),
-	blue = Color3.fromHex("#2590D1"),
-	orange = Color3.fromHex("#FF8A1F"),
-	bone = Color3.fromHex("#FFF1CF"),
-	purple = Color3.fromHex("#B678EA"),
-	pink = Color3.fromHex("#FF9BC8"),
-}
-UIScreens.colors = C
+-- Roblox globals, captured as upvalues so the offline place builder (Lune, studio/build_place.luau)
+-- can inject @lune/roblox equivalents with UIScreens.setRuntime(roblox).
+local Instance, Enum, UDim, UDim2, Vector2, Color3, ColorSequence =
+	Instance, Enum, UDim, UDim2, Vector2, Color3, ColorSequence
 
-local RARITY = {
-	Common = Color3.fromHex("#B8C2CC"),
-	Uncommon = Color3.fromHex("#7ADE43"),
-	Rare = Color3.fromHex("#2590D1"),
-	Epic = Color3.fromHex("#B678EA"),
-	Legendary = Color3.fromHex("#FFC21A"),
-	Mythic = Color3.fromHex("#FF3EC8"),
-	Secret = Color3.fromHex("#1A1A1A"),
-}
+function UIScreens.setRuntime(rt)
+	Instance, Enum, UDim, UDim2, Vector2, Color3, ColorSequence =
+		rt.Instance, rt.Enum, rt.UDim, rt.UDim2, rt.Vector2, rt.Color3, rt.ColorSequence
+end
+
+local C, RARITY
+
+-- Built lazily (after setRuntime) so Color3 is the right implementation.
+local function palette()
+	if C then
+		return
+	end
+	local hex = Color3.fromHex
+	C = {
+		panel = hex("#1E1B33"),
+		panelRaised = hex("#2B2748"),
+		stroke = hex("#1A1A1A"),
+		white = Color3.new(1, 1, 1),
+		gold = hex("#FFD93B"),
+		lime = hex("#A8F03C"),
+		green = hex("#7ADE43"),
+		greenLip = hex("#57AC35"),
+		red = hex("#E13A2A"),
+		redDark = hex("#B6261D"),
+		ice = hex("#5EC8FF"),
+		blue = hex("#2590D1"),
+		orange = hex("#FF8A1F"),
+		bone = hex("#FFF1CF"),
+		purple = hex("#B678EA"),
+		pink = hex("#FF9BC8"),
+	}
+	RARITY = {
+		Common = hex("#B8C2CC"),
+		Uncommon = hex("#7ADE43"),
+		Rare = hex("#2590D1"),
+		Epic = hex("#B678EA"),
+		Legendary = hex("#FFC21A"),
+		Mythic = hex("#FF3EC8"),
+		Secret = hex("#1A1A1A"),
+	}
+	UIScreens.colors = C
+end
 
 local function abbreviate(n: number): string
 	local units = { "", "K", "M", "B", "T", "Qa" }
@@ -111,8 +129,10 @@ local function text(parent: Instance, name: string, value: string, pos: UDim2, s
 		ZIndex = 2,
 	}, parent)
 	stroke(label, 2.5)
-	label:GetPropertyChangedSignal("Text"):Connect(function()
-		shadow.Text = label.Text
+	pcall(function() -- no events in the offline (Lune) place builder
+		label:GetPropertyChangedSignal("Text"):Connect(function()
+			shadow.Text = label.Text
+		end)
 	end)
 	return label
 end
@@ -178,6 +198,7 @@ local function tag(parent: Instance, value: string, color: Color3, pos: UDim2)
 end
 
 local function screen(parent: Instance, name: string, preview: boolean?): ScreenGui
+	palette()
 	local old = parent:FindFirstChild(name)
 	if old then
 		old:Destroy()

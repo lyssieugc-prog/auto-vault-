@@ -105,25 +105,6 @@
     ]
   },
   {
-    "name": "RebirthStatue",
-    "file": "assets/export/props/RebirthStatue.fbx",
-    "tris": 13508,
-    "meshes": {
-      "RebirthStatue_Body": 13016,
-      "RebirthStatue_Neon": 492
-    },
-    "parts": 196,
-    "kind": "hub_prop",
-    "size": [
-      14.42,
-      14.25,
-      27.78
-    ],
-    "attachments": [
-      "PromptAnchor"
-    ]
-  },
-  {
     "name": "EggStand",
     "file": "assets/export/props/EggStand.fbx",
     "tris": 6612,
@@ -232,6 +213,25 @@
       7.6,
       6.8,
       7.05
+    ],
+    "attachments": [
+      "PromptAnchor"
+    ]
+  },
+  {
+    "name": "RebirthStatue",
+    "file": "assets/export/props/RebirthStatue.fbx",
+    "tris": 13508,
+    "meshes": {
+      "RebirthStatue_Body": 13016,
+      "RebirthStatue_Neon": 492
+    },
+    "parts": 196,
+    "kind": "hub_prop",
+    "size": [
+      14.42,
+      14.25,
+      27.78
     ],
     "attachments": [
       "PromptAnchor"

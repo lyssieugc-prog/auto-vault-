@@ -72,11 +72,11 @@ local PROPS = {
 	EggStand3 = "EggStand",
 	EggStand4 = "EggStand",
 	EggStand5 = "EggStand",
-	CannonMount1 = "Cannon_1",
-	CannonMount2 = "Cannon_2",
-	CannonMount3 = "Cannon_3",
-	CannonMount4 = "Cannon_4",
-	CannonMount5 = "Cannon_5",
+	CannonMount1 = "Cannon1_PartyPopper",
+	CannonMount2 = "Cannon2_BarrelBlaster",
+	CannonMount3 = "Cannon3_RocketRig",
+	CannonMount4 = "Cannon4_MegaMortar",
+	CannonMount5 = "Cannon5_MeteorLauncher",
 }
 local props = folderIn(workspace, "HubProps")
 for markerName, modelName in PROPS do

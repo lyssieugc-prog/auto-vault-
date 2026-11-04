@@ -91,10 +91,32 @@ def shots():
     return s
 
 
-def main(samples=32, only=None):
-    os.makedirs(OUT, exist_ok=True)
+CACHE = os.environ.get("MAP_BLEND_CACHE", "")
+
+
+def load_or_build():
+    """MAP_BLEND_CACHE=<path.blend> reuses a joined scene if it is newer than map.py (fast re-renders)."""
+    src = os.path.join(HERE, "map.py")
+    if CACHE and os.path.exists(CACHE) and os.path.getmtime(CACHE) > os.path.getmtime(src):
+        bpy.ops.wm.open_mainfile(filepath=CACHE)
+        import json
+
+        lay = json.load(open(CACHE + ".peaks.json"))
+        for pk, yl in zip(M.PEAKS, lay):
+            pk["ylast"] = yl
+        return
     M.build()
     M.join_all()
+    if CACHE:
+        bpy.ops.wm.save_as_mainfile(filepath=CACHE)
+        import json
+
+        json.dump([pk["ylast"] for pk in M.PEAKS], open(CACHE + ".peaks.json", "w"))
+
+
+def main(samples=32, only=None):
+    os.makedirs(OUT, exist_ok=True)
+    load_or_build()
     scene = bpy.context.scene
     lighting(scene, samples)
     preview_materials()
