@@ -4,9 +4,9 @@ Source: owner's `game-style-vault` skill plus the vault setup brief. Profiles in
 override **only what they say**; everything else here stays on.
 
 ## 0. Core aesthetic
-- Colorful, **deliberately blocky** Roblox simulator / brainrot look. Chunky rounded blocks,
-  flat saturated colors, **visible studs** on floors, platforms, plot bases and walls where
-  real Roblox bricks would have them.
+- Colorful, **deliberately blocky** Roblox simulator / brainrot look. Clean chunky solids,
+  flat saturated colors, **studs as surface texture** on floors, platforms, plot bases and tops
+  (never stud geometry). Measurable rules: `style-guides/3D_STYLE_BIBLE.md`.
 - Recognizable Roblox character proportions (R15 blocky). Collectibles may be stylized but must
   read as "Roblox".
 - Readable silhouettes, strong value contrast, max saturation, daytime lighting.
@@ -72,7 +72,8 @@ animal, Minecraft-mob look, smooth generic AI model.
 
 **Pet minimums** (owner rejected creature v1 — see `references/images/rejected/`):
 - Chibi Roblox-pet proportions: head is the biggest part (≥ 1.4× body height), stubby legs.
-- **Studs on the pet itself** (top of head + back), not only on the map.
+- Studs are **surface texture only** (never stud geometry) — see `style-guides/3D_STYLE_BIBLE.md` §2.
+- Collectibles use **merged 0.5-stud blocks** (no tiny noisy voxels) with a crisp cartoon face (§7).
 - A real face: big white eyes + pupils + sparkle highlights, blush, mouth (teeth/tongue).
 - ≥ 5 colours: body, light belly/muzzle, dark trim/pattern, glow accent, face colours.
 - ≥ 50 parts before join; **no blank faces from any angle** (front, side, back all detailed).

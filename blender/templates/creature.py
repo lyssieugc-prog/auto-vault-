@@ -4,7 +4,7 @@ Pet / creature template — v2 (rebuilt after owner rejected v1 as "horrible").
 House rules this template must satisfy (style/house-style.md §4, lessons L-20261104-03):
 - Chibi Roblox-pet proportions: HEAD is the biggest part (≈1.4x body height), short body,
   stubby legs. Cute + readable at 50 studs.
-- STUDS on the visible top surfaces (head + back) — studded aesthetic is non-negotiable.
+- Studs on the visible top surfaces as TEXTURE only (never stud geometry).
 - A real FACE: big white eyes with pupils + sparkle highlights, blush, smiling mouth with teeth.
 - 3+ hues: body, light belly/muzzle, dark trim (paws, ear tips, pattern) + one glow accent.
 - Many chunky parts (target 50+ before join): stepped ears, toe pads, collar + tag, pattern
@@ -63,7 +63,7 @@ def build(spec=SPEC):
     body = box("Body", (2.3, 2.5, 1.45), (0, -0.25, 0.6), s["body"], bevel=0.4, seg=3)
     box("Belly", (1.5, 0.22, 0.95), (0, 1.0, 0.75), s["light"], bevel=0.08)
     # Back studs (visible behind the head)
-    add(vb.stud_patch("BackStuds", (0, -0.95, 2.05), 2, 2, spacing=0.75, color=s["body"]))
+    vb.stud_surface(body, "top")  # studs are TEXTURE only (L-20261104-04)
     # Pattern spots on the sides
     for side in (-1, 1):
         box(f"SpotA{side}", (0.08, 0.55, 0.45), (side * 1.16, -0.6, 1.15), s["dark"], bevel=0.03, seg=1)
@@ -80,7 +80,7 @@ def build(spec=SPEC):
     front = hy + hd / 2  # y of face plane
     top = hz + hh  # z of head top
     # Head studs (2x2) — the signature Roblox look
-    add(vb.stud_patch("HeadStuds", (0, hy + 0.45, top), 2, 2, spacing=0.9, color=s["body"]))
+    vb.stud_surface(P[-1], "top")  # head top: texture studs
     back = hy - hd / 2  # y of the back of the head
     # Back-of-head stripes (no big blank faces anywhere — every side gets detail)
     for i, (w, z) in enumerate(((1.8, top - 0.6), (1.4, top - 1.1), (0.9, top - 1.55))):

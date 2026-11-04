@@ -9,7 +9,7 @@ pitch; you plan, build, test and save the game to this repo using the standards 
 |---|---|
 | Any new game (`/make-game`) | `.claude/skills/make-game/SKILL.md` |
 | Owner corrects something (`/vault-learn`) | `.claude/skills/vault-learn/SKILL.md` |
-| Art / UI / maps / models | `style/house-style.md` → the matching `style/profiles/*.md` |
+| Art / UI / maps / models | `style/house-style.md` → `style-guides/3D_STYLE_BIBLE.md` (3D, DRAFT) → matching `style/profiles/*.md` |
 | Game mechanics for a genre | `genres/<genre>.md` |
 | Gameplay code | `systems/README.md` (reuse before writing new code) |
 | 3D assets / maps | `blender/README.md` |

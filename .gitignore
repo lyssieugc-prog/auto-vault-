@@ -23,3 +23,7 @@ __pycache__/
 node_modules/
 .DS_Store
 Thumbs.db
+
+# Third-party style references: local-only (see style-guides/3d-model-references/README.md)
+style-guides/3d-model-references/images/
+style-guides/3d-model-references/video-frames/

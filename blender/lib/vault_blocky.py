@@ -54,6 +54,17 @@ STUD_HEIGHT = 0.18
 MAX_STUDS_PER_SURFACE = 400  # mobile budget guard; larger surfaces use a stud texture instead
 
 
+def _set_size(obj, size):
+    """Stores the authored size as scalar props (FBX export can't serialise list props)."""
+    obj["vault_sx"], obj["vault_sy"], obj["vault_sz"] = (float(v) for v in size)
+
+
+def _get_size(obj):
+    if "vault_sx" in obj:
+        return obj["vault_sx"], obj["vault_sy"], obj["vault_sz"]
+    return tuple(obj.dimensions)
+
+
 def hex_to_rgba(hex_color: str) -> tuple[float, float, float, float]:
     h = PALETTE.get(hex_color, hex_color).lstrip("#")
     r, g, b = (int(h[i : i + 2], 16) / 255.0 for i in (0, 2, 4))
@@ -159,7 +170,8 @@ def wedge(name, size=(1, 1, 1), location=(0, 0, 0), color="red"):
 
 
 def studs(target, spacing=1.0, color=None, margin=0.5, max_studs=MAX_STUDS_PER_SURFACE):
-    """Adds a single joined stud mesh on top of a block made by block()/studded_plate().
+    """LEGACY — physical stud geometry is banned for game assets (L-20261104-04); kept only for
+    explicitly owner-approved hero close-ups. Adds a single joined stud mesh on top of a block made by block()/studded_plate().
     Returns the stud object, or None if the surface would exceed max_studs (use a texture)."""
     sx, sy, sz = target.dimensions
     nx = max(1, int((sx - 2 * margin) // spacing) + 1)
@@ -212,8 +224,9 @@ def stud_patch(name, center, cols, rows, spacing=0.9, color="white", radius=None
 
 
 def studded_plate(name, width, depth, height=1.0, location=(0, 0, 0), color="green", spacing=1.0):
-    plate = block(name, (width, depth, height), location, color, bevel=0.06)
-    studs(plate, spacing=spacing)
+    plate = block(name, (width, depth, height), location, color, bevel=0.04)
+    _set_size(plate, (width, depth, height))
+    stud_surface(plate, "top")  # texture studs (L-20261104-04); `spacing` kept for API compat
     plate["vault_kind"] = "studded_plate"
     return plate
 
@@ -330,3 +343,312 @@ def ring_positions(count: int, radius: float, z: float = 0.0):
     for i in range(count):
         a = 2 * math.pi * i / count
         yield (math.cos(a) * radius, math.sin(a) * radius, z), a
+
+
+# ---------------------------------------------------------------------------------------------
+# Reference-derived construction languages (style-guides/3D_STYLE_BIBLE.md)
+#   BRICK  — environments/buildings/props: stacked bricks with visible seams, crisp edges,
+#            geometry studs on visible top (and some side) faces.
+#   VOXEL  — collectibles/creatures: many small cubes, per-voxel colour jitter, pixel faces.
+# ---------------------------------------------------------------------------------------------
+
+BRICK_H = 1.2  # LEGO-like brick height in studs (plates = 0.4)
+PLATE_H = 0.4
+BRICK_BEVEL = 0.035  # crisp edges: seams read, corners don't look soft
+
+
+def brick(name, size, location, color, top_studs=True, side_studs=(), emission=0.0, spacing=1.0):
+    """A brick: crisp box + studs. side_studs: any of '+x','-x','+y','-y'."""
+    obj = block(name, size, location, color, bevel=BRICK_BEVEL, segments=1, emission=emission)
+    _set_size(obj, size)
+    out = [obj]
+    if top_studs:
+        s = face_studs(obj, "+z", spacing=spacing)
+        if s:
+            out.append(s)
+    for axis in side_studs:
+        s = face_studs(obj, axis, spacing=spacing)
+        if s:
+            out.append(s)
+    return out
+
+
+_AXES = {
+    "+z": ((0, 0, 1), (1, 0, 0), (0, 1, 0)),
+    "+x": ((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+    "-x": ((-1, 0, 0), (0, 1, 0), (0, 0, 1)),
+    "+y": ((0, 1, 0), (1, 0, 0), (0, 0, 1)),
+    "-y": ((0, -1, 0), (1, 0, 0), (0, 0, 1)),
+}
+
+
+def face_studs(target, axis="+z", spacing=1.0, margin=None, color=None, max_studs=MAX_STUDS_PER_SURFACE):
+    """Geometry studs on one face of a brick made by brick()/block() (uses vault_size)."""
+    sx, sy, sz = _get_size(target)
+    lx, ly, lz = target.location
+    n, u, v = _AXES[axis]
+    dims = {"x": sx, "y": sy, "z": sz}
+    names = "xyz"
+    su = dims[names[u.index(1)]]
+    sv = dims[names[v.index(1)]]
+    m = margin if margin is not None else spacing / 2
+    nu = max(1, int((su - 2 * m + 1e-6) // spacing) + 1)
+    nv = max(1, int((sv - 2 * m + 1e-6) // spacing) + 1)
+    if su < spacing * 0.9 or sv < spacing * 0.9:
+        return None
+    if nu * nv > max_studs:
+        target["vault_stud_texture"] = True
+        return None
+    center = [lx, ly, lz + sz / 2]
+    for i in range(3):
+        if n[i] != 0:
+            half = (sx, sy, sz)[i] / 2
+            center[i] += n[i] * half
+    r, h = STUD_RADIUS * spacing, STUD_HEIGHT * spacing
+    bm = bmesh.new()
+    for iu in range(nu):
+        for iv in range(nv):
+            ou = (iu - (nu - 1) / 2) * spacing
+            ov = (iv - (nv - 1) / 2) * spacing
+            ret = bmesh.ops.create_cone(bm, cap_ends=True, segments=12, radius1=r, radius2=r, depth=h)
+            for vert in ret["verts"]:
+                a, b, c = vert.co.x, vert.co.y, vert.co.z + h / 2  # c along normal, 0..h
+                vert.co.x = center[0] + a * u[0] + b * v[0] + c * n[0] + ou * u[0] + ov * v[0]
+                vert.co.y = center[1] + a * u[1] + b * v[1] + c * n[1] + ou * u[1] + ov * v[1]
+                vert.co.z = center[2] + a * u[2] + b * v[2] + c * n[2] + ou * u[2] + ov * v[2]
+    obj = _new_mesh_object(f"{target.name}_Studs{axis}", bm)
+    mat = target.data.materials[0] if color is None and target.data.materials else None
+    _assign(obj, mat or palette_material(color, color))
+    obj["vault_kind"] = "studs"
+    return obj
+
+
+def _shade(hex_color: str, factor: float) -> str:
+    h = PALETTE.get(hex_color, hex_color).lstrip("#")
+    rgb = [min(255, max(0, int(int(h[i : i + 2], 16) * factor))) for i in (0, 2, 4)]
+    return "#{:02X}{:02X}{:02X}".format(*rgb)
+
+
+_FACES = [
+    ((1, 0, 0), [(1, 0, 0), (1, 1, 0), (1, 1, 1), (1, 0, 1)]),
+    ((-1, 0, 0), [(0, 0, 0), (0, 0, 1), (0, 1, 1), (0, 1, 0)]),
+    ((0, 1, 0), [(0, 1, 0), (0, 1, 1), (1, 1, 1), (1, 1, 0)]),
+    ((0, -1, 0), [(0, 0, 0), (1, 0, 0), (1, 0, 1), (0, 0, 1)]),
+    ((0, 0, 1), [(0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)]),
+    ((0, 0, -1), [(0, 0, 0), (0, 1, 0), (1, 1, 0), (1, 0, 0)]),
+]
+
+
+def voxel_mesh(name, voxels, voxel=0.25, origin=(0, 0, 0), jitter=0.07, seed=7, emissive=None):
+    """Builds ONE mesh from a voxel dict {(ix,iy,iz): '#RRGGBB'}. Hidden faces are culled, verts
+    are shared (watertight). Each voxel gets one of 3 shade variants so the voxel grid reads like
+    the references. emissive = {hex: strength} for glowing colours."""
+    import random
+
+    rnd = random.Random(seed)
+    emissive = emissive or {}
+    bm = bmesh.new()
+    verts = {}
+    mats, mat_slot = [], {}
+
+    def vert(p):
+        if p not in verts:
+            verts[p] = bm.verts.new((origin[0] + p[0] * voxel, origin[1] + p[1] * voxel, origin[2] + p[2] * voxel))
+        return verts[p]
+
+    for (x, y, z), col in voxels.items():
+        variant = rnd.choice((1 - jitter, 1.0, 1 + jitter)) if col not in emissive else 1.0
+        key = (col, variant)
+        if key not in mat_slot:
+            mat_slot[key] = len(mats)
+            mats.append(palette_material(f"{col.lstrip('#')}_{variant:.2f}", _shade(col, variant),
+                                         emission=emissive.get(col, 0.0)))
+        for (dx, dy, dz), corners in _FACES:
+            if (x + dx, y + dy, z + dz) in voxels:
+                continue
+            f = bm.faces.new([vert((x + cx, y + cy, z + cz)) for cx, cy, cz in corners])
+            f.material_index = mat_slot[key]
+    obj = _new_mesh_object(name, bm)
+    for m in mats:
+        obj.data.materials.append(m)
+    obj["vault_kind"] = "voxel"
+    obj["vault_voxels"] = len(voxels)
+    return obj
+
+
+class VoxelCanvas:
+    """Helper to rasterise shapes into a voxel dict (units = voxels). Later writes overwrite."""
+
+    def __init__(self):
+        self.v = {}
+
+    def box(self, x0, x1, y0, y1, z0, z1, col):
+        for x in range(x0, x1 + 1):
+            for y in range(y0, y1 + 1):
+                for z in range(z0, z1 + 1):
+                    self.v[(x, y, z)] = col
+
+    def ellipsoid(self, cx, cy, cz, rx, ry, rz, col, only_if=None):
+        for x in range(int(cx - rx) - 1, int(cx + rx) + 2):
+            for y in range(int(cy - ry) - 1, int(cy + ry) + 2):
+                for z in range(int(cz - rz) - 1, int(cz + rz) + 2):
+                    d = ((x + 0.5 - cx) / rx) ** 2 + ((y + 0.5 - cy) / ry) ** 2 + ((z + 0.5 - cz) / rz) ** 2
+                    if d <= 1 and (only_if is None or only_if(x, y, z)):
+                        self.v[(x, y, z)] = col
+
+    def cylinder(self, cx, cy, z0, z1, r0, r1, col):
+        for z in range(z0, z1 + 1):
+            t = 0 if z1 == z0 else (z - z0) / (z1 - z0)
+            r = r0 + (r1 - r0) * t
+            for x in range(int(cx - r) - 1, int(cx + r) + 2):
+                for y in range(int(cy - r) - 1, int(cy + r) + 2):
+                    if (x + 0.5 - cx) ** 2 + (y + 0.5 - cy) ** 2 <= r * r:
+                        self.v[(x, y, z)] = col
+
+    def paint(self, pred, col):
+        """Recolour existing voxels where pred(x, y, z) is true."""
+        for k in list(self.v):
+            if pred(*k):
+                self.v[k] = col
+
+    def downsample(self, f=2, min_fill=4):
+        """Merges f^3 cells into one bigger block (majority colour). Owner feedback: collectibles
+        should read as chunky MERGED blocks, not hundreds of tiny voxels."""
+        cells = {}
+        for (x, y, z), col in self.v.items():
+            k = (x // f, y // f, z // f)
+            cells.setdefault(k, []).append(col)
+        out = VoxelCanvas()
+        for k, cols in cells.items():
+            if len(cols) >= min_fill:
+                out.v[k] = max(set(cols), key=cols.count)
+        return out
+
+    def front_y(self, x, z):
+        """Largest y filled at column (x, z) — the visible front surface (+y faces the camera)."""
+        ys = [k[1] for k in self.v if k[0] == x and k[2] == z]
+        return max(ys) if ys else None
+
+
+# ---------------------------------------------------------------------------------------------
+# STUD TEXTURE (owner rule, L-20261104-04): studs are part of the SURFACE TEXTURE, never physical
+# geometry. One UV unit = one stud. Roblox side: the generated stud normal map is used as a
+# MaterialVariant / SurfaceAppearance normal map, tinted by the part colour.
+# ---------------------------------------------------------------------------------------------
+
+STUD_TEX_PX = 128
+_TEX_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "textures")
+
+
+def stud_texture_paths():
+    return os.path.join(_TEX_DIR, "stud_height.png"), os.path.join(_TEX_DIR, "stud_normal.png")
+
+
+def ensure_stud_textures(force=False):
+    """Generates one-stud tile textures (height + tangent-space normal) if missing."""
+    hpath, npath = stud_texture_paths()
+    if os.path.exists(hpath) and os.path.exists(npath) and not force:
+        return hpath, npath
+    os.makedirs(_TEX_DIR, exist_ok=True)
+    n = STUD_TEX_PX
+    R, EDGE = 0.30, 0.035  # stud radius (of a 1-stud tile) + soft shoulder
+
+    def height(u, v):
+        r = math.hypot(u - 0.5, v - 0.5)
+        if r >= R + EDGE:
+            return 0.0
+        if r <= R:
+            return 0.85 + 0.15 * (1 - (r / R) ** 2)  # slightly domed top
+        t = (R + EDGE - r) / EDGE
+        return 0.85 * t * t * (3 - 2 * t)
+
+    H = [[height((x + 0.5) / n, (y + 0.5) / n) for x in range(n)] for y in range(n)]
+    hp, np_ = [], []
+    for y in range(n):
+        for x in range(n):
+            h = H[y][x]
+            hp += [h, h, h, 1.0]
+            dx = H[y][(x + 1) % n] - H[y][(x - 1) % n]
+            dy = H[(y + 1) % n][x] - H[(y - 1) % n][x]
+            k = 6.0
+            nx, ny, nz = -dx * k, -dy * k, 1.0
+            ln = math.sqrt(nx * nx + ny * ny + nz * nz)
+            np_ += [nx / ln * 0.5 + 0.5, ny / ln * 0.5 + 0.5, nz / ln * 0.5 + 0.5, 1.0]
+    for path, px, name in ((hpath, hp, "stud_height"), (npath, np_, "stud_normal")):
+        img = bpy.data.images.new(name, n, n, alpha=False, float_buffer=False)
+        img.pixels = px
+        img.filepath_raw = path
+        img.file_format = "PNG"
+        img.save()
+    return hpath, npath
+
+
+def studded_material(base):
+    """Studded variant of a palette material: base colour + stud bump from the height tile."""
+    name = base.name + "_Studs"
+    mat = bpy.data.materials.get(name)
+    if mat:
+        return mat
+    mat = base.copy()
+    mat.name = name
+    hpath, _ = ensure_stud_textures()
+    nt = mat.node_tree
+    bsdf = nt.nodes.get("Principled BSDF")
+    uv = nt.nodes.new("ShaderNodeUVMap")
+    tex = nt.nodes.new("ShaderNodeTexImage")
+    img = bpy.data.images.get("stud_height_tile") or bpy.data.images.load(hpath)
+    img.name = "stud_height_tile"
+    img.colorspace_settings.name = "Non-Color"
+    tex.image = img
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 1.0
+    bump.inputs["Distance"].default_value = 0.06
+    nt.links.new(uv.outputs["UV"], tex.inputs["Vector"])
+    nt.links.new(tex.outputs["Color"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    mat["vault_studs"] = True
+    return mat
+
+
+def stud_surface(obj, mode="top"):
+    """Applies texture studs to a mesh: world-scaled box UVs (1 UV = 1 stud) and studded
+    materials. mode: 'top' (faces pointing up), 'all', or 'none'. Non-studded faces get UVs in
+    the flat corner of the tile so they render plain."""
+    if obj.type != "MESH" or mode == "none":
+        return obj
+    me = obj.data
+    if not me.uv_layers:
+        me.uv_layers.new(name="UVMap")
+    uvl = me.uv_layers.active.data
+    loc = obj.location
+    for poly in me.polygons:
+        nx, ny, nz = poly.normal
+        studded = (mode == "all") or (nz > 0.7)
+        for li in poly.loop_indices:
+            co = me.vertices[me.loops[li].vertex_index].co
+            wx, wy, wz = co.x + loc.x, co.y + loc.y, co.z + loc.z
+            if not studded:
+                uvl[li].uv = (0.02, 0.02)
+            elif abs(nz) >= max(abs(nx), abs(ny)):
+                uvl[li].uv = (wx, wy)
+            elif abs(nx) >= abs(ny):
+                uvl[li].uv = (wy, wz)
+            else:
+                uvl[li].uv = (wx, wz)
+    for i, m in enumerate(me.materials):
+        if m is not None and not m.get("vault_studs"):
+            me.materials[i] = studded_material(m)
+    obj["vault_stud_mode"] = mode
+    return obj
+
+
+def solid(name, size, location, color, bevel=0.04, studs="top", emission=0.0, rot=None):
+    """Default building block for props/maps: one clean chunky solid with crisp edges and
+    texture studs. No seams, no stud geometry."""
+    obj = block(name, size, location, color, bevel=bevel, segments=1, emission=emission)
+    _set_size(obj, size)
+    if rot:
+        obj.rotation_euler = rot
+    if emission == 0:
+        stud_surface(obj, studs)
+    return obj

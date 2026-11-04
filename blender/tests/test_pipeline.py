@@ -57,7 +57,8 @@ def main():
     head, body = bpy.data.objects["Head"], bpy.data.objects["Body"]
     check(len(parts) >= MIN_PARTS_CREATURE, f"creature has {len(parts)} parts (>= {MIN_PARTS_CREATURE})")
     check(len(colours) >= MIN_CREATURE_COLOURS, f"creature uses {len(colours)} colours (>= {MIN_CREATURE_COLOURS})")
-    check(any(p.get("vault_kind") == "studs" for p in parts), "creature has visible studs")
+    check(not any(p.get("vault_kind") == "studs" for p in parts), "creature has NO stud geometry")
+    check(any(m.get("vault_studs") for m in bpy.data.materials), "creature uses texture studs")
     check({"Eye1", "Eye-1", "Pupil1", "Pupil-1", "Sparkle1", "Mouth"} <= names, "creature has a full face")
     check(head.dimensions.z >= body.dimensions.z * 1.4, "chibi proportions: head >= 1.4x body height")
 
@@ -80,7 +81,23 @@ def main():
         manifest.append(r)
     check(os.path.exists(os.path.join(out, "map", "layout.json")), "map layout markers written")
     plaza = next(r for r in results if r["name"] == "Map_Plaza")
-    check(plaza["tris"] > 225 * 20, f"plaza carries visible studs ({plaza['tris']} tris)")
+    plaza_obj = bpy.data.objects.get("Map_Plaza") or bpy.data.objects.get("Plaza")
+    check(plaza_obj is not None and any(m.get("vault_studs") for m in plaza_obj.data.materials),
+          f"plaza uses texture studs ({plaza['tris']} tris, no stud geometry)")
+
+    # Style test collection gates (style-guides/3D_STYLE_BIBLE.md)
+    import test_collection
+    groups, _ = test_collection.build_all()
+    all_objs = [o for objs in groups.values() for o in objs]
+    check(not any(o.get("vault_kind") == "studs" for o in all_objs), "collection: no physical stud geometry")
+    check(any(m.get("vault_studs") for m in bpy.data.materials), "collection: texture studs in use")
+    names = {o.name for o in groups["Brainrot"]}
+    check({"EyeL", "EyeR", "PupilL", "PupilR", "Mouth"} <= names, "brainrot has a full face")
+    body = bpy.data.objects["Frappo_Body"]
+    check(body.get("vault_kind") == "voxel" and body["vault_voxels"] < 1500, "brainrot is merged blocks (<1500 cells)")
+    for name, objs in groups.items():
+        rep = vb.poly_report(objs)
+        check(rep["tris"] <= MAX_TRIS_PER_MESH, f"collection {name} tris {rep['tris']} <= {MAX_TRIS_PER_MESH}")
 
     # Stud guard: oversize surfaces must fall back to a texture flag instead of exploding tris.
     vb.reset_scene()
