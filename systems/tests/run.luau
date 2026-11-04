@@ -19,6 +19,10 @@ local SPECS = {
 	require("./specs/Guard"),
 	require("./specs/DataService"),
 	require("./specs/Monetization"),
+	require("./specs/Boosts"),
+	require("./specs/SeasonPass"),
+	require("./specs/PeriodicQuests"),
+	require("./specs/Codes"),
 	require("./specs/Integration"),
 }
 

@@ -23,6 +23,10 @@ system instances), so they're tested under Lune (`lune run systems/tests/run`). 
 | `Shared/Guard` | remote arg validation + token-bucket rate limiter | `specs/Guard` |
 | `Shared/DataService` | profiles: template reconcile, migrations, session lock, retries, safe release | `specs/DataService` |
 | `Shared/Monetization` | idempotent receipts, gamepass cache, 2x→100x repurchasable ladder | `specs/Monetization` |
+| `Shared/Boosts` | timed multipliers on the server clock, stacking cap, prune, HUD list | `specs/Boosts` |
+| `Shared/SeasonPass` | N-tier battle pass (default 50), XP curve, free + premium claims, season reset | `specs/SeasonPass` |
+| `Shared/PeriodicQuests` | daily + weekly quests with UTC (Monday) resets | `specs/PeriodicQuests` |
+| `Shared/Codes` | promo codes: normalize, expiry, one redemption per user | `specs/Codes` |
 | `Shared/Format` | 1.2K/3.4M abbreviations, commas, countdowns | `specs/Format` |
 | `Server/DataStoreAdapter` | Roblox DataStore → DataService store interface (+ memory store) | Studio only |
 | `Server/Net` | remotes folder, rate-limited + pcall-wrapped handlers | Studio only |

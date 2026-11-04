@@ -1,3 +1,4 @@
-vault_commit=571335a
-vendored=2026-11-04T16:01:11Z
+vault_commit=3777aac+systems(Boosts,SeasonPass,PeriodicQuests,Codes)
+vendored=2026-11-04T16:10:40Z
+# Trading.luau intentionally NOT vendored (owner standard: no player-to-player trading).
 # To update: re-copy systems/src/* into vendor/vault and bump this file in the same commit.
