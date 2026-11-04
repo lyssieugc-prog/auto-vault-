@@ -2,12 +2,12 @@
   {
     "name": "PebblePup",
     "file": "assets/export/pets/PebblePup.fbx",
-    "tris": 7012,
+    "tris": 7380,
     "tris_per_mesh": {
-      "Body": 6968,
+      "Body": 7336,
       "Neon": 44
     },
-    "parts": 88,
+    "parts": 92,
     "kind": "pet",
     "meshes": [
       "PebblePup_Body",

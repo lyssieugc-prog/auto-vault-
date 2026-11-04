@@ -391,31 +391,38 @@ def bandage_icon(prefix, cx, y, cz, L, depth=0.2, rot=0.6):
 
 
 def pine(prefix, x, y, h=12.0, rnd=None, snow=True):
-    """Chunky alpine pine: trunk + 4 tiers of rotated angular slabs (individually placed clusters)."""
+    """Chunky alpine pine: trunk + 5 skirts of radial, drooping angular slabs (individually placed,
+    varied size/yaw) around a core — spiky irregular silhouette, darker below, lighter on top."""
     rnd = rnd or random.Random(11)
-    P = [C(f"{prefix}Trunk", 0.65, 0.5, h * 0.35, (x, y, 0), "#8A5530", sides=8),
-         S(f"{prefix}Root", (1.8, 1.8, 0.5), (x, y, 0), "#6B3F22", rot=(0, 0, rnd.uniform(0, 1)))]
-    tiers = 4
+    P = [C(f"{prefix}Trunk", 0.7, 0.5, h * 0.3, (x, y, 0), "#8A5530", sides=8),
+         S(f"{prefix}Root", (1.9, 1.9, 0.5), (x, y, 0), "#6B3F22", rot=(0, 0, rnd.uniform(0, 1)))]
+    tiers = 5
     for t in range(tiers):
         f = 1 - t / tiers
-        rad = 3.4 * f + 0.6
-        z = h * 0.22 + t * h * 0.19
-        cols = (GRN["dark"], GRN["base"], LEAF["dark"], GRN["base"])
-        n = 5 if t < 3 else 3
+        rad = 3.6 * f + 0.9
+        z = h * 0.18 + t * h * 0.15
+        n = (7, 6, 6, 5, 4)[t]
+        base_col = (GRN["deep"], GRN["dark"], GRN["base"], LEAF["dark"], LEAF["base"])[t]
+        alt_col = (GRN["dark"], GRN["base"], LEAF["dark"], GRN["base"], LEAF["light"])[t]
+        P.append(S(f"{prefix}Core{t}", (rad * 0.9, rad * 0.9, h * 0.15), (x, y, z), base_col, bevel=0.08, rot=(0, 0, t * 0.5)))
+        a0 = rnd.uniform(0, 6.3)
         for k in range(n):
-            a = 2 * math.pi * k / n + rnd.uniform(-0.3, 0.3) + t * 0.6
-            rr = rad * 0.45
-            s = rad * rnd.uniform(0.95, 1.15)
-            P.append(S(f"{prefix}T{t}_{k}", (s, s * 0.8, h * 0.17), (x + math.cos(a) * rr, y + math.sin(a) * rr, z),
-                       cols[(t + k) % 4], bevel=0.08,
-                       rot=(rnd.uniform(-0.12, 0.12), rnd.uniform(-0.12, 0.12), a + rnd.uniform(-0.3, 0.3))))
-            if snow and k % 2 == 0:
-                P.append(S(f"{prefix}Sn{t}_{k}", (s * 0.6, s * 0.5, 0.35), (x + math.cos(a) * rr * 1.1, y + math.sin(a) * rr * 1.1,
-                                                                             z + h * 0.17), SNOW, bevel=0.1, rot=(0, 0, a)))
-    P.append(S(f"{prefix}Tip", (1.0, 1.0, 1.4), (x, y, h * 0.22 + tiers * h * 0.19), GRN["base"], rot=(0, 0, 0.4)))
+            a = a0 + 2 * math.pi * k / n + rnd.uniform(-0.25, 0.25)
+            ln = rad * rnd.uniform(0.85, 1.1)
+            wd = rad * rnd.uniform(0.55, 0.75)
+            rr = rad * 0.42
+            droop = rnd.uniform(0.18, 0.32)
+            col = base_col if k % 2 else alt_col
+            P.append(S(f"{prefix}T{t}_{k}", (ln, wd, h * 0.1), (x + math.cos(a) * rr, y + math.sin(a) * rr, z + h * 0.03),
+                       col, bevel=0.07, rot=(0, droop, a)))
+            if snow and (k + t) % 2 == 0:
+                P.append(S(f"{prefix}Sn{t}_{k}", (ln * 0.55, wd * 0.6, 0.3),
+                           (x + math.cos(a) * (rr - ln * 0.1), y + math.sin(a) * (rr - ln * 0.1), z + h * 0.03 + h * 0.1 - 0.02),
+                           SNOW, bevel=0.1, rot=(0, droop, a)))
+    zt = h * 0.18 + tiers * h * 0.15
+    P.append(S(f"{prefix}Tip", (1.0, 1.0, 1.6), (x, y, zt - 0.4), LEAF["base"], rot=(0.08, -0.06, 0.4)))
     if snow:
-        P.append(S(f"{prefix}TipSnow", (0.8, 0.8, 0.45), (x, y, h * 0.22 + tiers * h * 0.19 + 1.3), SNOW, rot=(0, 0, 0.4),
-                   bevel=0.12))
+        P.append(S(f"{prefix}TipSnow", (0.85, 0.85, 0.4), (x, y, zt + 1.15), SNOW, rot=(0.08, -0.06, 0.4), bevel=0.12))
     return P
 
 
@@ -551,8 +558,8 @@ def lift_pad():
           C("LiftWheelA", 0.9, 0.9, 0.35, (px - 0.2, py + 3.2, 11.5), "#C9D3DD", sides=14, rot=(0, D90, 0)),
           C("LiftWheelB", 0.9, 0.9, 0.35, (px - 0.2, py - 2.2, 11.5), "#C9D3DD", sides=14, rot=(0, D90, 0)),
           C("LiftHubA", 0.35, 0.35, 0.5, (px - 0.28, py + 3.2, 11.5), RED["base"], sides=8, rot=(0, D90, 0)),
-          rod("LiftCable", (px, py + 3.2, 12.35), (px, py + 7.5, 14.5), 0.08, IRON, sides=6),
-          rod("LiftCableB", (px, py - 2.2, 12.35), (px, py - 6.0, 13.5), 0.08, IRON, sides=6),
+          S("LiftCableHouse", (1.2, 6.6, 0.9), (px - 0.5, py + 0.5, 11.8), RED["dark"]),
+          S("LiftCableHouseCap", (1.4, 6.8, 0.3), (px - 0.5, py + 0.5, 12.7), SNOW, bevel=0.1),
           rod("LiftHanger", (px, py + 3.2, 10.6), (px, py + 3.2, 7.6), 0.1, IRON, sides=6),
           S("LiftChairSeat", (2.6, 1.2, 0.3), (px, py + 3.2, 6.2), RED["base"]),
           S("LiftChairBack", (2.6, 0.3, 1.3), (px, py + 2.7, 6.5), RED["dark"]),
@@ -722,7 +729,7 @@ def kit_ground():
     P += lantern_post("EntryLampL", -4.2, 19.3, h=4.4)
     P += lantern_post("EntryLampR", 3.2, 19.3, h=4.4)
     # timber fence: back + sides (front stays open toward the mountain)
-    def fence(prefix, a, b):
+    def fence(prefix, a, b, skip_first=False):
         (ax, ay), (bx, by) = a, b
         L = math.hypot(bx - ax, by - ay)
         n = max(1, int(L / 4.0))
@@ -731,8 +738,11 @@ def kit_ground():
         for i in range(n + 1):
             t = i / n
             x, y = ax + (bx - ax) * t, ay + (by - ay) * t
-            out.append(S(f"{prefix}P{i}", (0.6, 0.6, 2.6), (x, y, 0), WOOD["dark"] if i % 2 else WOOD["deep"]))
-            out.append(S(f"{prefix}C{i}", (0.8, 0.8, 0.22), (x, y, 2.6), SNOW, bevel=0.08))
+            if i == 0 and skip_first:
+                pass
+            else:
+                out.append(S(f"{prefix}P{i}", (0.6, 0.6, 2.6), (x, y, 0), WOOD["dark"] if i % 2 else WOOD["deep"]))
+                out.append(S(f"{prefix}C{i}", (0.8, 0.8, 0.22), (x, y, 2.6), SNOW, bevel=0.08))
             if i < n:
                 mx, my = ax + (bx - ax) * (t + 0.5 / n), ay + (by - ay) * (t + 0.5 / n)
                 for k, zz in enumerate((0.9, 1.9)):
@@ -740,11 +750,17 @@ def kit_ground():
                                  rot=(0, 0, yaw)))
         return out
     P += fence("FenceBack", (-23.4, -19.4), (23.4, -19.4))
-    P += fence("FenceL", (-23.4, -19.4), (-23.4, 5.0))
-    P += fence("FenceR", (23.4, -19.4), (23.4, 5.0))
+    P += fence("FenceL", (-23.4, -19.4), (-23.4, 5.0), True)
+    P += fence("FenceR", (23.4, -19.4), (23.4, 5.0), True)
     # snowy corner boulders where the fence ends (frames the open front)
     P += boulder("CornerRockL", -22.5, 7.2, 2.2, rnd, moss=False, snow=True)
     P += boulder("CornerRockR", 22.3, 7.0, 2.0, rnd, moss=False, snow=True)
+    P += kit.flower_bed("BedFL", (-22.5, 19.2), (-13.5, 19.2), colors=(PINK["base"], GOLD["base"], "#FFFFFF"), rnd=rnd)
+    P += kit.flower_bed("BedFR", (11.5, 19.2), (21.5, 19.2), colors=(RED["base"], GOLD["base"], "#B678EA"), rnd=rnd)
+    for i, (x, y, w, d) in enumerate(((-21.5, -6.0, 3.4, 2.2), (21.3, 1.5, 2.8, 1.8), (-21.0, 4.5, 2.2, 1.6), (21.0, -17.5, 3.0, 2.0),
+                                     (-20.5, -17.6, 2.6, 1.8))):
+        P += [R(f"Drift{i}", (w, d, 0.5), (x, y, 0), SNOW, radius=0.2, rot=(0, 0, rnd.uniform(-0.3, 0.3))),
+              R(f"DriftTop{i}", (w * 0.55, d * 0.6, 0.35), (x + 0.3, y - 0.1, 0.45), SNOW_D, radius=0.14)]
     MARKERS["Spawn"] = {"pos": [0.0, 7.5, 0.22], "facing": [0, 1, 0], "note": "on the path in front of the building"}
     return P
 
@@ -769,13 +785,13 @@ def stage1():
     rnd = random.Random(101)
     section("Tent")
     P = []
-    cx, cy = 0.0, -5.0
-    half, rise, L = 4.6, 6.6, 9.0
+    cx, cy = 0.0, -6.0
+    half, rise, L = 6.0, 8.4, 11.5
     a = math.atan2(rise, half)
     Lsl = math.hypot(half, rise) + 0.3
     ca, sa = math.cos(a), math.sin(a)
     zr = rise + 0.35
-    P.append(S("TentFloor", (9.6, 9.8, 0.35), (cx, cy, 0), "#3C6E8F"))
+    P.append(S("TentFloor", (12.6, 12.2, 0.35), (cx, cy, 0), "#3C6E8F"))
     # canvas: 3 strips per side (alternating orange shades) + darker hem + bandage patch
     for s in (-1, 1):
         for k in range(3):
@@ -824,7 +840,7 @@ def stage1():
     P += [S("Mat", (3.4, 2.4, 0.12), (cx + 1.9, cy + 6.6, 0), RED["dark"], bevel=0.03),
           S("MatStripe", (3.0, 0.4, 0.14), (cx + 1.9, cy + 6.6, 0), GOLD["base"], bevel=0.02)]
     # backpack leaning by the door with bedroll + rope coil
-    bx, by = cx + 4.0, cy + 6.0
+    bx, by = cx + 4.6, cy + 7.0
     P += [R("Pack", (1.6, 1.1, 2.2), (bx, by, 0), RED["base"], radius=0.25, rot=(0.15, 0, 0.3)),
           R("PackPocket", (1.1, 0.4, 0.9), (bx + 0.18, by + 0.55, 0.3), RED["dark"], radius=0.12, rot=(0.15, 0, 0.3)),
           C("PackRoll", 0.42, 0.42, 1.9, (bx - 0.95, by - 0.3, 2.35), BLUE["base"], sides=10, rot=(0, D90, 0.3)),
@@ -833,7 +849,7 @@ def stage1():
           ring("RopeCoil2", 0.75, 0.45, 0.3, (bx + 1.8, by - 1.3, 0.3), "#D9B77E", sides=14)]
     section("Campsite")
     # campfire ring + teepee logs + neon flames + log seats + marshmallow stick
-    fx, fy = cx - 7.0, cy + 6.0
+    fx, fy = cx - 9.4, cy + 7.6
     for i in range(9):
         aa = 2 * math.pi * i / 9 + rnd.uniform(-0.1, 0.1)
         s = rnd.uniform(0.75, 1.0)
@@ -846,17 +862,19 @@ def stage1():
                      LOGC["dark"] if i % 2 else LOGC["base"], sides=6))
     for i, (s, z, col) in enumerate(((1.1, 0.25, NEON_ORANGE), (0.8, 0.9, "#FFB43B"), (0.5, 1.5, NEON_GOLD))):
         P.append(S(f"Flame{i}", (s, s, s * 1.1), (fx + 0.05 * i, fy - 0.05 * i, z), col, emission=4, rot=(0.3, 0.3, 0.6 * i)))
-    for k, (dx, dy, yaw) in enumerate(((-3.0, 0.6, 1.4), (0.4, -3.0, 0.1))):
+    for k, (dx, dy, yaw) in enumerate(((-3.0, 0.2, 1.5), (0.9, 3.0, 0.15))):
         lx, ly = fx + dx, fy + dy
         P += [C(f"Seat{k}", 0.55, 0.55, 2.6, (lx - 1.3 * math.cos(yaw), ly - 1.3 * math.sin(yaw), 0.55), LOGC["base"], sides=8,
                 rot=(0, D90, yaw)),
               S(f"SeatChock{k}", (0.6, 0.6, 0.3), (lx, ly, 0), LOGC["deep"], rot=(0, 0, yaw))]
-    P += [C("Stump", 0.75, 0.8, 1.0, (fx + 2.2, fy + 2.4, 0), LOGC["base"], sides=10),
-          C("StumpTop", 0.65, 0.65, 0.08, (fx + 2.2, fy + 2.4, 1.0), CREAM["dark"], sides=10),
-          rod("Stick", (fx + 2.2, fy + 2.4, 1.1), (fx + 0.6, fy + 0.9, 2.0), 0.06, WOOD["deep"], sides=5),
-          R("Marshmallow", (0.4, 0.4, 0.5), (fx + 0.6, fy + 0.9, 1.8), "#FFFFFF", radius=0.12)]
+    P += [C("Stump", 0.75, 0.8, 1.0, (fx + 2.9, fy - 0.6, 0), LOGC["base"], sides=10),
+          C("StumpTop", 0.65, 0.65, 0.08, (fx + 2.9, fy - 0.6, 1.0), CREAM["dark"], sides=10),
+          rod("Stick", (fx + 2.9, fy - 0.6, 1.1), (fx + 0.9, fy - 0.2, 2.1), 0.06, WOOD["deep"], sides=5),
+          R("Marshmallow", (0.4, 0.4, 0.5), (fx + 0.9, fy - 0.2, 1.85), "#FFFFFF", radius=0.12),
+          C("Kettle", 0.45, 0.35, 0.6, (fx - 1.0, fy + 1.0, 0.15), BLUE["dark"], sides=10),
+          S("KettleHandle", (0.7, 0.1, 0.1), (fx - 1.0, fy + 1.0, 0.95), IRON)]
     # first-aid crate (bandage icon, no cross)
-    kx, ky = cx + 6.6, cy - 1.5
+    kx, ky = cx + 9.6, cy + 7.2
     P += [S("Crate", (2.4, 2.0, 1.6), (kx, ky, 0), WOOD["base"]),
           S("CrateLid", (2.6, 2.2, 0.3), (kx, ky, 1.6), WOOD["dark"])]
     for i, dx in enumerate((-1.05, 1.05)):
@@ -865,7 +883,7 @@ def stage1():
     P += bandage_icon("CrateIcon", kx, ky + 1.05, 0.8, 1.2, depth=0.1)
     P += [S("CrateTin", (1.0, 0.8, 0.6), (kx - 0.3, ky, 1.9), "#FFFFFF"), S("CrateTinLid", (1.05, 0.85, 0.15), (kx - 0.3, ky, 2.5), PINK["base"])]
     # wooden trail sign: post + 2 arrow boards (to the peak +y, and to camp)
-    sx, sy = cx + 7.2, cy + 5.0
+    sx, sy = cx + 12.6, cy + 3.5
     P += [S("TrailPost", (0.55, 0.55, 5.2), (sx, sy, 0), WOOD["dark"]),
           S("TrailCap", (0.85, 0.85, 0.3), (sx, sy, 5.2), WOOD["deep"]),
           S("TrailArrowA", (0.3, 2.6, 0.9), (sx, sy + 1.3, 3.9), WOOD["light"]),
@@ -890,12 +908,31 @@ def stage1():
         bpy.data.objects[P[-1 - i].name].rotation_euler = (0, 0, 0)
     P += [S("TrailIconRot", (0.08, 0.9, 0.12), (sx + 0.18, sy + 1.7, 4.0), RED["base"])]
     # back-of-tent vignette: two small pines + firewood bundle + rock
-    P += pine("PineA", -6.8, -13.5, 11, rnd)
-    P += pine("PineB", 7.5, -14.5, 9, random.Random(5))
-    P += boulder("TentRock", 9.0, -9.5, 1.8, rnd)
+    P += pine("PineA", -16.0, -15.5, 12, rnd)
+    P += pine("PineB", 20.0, -16.0, 10, random.Random(5))
+    P += pine("PineC", -20.0, -9.0, 8, random.Random(6))
+    P += boulder("TentRock", 12.0, -4.5, 1.8, rnd)
     for i in range(4):
-        P.append(C(f"Kindling{i}", 0.3, 0.3, 1.8, (-6.2, cy - 2.6 + i * 0.62, 0.3 + (i % 2) * 0.45), LOGC["base"] if i % 2 else LOGC["dark"],
+        P.append(C(f"Kindling{i}", 0.3, 0.3, 1.8, (-12.2, cy + 1.0 + i * 0.62, 0.3 + (i % 2) * 0.45), LOGC["base"] if i % 2 else LOGC["dark"],
                    sides=7, rot=(0, D90, 0)))
+    # clothesline vignette: bandages + socks drying between two poles (Bone Clinic humour)
+    for k, yy in enumerate((-15.0, -8.0)):
+        P += [S(f"LinePost{k}", (0.45, 0.45, 5.0), (-13.0, yy, 0), WOOD["dark"]),
+              S(f"LinePostFoot{k}", (1.0, 1.0, 0.3), (-13.0, yy, 0), STONE["dark"])]
+    P.append(rod("Line", (-13.0, -15.0, 4.7), (-13.0, -8.0, 4.7), 0.05, CREAM["dark"], sides=4))
+    for i, (col, ln) in enumerate(((CREAM["base"], 2.2), (PINK["base"], 1.6), (CREAM["light"], 2.6), (RED["base"], 1.3), (PINK["light"], 2.0))):
+        yy = -14.2 + i * 1.35
+        P.append(S(f"LineCloth{i}", (0.1, 0.9, ln), (-13.0, yy, 4.7 - ln), col, bevel=0.02, rot=(0.06 * (i - 2), 0, 0)))
+        P.append(S(f"LinePeg{i}", (0.16, 0.2, 0.35), (-13.0, yy, 4.5), WOOD["light"], bevel=0.02))
+    # practice-crash vignette: little wooden ramp into a hay-bale target (what this game is about)
+    P += [prism("PracticeRamp", [(-9.5, 0), (-5.5, 0), (-9.5, 1.6)], 2.6, "x", (14.9, 0, 0), WOOD["base"]),
+          S("PracticeRampLip", (2.6, 0.5, 0.3), (16.2, -9.55, 1.4), ORNG["base"])]
+    for i, (dx, dz) in enumerate(((0, 0), (2.4, 0), (1.2, 1.4))):
+        P += [S(f"Hay{i}", (2.3, 1.6, 1.4), (15.0 + dx, -12.0, dz), "#F2C14E"),
+              S(f"HayBand{i}", (0.25, 1.65, 1.42), (15.0 + dx - 0.6, -12.0, dz), "#C98A2E")]
+    P += [C("TargetRing", 1.1, 1.1, 0.12, (16.2, -11.22, 3.4), RED["base"], sides=16, rot=(-D90, 0, 0)),
+          C("TargetMid", 0.7, 0.7, 0.14, (16.2, -11.19, 3.4), "#FFFFFF", sides=16, rot=(-D90, 0, 0)),
+          C("TargetEye", 0.32, 0.32, 0.16, (16.2, -11.16, 3.4), RED["base"], sides=12, rot=(-D90, 0, 0))]
     MARKERS.setdefault("StageDoors", {})["1"] = [cx, cy + L / 2 + 1.0, 0.35]
     return P
 
@@ -1767,6 +1804,9 @@ def shoot(scene, cam, path, loc, target, lens):
 STAGE_H = {0: 8, 1: 8, 2: 15, 3: 23, 4: 26, 5: 40}
 
 
+VIEWS = ["front", "side", "back", "hero"]
+
+
 def render_all(samples=32, only=None):
     os.makedirs(PREVIEWS, exist_ok=True)
     jobs = [n for n in (0, 1, 2, 3, 4, 5)] + ["lineup"]
@@ -1798,12 +1838,18 @@ def render_all(samples=32, only=None):
         tz = h * 0.35
         if n == 0:
             shoot(scene, cam, os.path.join(PREVIEWS, "kit_front.png"), (0, 52, 22), (0, 8, 2.5), 32)
-            shoot(scene, cam, os.path.join(PREVIEWS, "kit_lift_clinic_closeup.png"), (2, 34, 10), (0, 12, 3), 30)
+            shoot(scene, cam, os.path.join(PREVIEWS, "kit_lift_closeup.png"), (8, 30, 10), (16.0, 13.0, 4.5), 35)
+            shoot(scene, cam, os.path.join(PREVIEWS, "kit_clinic_closeup.png"), (-8, 28, 8), (-16.5, 12.5, 3.0), 35)
+            shoot(scene, cam, os.path.join(PREVIEWS, "kit_boards_pets_closeup.png"), (0, 34, 8), (0, 12, 2.5), 35)
             continue
-        shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_front.png"), (0, dist, h * 0.55 + 14), (0, -3, tz), 30)
-        shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_side.png"), (dist, -4, h * 0.55 + 12), (0, -4, tz), 30)
-        shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_back.png"), (6, -dist, h * 0.55 + 14), (0, -4, tz), 30)
-        shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_hero.png"), (dist * 0.55, dist * 0.7, h * 0.4 + 6), (0, -6, tz + 1), 30)
+        if "front" in VIEWS:
+            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_front.png"), (0, dist, h * 0.55 + 14), (0, -3, tz), 30)
+        if "side" in VIEWS:
+            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_side.png"), (dist, -4, h * 0.55 + 12), (0, -4, tz), 30)
+        if "back" in VIEWS:
+            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_back.png"), (6, -dist, h * 0.55 + 14), (0, -4, tz), 30)
+        if "hero" in VIEWS:
+            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_hero.png"), (dist * 0.55, dist * 0.7, h * 0.4 + 6), (0, -6, tz + 1), 30)
 
 
 if __name__ == "__main__":
@@ -1819,6 +1865,9 @@ if __name__ == "__main__":
             do_render, do_export = True, False
         elif a == "--samples":
             samples = int(argv[i + 1])
+            i += 1
+        elif a == "--views":
+            VIEWS[:] = argv[i + 1].split(",")
             i += 1
         elif a == "--only":
             only = argv[i + 1]

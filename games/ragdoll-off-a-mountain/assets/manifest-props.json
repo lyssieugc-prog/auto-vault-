@@ -1,47 +1,5 @@
 [
   {
-    "name": "Cannon4_MegaMortar",
-    "file": "assets/export/props/Cannon4_MegaMortar.fbx",
-    "tris": 12540,
-    "meshes": {
-      "Cannon4_MegaMortar_Body": 12008,
-      "Cannon4_MegaMortar_Neon": 532
-    },
-    "parts": 238,
-    "kind": "cannon",
-    "size": [
-      11.58,
-      11.62,
-      12.5
-    ],
-    "attachments": [
-      "Muzzle",
-      "Pivot",
-      "Seat"
-    ]
-  },
-  {
-    "name": "Cannon5_MeteorLauncher",
-    "file": "assets/export/props/Cannon5_MeteorLauncher.fbx",
-    "tris": 6976,
-    "meshes": {
-      "Cannon5_MeteorLauncher_Body": 4948,
-      "Cannon5_MeteorLauncher_Neon": 2028
-    },
-    "parts": 97,
-    "kind": "cannon",
-    "size": [
-      8.3,
-      19.97,
-      17.03
-    ],
-    "attachments": [
-      "Muzzle",
-      "Pivot",
-      "Seat"
-    ]
-  },
-  {
     "name": "Cannon1_PartyPopper",
     "file": "assets/export/props/Cannon1_PartyPopper.fbx",
     "tris": 8468,
@@ -97,6 +55,48 @@
       7.9,
       12.26,
       12.45
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  },
+  {
+    "name": "Cannon4_MegaMortar",
+    "file": "assets/export/props/Cannon4_MegaMortar.fbx",
+    "tris": 12540,
+    "meshes": {
+      "Cannon4_MegaMortar_Body": 12008,
+      "Cannon4_MegaMortar_Neon": 532
+    },
+    "parts": 238,
+    "kind": "cannon",
+    "size": [
+      11.58,
+      11.62,
+      12.5
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  },
+  {
+    "name": "Cannon5_MeteorLauncher",
+    "file": "assets/export/props/Cannon5_MeteorLauncher.fbx",
+    "tris": 6976,
+    "meshes": {
+      "Cannon5_MeteorLauncher_Body": 4948,
+      "Cannon5_MeteorLauncher_Neon": 2028
+    },
+    "parts": 97,
+    "kind": "cannon",
+    "size": [
+      8.3,
+      19.97,
+      17.03
     ],
     "attachments": [
       "Muzzle",
