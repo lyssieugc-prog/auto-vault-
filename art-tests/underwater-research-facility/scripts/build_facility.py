@@ -652,7 +652,7 @@ def landscape():
             L = math.hypot(x1 - x0, y1 - y0)
             P.append(C(f"{name}{i}", 0.28, 0.28, L, (x0, y0, 0.28), "#1A1A1A", sides=8, rot=(0, math.pi / 2, math.atan2(y1 - y0, x1 - x0))))
     # marine life: fish schools, jellyfish, bubble vents, divers
-    for g, (x, y, z, col, yaw) in enumerate(((20, 18, 18, "#FFC83D", 0.4), (-50, 6, 22, "#7CF7FF", -0.6), (72, -32, 20, "#FF6FAE", 2.2))):
+    for g, (x, y, z, col, yaw) in enumerate(((-26, 52, 24, "#FFC83D", 0.4), (-50, 6, 22, "#7CF7FF", -0.6), (72, -32, 20, "#FF6FAE", 2.2))):
         for i in range(7):
             P += uw.tiny_fish(f"School{g}_{i}_", (x + (i % 3) * 2.2 + rnd.uniform(-0.4, 0.4), y + (i // 3) * 1.8, z + rnd.uniform(-1, 1)), col,
                               yaw=yaw, s=rnd.uniform(0.8, 1.2))

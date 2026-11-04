@@ -30,16 +30,16 @@ def make_stud_textures(force=False):
     if os.path.exists(hpath) and os.path.exists(npath) and not force:
         return hpath, npath
     os.makedirs(TEX_DIR, exist_ok=True)
-    n, R, E = STUD_PX, 0.27, 0.03
+    n, R, E = STUD_PX, 0.25, 0.07  # flat-topped stud with a soft, wide bevel (reads raised, not engraved)
 
     def h(u, v):
         r = math.hypot(u - 0.5, v - 0.5)
         if r >= R + E:
             return 0.0
         if r <= R:
-            return 0.55 + 0.45 * (1 - (r / R) ** 2)
+            return 0.92 + 0.08 * (1 - (r / R) ** 2)
         t = (R + E - r) / E
-        return 0.55 * t * t * (3 - 2 * t)
+        return 0.92 * t * t * (3 - 2 * t)
 
     H = [[h((x + 0.5) / n, (y + 0.5) / n) for x in range(n)] for y in range(n)]
     hp, np_ = [], []
@@ -49,7 +49,7 @@ def make_stud_textures(force=False):
             hp += [v, v, v, 1.0]
             dx = (H[y][(x + 1) % n] - H[y][(x - 1) % n]) * n / 2
             dy = (H[(y + 1) % n][x] - H[(y - 1) % n][x]) * n / 2
-            k = 0.06  # bump height in tile units
+            k = 0.035  # bump height in tile units (softer)
             nx, ny, nz = -dx * k, -dy * k, 1.0
             ln = math.sqrt(nx * nx + ny * ny + nz * nz)
             np_ += [nx / ln * 0.5 + 0.5, ny / ln * 0.5 + 0.5, nz / ln * 0.5 + 0.5, 1.0]
