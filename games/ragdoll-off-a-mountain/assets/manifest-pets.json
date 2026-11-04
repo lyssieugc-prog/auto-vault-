@@ -26,5 +26,33 @@
     ],
     "note": "orbiters + aura ring; spin/bob in Studio",
     "status": "PENDING owner approval"
+  },
+  {
+    "name": "SkellyCat",
+    "file": "assets/export/pets/SkellyCat.fbx",
+    "tris": 8964,
+    "tris_per_mesh": {
+      "Body": 8228,
+      "Neon": 736
+    },
+    "parts": 225,
+    "kind": "pet",
+    "meshes": [
+      "SkellyCat_Body",
+      "SkellyCat_Neon"
+    ],
+    "status": "PENDING owner approval"
+  },
+  {
+    "name": "SkellyCat_FX",
+    "file": "assets/export/pets/SkellyCat_FX.fbx",
+    "tris": 5216,
+    "parts": 88,
+    "kind": "pet_fx",
+    "meshes": [
+      "SkellyCat_FX"
+    ],
+    "note": "orbiters + aura ring; spin/bob in Studio",
+    "status": "PENDING owner approval"
   }
 ]

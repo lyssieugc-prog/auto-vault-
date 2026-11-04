@@ -1,0 +1,50 @@
+name: Build place (Ragdoll Off a Mountain)
+
+# Builds "Ragdoll Off a Mountain.rbxl" (scripts + Edit-mode UI + markers) and bundles it with the
+# Blender FBX exports and Studio scripts as a downloadable artifact. Never publishes anything.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "games/ragdoll-off-a-mountain/**"
+      - ".github/workflows/build-place.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  place:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install Rojo + Lune
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/bin" /tmp/dl && cd /tmp/dl
+          curl -fsSL -o rojo.zip https://github.com/rojo-rbx/rojo/releases/download/v7.4.4/rojo-7.4.4-linux-x86_64.zip
+          curl -fsSL -o lune.zip https://github.com/lune-org/lune/releases/download/v0.8.9/lune-0.8.9-linux-x86_64.zip
+          for z in *.zip; do unzip -oq "$z" -d "$HOME/bin"; done
+          chmod +x "$HOME/bin"/*
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+      - name: Build place
+        run: |
+          set -euo pipefail
+          G=games/ragdoll-off-a-mountain
+          OUT="$RUNNER_TEMP/RagdollOffAMountain"
+          mkdir -p "$OUT"
+          rojo build "$G/default.project.json" -o "$RUNNER_TEMP/base.rbxl"
+          lune run "$G/studio/build_place.luau" "$RUNNER_TEMP/base.rbxl" "$OUT/Ragdoll Off a Mountain.rbxl" "$G/assets/export/map/layout.json"
+          mkdir -p "$OUT/models" "$OUT/studio_scripts" "$OUT/ui_art"
+          cp -R "$G/assets/export/." "$OUT/models/"
+          find "$OUT/models" -name '*.glb' -delete
+          cp "$G"/studio/*.luau "$OUT/studio_scripts/"
+          cp "$G"/assets/ui/*.png "$OUT/ui_art/" 2>/dev/null || true
+          cp "$G/studio/IMPORT_GUIDE.md" "$OUT/"
+          ls -R "$OUT" | head -80
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RagdollOffAMountain-place
+          path: ${{ runner.temp }}/RagdollOffAMountain
+          retention-days: 30
