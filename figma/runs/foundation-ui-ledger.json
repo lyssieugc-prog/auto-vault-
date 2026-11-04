@@ -1,0 +1,96 @@
+{
+ "runId": "foundation-ui-2026-11-04",
+ "fileKey": "LKQvsczbhomTqLmT9me2oZ",
+ "fileUrl": "https://www.figma.com/design/LKQvsczbhomTqLmT9me2oZ",
+ "scope": "full library v1: foundations, components with states, desktop+mobile screens, UI test board",
+ "fonts": {
+  "title/body": "Fredoka One (Roblox Enum.Font.FredokaOne)",
+  "banner": "Luckiest Guy (Roblox Enum.Font.LuckiestGuy)"
+ },
+ "completedSteps": [
+  "file created",
+  "session created",
+  "font discovery",
+  "foundations: pages, 19 primitives, 19 semantic colors, spacing/radius/touch, 7 text styles, 3 effect styles",
+  "Button set 28 variants (studded)",
+  "Patterns: Studs/Sunburst/Stripes/Chevron",
+  "VFX: Sparkle/BurstRing/Confetti",
+  "RewardTile/DailyDay/IndexCard/MultiplierStep/ShopCard/QuestRow/Toast/TutorialPointer (rebuilt with bound colours)",
+  "Motion Specs keyframe board"
+ ],
+ "blocked": null,
+ "next": "Screens page: HUD desktop + mobile, Shop, Inventory, Battle Pass, Daily, Quests, Index, Settings, Tutorial, Loading; then UI Test Board",
+ "entities": {
+  "pages": {
+   "Cover": "0:1",
+   "Foundations": "2:2",
+   "Components": "2:3",
+   "Screens": "2:4",
+   "UI Test Board": "2:5"
+  },
+  "semantic": {
+   "bg/panel": "VariableID:2:27",
+   "bg/panel-raised": "VariableID:2:28",
+   "bg/slot": "VariableID:2:29",
+   "action/primary": "VariableID:2:30",
+   "action/primary-lip": "VariableID:2:31",
+   "action/secondary": "VariableID:2:32",
+   "action/premium": "VariableID:2:33",
+   "action/danger": "VariableID:2:34",
+   "action/disabled": "VariableID:2:35",
+   "text/primary": "VariableID:2:36",
+   "text/accent": "VariableID:2:37",
+   "text/stroke": "VariableID:2:38",
+   "border/dark": "VariableID:2:39",
+   "rarity/common": "VariableID:2:40",
+   "rarity/uncommon": "VariableID:2:41",
+   "rarity/rare": "VariableID:2:42",
+   "rarity/epic": "VariableID:2:43",
+   "rarity/legendary": "VariableID:2:44",
+   "rarity/mythic": "VariableID:2:45"
+  },
+  "numbers": {
+   "spacing/sm": "VariableID:2:48",
+   "spacing/md": "VariableID:2:49",
+   "spacing/lg": "VariableID:2:50",
+   "radius/md": "VariableID:2:54",
+   "radius/lg": "VariableID:2:55"
+  },
+  "textStyles": {
+   "Label/Button": "S:0eb9240c3e30771137c3bbd9d5f0df6f6b612ea5,",
+   "Title/M": "S:f30cb85339c2458253af9f5b6d788a476358496e,",
+   "Body/M": "S:bf267dd985ffb0142daf2047b7dd5c2c83dbc7b6,",
+   "Caption/S": "S:9d65e02680153a37b8af66795d48d2fd009548e1,",
+   "Number/HUD": "S:6b9e5e77446c61552c6c54c3661ced109fd93fd0,",
+   "Title/L": "S:708f7a7c5f9f369a65ff2c3cc89ef691c17e8b79,",
+   "Banner/XL": "S:79a4804db5ccb0c1c362e6b64113e129322fb843,"
+  },
+  "effectStyles": {
+   "Elevation/Pop": "S:e4379fcf69a3564219a3a111bf28125922a85caf,",
+   "Gloss/Inner": "S:4d8af6824973fd2ebedd84bfa92e6d0ca614e4d1,",
+   "Glow/Claimable": "S:b783c97a5320f170b06b43106281566d8f0eca3e,"
+  },
+  "components": {
+   "Button": "3:114",
+   "Pattern/Studs": "5:2",
+   "Pattern/Sunburst": "5:131",
+   "Pattern/Stripes": "5:144",
+   "Pattern/Chevron": "5:157",
+   "VFX/Sparkle": "5:188",
+   "VFX/BurstRing": "5:190",
+   "VFX/Confetti": "5:193",
+   "RewardTile": "6:1644",
+   "DailyDay": "6:2744",
+   "IndexCard": "6:3580",
+   "MultiplierStep": "6:4395",
+   "ShopCard": "6:4396",
+   "QuestRow": "6:4939",
+   "Toast": "6:5204",
+   "TutorialPointer": "6:5500",
+   "MotionSpecs": "7:12556"
+  }
+ },
+ "notes": [
+  "Bug fixed: first gameplay components had unbound (white) fills because colour keys were passed instead of variable IDs; deleted and rebuilt."
+ ]
+}
