@@ -125,7 +125,7 @@ function Trading:setOffer(userId, uids: { string }, currencies: { [string]: numb
 		seen[uid] = true
 	end
 	local cleanCurrencies = {}
-	for name, amount in currencies or {} do
+	for name, amount in pairs(currencies or {}) do
 		if not table.find(self.tradableCurrencies, name) or not self.currency then
 			return false, "invalid_currency"
 		end

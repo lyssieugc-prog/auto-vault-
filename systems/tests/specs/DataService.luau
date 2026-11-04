@@ -46,8 +46,20 @@ return function(t)
 		it("session lock blocks a second server until released or expired", function()
 			local clock = t.clock(1000)
 			local store = memoryStore()
-			local a = DataService.new({ store = store, template = TEMPLATE, sessionId = "A", now = clock.now, lockTimeout = 100 })
-			local b = DataService.new({ store = store, template = TEMPLATE, sessionId = "B", now = clock.now, lockTimeout = 100 })
+			local a = DataService.new({
+				store = store,
+				template = TEMPLATE,
+				sessionId = "A",
+				now = clock.now,
+				lockTimeout = 100,
+			})
+			local b = DataService.new({
+				store = store,
+				template = TEMPLATE,
+				sessionId = "B",
+				now = clock.now,
+				lockTimeout = 100,
+			})
 			a:load(1)
 			local none, err = b:load(1)
 			expect(none).toBeNil()

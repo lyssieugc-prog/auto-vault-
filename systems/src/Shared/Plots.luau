@@ -15,7 +15,10 @@ local Plots = {}
 Plots.__index = Plots
 
 function Plots.new(config)
-	assert(type(config) == "table" and type(config.count) == "number" and config.count >= 1, "Plots.new: count required")
+	assert(
+		type(config) == "table" and type(config.count) == "number" and config.count >= 1,
+		"Plots.new: count required"
+	)
 	local self = setmetatable({}, Plots)
 	self.count = config.count
 	self.owners = {} -- [index] = userId

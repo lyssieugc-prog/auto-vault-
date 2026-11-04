@@ -47,12 +47,12 @@ step "luau-analyze (pure modules)"
 need luau-analyze && run luau-analyze systems/src/Shared/*.luau
 
 step "Lune (systems tests)"
-need lune && run lune run systems/tests/run
+need lune && run lune run systems/tests/run.luau
 
 step "Template end-to-end (scaffold + tests + rojo build)"
 TMP="$(mktemp -d)"
 run scripts/new-game.sh "Vault Smoke Test" --dest "$TMP"
-if need lune; then run lune run "$TMP/vault-smoke-test/tests/run"; fi
+if need lune; then run lune run "$TMP/vault-smoke-test/tests/run.luau"; fi
 if need rojo; then
   run rojo build systems/default.project.json -o "$TMP/vault.rbxm"
   run rojo build "$TMP/vault-smoke-test/default.project.json" -o "$TMP/smoke.rbxl"
@@ -62,7 +62,7 @@ rm -rf "$TMP"
 step "Games"
 for g in games/*/; do
   [[ -f "$g/default.project.json" ]] || continue
-  if need lune && [[ -f "$g/tests/run.luau" ]]; then run lune run "$g/tests/run"; fi
+  if need lune && [[ -f "$g/tests/run.luau" ]]; then run lune run "${g%/}/tests/run.luau"; fi
   if need rojo; then run rojo build "$g/default.project.json" -o "$(mktemp -d)/game.rbxl"; fi
 done
 

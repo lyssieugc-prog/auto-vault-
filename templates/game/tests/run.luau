@@ -8,7 +8,9 @@ local GameLogic = require("../src/shared/GameLogic")
 local TestKit = require("../vendor/vault/tests/TestKit")
 
 local M = {}
-for _, name in { "Currency", "Inventory", "Upgrades", "Rebirth", "Rewards", "Tutorial", "Monetization", "Rarity", "DataService" } do
+for _, name in
+	{ "Currency", "Inventory", "Upgrades", "Rebirth", "Rewards", "Tutorial", "Monetization", "Rarity", "DataService" }
+do
 	M[name] = require("../vendor/vault/Shared/" .. name)
 end
 

@@ -74,7 +74,11 @@ Config.upgrades = {
 			return 1 + level
 		end,
 	},
-	CashMulti = { currency = "Gems", costs = { 10, 40, 150, 600, 2500, 10000 }, values = { 1, 2, 5, 25, 100, 500, 1250 } },
+	CashMulti = {
+		currency = "Gems",
+		costs = { 10, 40, 150, 600, 2500, 10000 },
+		values = { 1, 2, 5, 25, 100, 500, 1250 },
+	},
 }
 
 Config.rebirth = { currency = "Cash", baseCost = 10000, growth = 2.5, multiplierPerRebirth = 0.5 }

@@ -175,7 +175,8 @@ function GameLogic:hatch(userId, eggName: any)
 	local pool = egg.pool[tier]
 	local petId = pool[math.clamp(math.floor(self.rng() * #pool) + 1, 1, #pool)]
 	local mutation, mult = roller:rollMutation()
-	local uid = self.inventory:add(userId, { id = petId, rarity = tier, mutation = mutation, mutationMultiplier = mult })
+	local uid =
+		self.inventory:add(userId, { id = petId, rarity = tier, mutation = mutation, mutationMultiplier = mult })
 	self.rewards:progress(profile.rewards, "eggsHatched", 1)
 	self:tutorialEvent(userId, "hatch")
 	return { uid = uid, id = petId, rarity = tier, mutation = mutation }, nil

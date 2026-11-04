@@ -11,7 +11,7 @@ return function(t)
 				items = {
 					{ id = "Floor1", cost = 0, currency = "Cash" },
 					{ id = "Dropper1", cost = 100, currency = "Cash", requires = { "Floor1" }, income = 5 },
-					{ id = "Dropper2", cost = 800, currency = "Cash", requires = { "Dropper1" }, income = 20 },
+					{ id = "Dropper2", cost = 950, currency = "Cash", requires = { "Dropper1" }, income = 20 },
 					{ id = "VIPRoom", cost = 0, currency = "Cash", requires = { "Floor1" }, gamepass = "VIP" },
 				},
 			})

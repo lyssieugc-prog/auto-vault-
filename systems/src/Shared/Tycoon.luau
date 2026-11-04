@@ -52,7 +52,7 @@ end
 
 function Tycoon:load(userId, saved: { string }?)
 	local owned = {}
-	for _, id in saved or {} do
+	for _, id in ipairs(saved or {}) do
 		if self.items[id] then
 			owned[id] = true
 		end
@@ -155,7 +155,7 @@ end
 
 function Tycoon:reset(userId, keep: { string }?)
 	local owned = {}
-	for _, id in keep or {} do
+	for _, id in ipairs(keep or {}) do
 		if self.items[id] then
 			owned[id] = true
 		end
