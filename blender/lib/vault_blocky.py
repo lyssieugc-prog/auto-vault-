@@ -537,7 +537,7 @@ class VoxelCanvas:
 # ---------------------------------------------------------------------------------------------
 
 STUD_TEX_PX = 128
-STUD_PITCH = 1.0  # studs per UV tile spacing in studs; owner picks the visual size (see bible §2)
+STUD_PITCH = 0.5  # stud spacing in studs — owner chose B (half size), L-20261104-06; bible §2
 _TEX_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "textures")
 
 

@@ -2,6 +2,14 @@
 
 Read before every build. Newest first. Format in `lessons/README.md`.
 
+### L-20261104-07 — Buildings need detail on par with collectibles (not more)
+- Scope: global (owner: "the brainrot is more detailed than the buildings, that's really not how it
+  should be… the buildings should have more detail" → "not MORE than collectibles")
+- Root cause: building was clean panels only; detail budget went to the collectible.
+- Rule: `style-guides/3D_STYLE_BIBLE.md` §3b detail-parity checklist for every building/prop.
+- Applied to: `blender/templates/test_collection.py` (`building_details`), bible §3b,
+  `blender/tests/test_pipeline.py` (building piece-count gate)
+
 ### L-20261104-06 — Everything studded (pets too); any shape allowed; studs must not look huge
 - Scope: global (owner: "it doesn't have to just be cubes… as long as it has the stud texture, and
   yes EVERYTHING even pets should have stud texture"; "the studs are huge, use the roblox stud texture")
@@ -11,7 +19,8 @@ Read before every build. Newest first. Format in `lessons/README.md`.
 - Rule: every surface of every model carries stud texture (exceptions: glass, neon, face pieces);
   cylinders/cones/wedges/rounded shapes are fine for props; studs keep correct size after scaling
   (world-space UVs); brainrot stays the merged-block v3 shape (round v4 rejected).
-- OPEN: stud size — owner choosing between 1 / 0.5 / 0.25-stud pitch (`vault_blocky.STUD_PITCH`).
+- RESOLVED: stud size = **0.5-stud spacing** (owner picked option B) → `STUD_PITCH = 0.5`; Roblox
+  Texture StudsPerTileU/V = 0.5.
 - Applied to: `blender/lib/vault_blocky.py` (world-space `stud_surface`, `restud`, `scale_group`,
   `cyl`/`ball`/`rounded`, `STUD_PITCH`), `blender/templates/test_collection.py` (real Roblox scale,
   studded brainrot), `blender/tools/render_collection.py`

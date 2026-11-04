@@ -156,6 +156,108 @@ def building():
     for i, x in enumerate((2.0, 7.6)):
         P.append(vb.cyl(f"Planter{i}", 0.6, 0.7, 0.9, (x, fy + 1.4, z0), C["frame_dark"], sides=12))
         P.append(vb.ball(f"Bush{i}", (0.7, 0.7, 0.6), (x, fy + 1.4, z0 + 1.3), C["leaf"], segments=12, rings=8))
+    P += building_details(W, D, H1, H2, z0, z1, zr, fy)
+    return P
+
+
+def building_details(W, D, H1, H2, z0, z1, zr, fy):
+    """Detail pass (owner: buildings need detail on par with collectibles — not more)."""
+    P = []
+    WH, WOOD, DARK = "#FFFFFF", "#D9A066", "#2E3440"
+    fruit = ("#FF9F1C", "#FF3B5C", "#8BE04E", "#FFD93B")
+    # shop window frame + mullions (3 panes)
+    P += [S("ShopFrameTop", (8.4, 0.3, 0.3), (-1.5, fy + 0.05, z0 + H1 - 1.7), WH),
+          S("ShopFrameL", (0.3, 0.3, 4.4), (-5.55, fy + 0.05, z0 + 1.75), WH),
+          S("ShopFrameR", (0.3, 0.3, 4.4), (2.55, fy + 0.05, z0 + 1.75), WH)]
+    for i, x in enumerate((-2.83, -0.17)):
+        P.append(S(f"ShopMullion{i}", (0.2, 0.2, 4.2), (x, fy - 0.3, z0 + 1.4), WH))
+    # scalloped awning valance
+    for i in range(16):
+        P.append(vb.ball(f"Scallop{i}", (0.3, 0.14, 0.26), (-5.85 + i * 0.55, fy + 2.1, z0 + H1 - 2.05),
+                         C["accent"] if i % 2 == 0 else WH, segments=10, rings=6))
+    # door frame, knob, lamps, step, mat
+    P += [S("DoorFrameTop", (3.0, 0.3, 0.3), (4.75, fy + 0.05, z0 + 4.6), WH),
+          S("DoorFrameL", (0.25, 0.3, 4.6), (3.4, fy + 0.05, z0), WH),
+          S("DoorFrameR", (0.25, 0.3, 4.6), (6.1, fy + 0.05, z0), WH),
+          vb.ball("DoorKnob", (0.16, 0.12, 0.16), (5.6, fy - 0.2, z0 + 2.3), C["sign"], segments=8, rings=5),
+          S("DoorStep", (3.4, 1.2, 0.3), (4.75, fy + 2.1, 0), C["stone_dark"]),
+          S("Mat", (2.4, 1.0, 0.06), (4.75, fy + 1.0, z0), "#FF6FAE", bevel=0.01)]
+    for i, x in enumerate((3.0, 6.6)):
+        P.append(S(f"LampBack{i}", (0.5, 0.2, 0.8), (x, fy + 0.1, z0 + 3.2), DARK))
+        P.append(vb.ball(f"Lamp{i}", (0.22, 0.22, 0.3), (x, fy + 0.35, z0 + 3.7), C["light"], segments=10, rings=6, emission=4))
+    # baseboard + cornice bands
+    P += [S("BaseBack", (W, 0.2, 0.5), (0, -D / 2 - 0.1, z0), C["frame_dark"]),
+          S("BaseL", (0.2, D - 1.6, 0.5), (-W / 2 - 0.1, 0, z0), C["frame_dark"]),
+          S("BaseR", (0.2, D - 1.6, 0.5), (W / 2 + 0.1, 0, z0), C["frame_dark"]),
+          S("Cornice", (W + 1.4, D + 1.4, 0.4), (0, 0, zr - 0.7), C["frame_dark"])]
+    # side windows with frames + flower boxes (both floors)
+    for sx in (-1, 1):
+        xo = sx * (W / 2 + 0.04)
+        for k, zw in enumerate((z0 + 2.0, z1 + 1.6)):
+            tag = f"{'L' if sx < 0 else 'R'}{k}"
+            P += [S(f"SideGlass{tag}", (0.1, 3.0, 2.4), (xo, 0, zw), C["glass"], studs="none", bevel=0.01),
+                  S(f"SideFrameT{tag}", (0.25, 3.5, 0.3), (xo + sx * 0.05, 0, zw + 2.4), WH),
+                  S(f"SideFrameB{tag}", (0.25, 3.5, 0.3), (xo + sx * 0.05, 0, zw - 0.3), WH),
+                  S(f"SideFrameF{tag}", (0.25, 0.3, 2.4), (xo + sx * 0.05, 1.6, zw), WH),
+                  S(f"SideFrameK{tag}", (0.25, 0.3, 2.4), (xo + sx * 0.05, -1.6, zw), WH),
+                  S(f"FlowerBox{tag}", (0.6, 3.2, 0.5), (xo + sx * 0.3, 0, zw - 0.8), C["frame_dark"])]
+            for j in range(5):
+                P.append(vb.ball(f"Flower{tag}_{j}", (0.22, 0.22, 0.2), (xo + sx * 0.3, -1.2 + j * 0.6, zw - 0.2),
+                                 fruit[j % 4], segments=8, rings=5))
+    # string lights under the floor beam
+    P.append(S("LightWire", (W - 1.0, 0.06, 0.06), (0, fy + 0.75, z0 + H1 - 0.15), DARK, bevel=0.0))
+    for i in range(12):
+        P.append(vb.ball(f"Bulb{i}", (0.14, 0.14, 0.18), (-6.0 + i * 1.09, fy + 0.78, z0 + H1 - 0.45),
+                         ("#FFE066", "#FF8FC8", "#7FF0FF")[i % 3], segments=8, rings=5, emission=3))
+    # sign border + fruit icons
+    P += [S("SignBorderT", (9.6, 0.25, 0.25), (0, fy + 1.0, zr + 3.2), WH),
+          S("SignBorderB", (9.6, 0.25, 0.25), (0, fy + 1.0, zr + 1.0), WH)]
+    for i, x in enumerate((-3.2, 0.0, 3.2)):
+        P.append(vb.ball(f"SignFruit{i}", (0.55, 0.2, 0.55), (x, fy + 1.12, zr + 2.2), fruit[i], segments=12, rings=8))
+        P.append(S(f"SignLeaf{i}", (0.35, 0.12, 0.25), (x + 0.2, fy + 1.15, zr + 2.7), C["leaf"], bevel=0.05))
+    # roof: parapet, AC unit, vent, cup toppings
+    zt = zr + 0.9
+    P += [S("ParapetB", (W + 2.6, 0.5, 0.6), (0, -D / 2 - 1.05, zt), C["accent"]),
+          S("ParapetL", (0.5, D + 1.6, 0.6), (-W / 2 - 1.05, -0.25, zt), C["accent"]),
+          S("ParapetR", (0.5, D + 1.6, 0.6), (W / 2 + 1.05, -0.25, zt), C["accent"]),
+          vb.rounded("ACUnit", (2.2, 1.6, 1.3), (3.5, -2.5, zt), C["steel"], radius=0.12),
+          vb.cyl("ACFan", 0.55, 0.55, 0.06, (3.5, -2.5, zt + 1.3), DARK, sides=14),
+          vb.cyl("Vent", 0.25, 0.25, 1.4, (5.8, 1.5, zt), C["steel_dark"], sides=10),
+          vb.cyl("VentCap", 0.38, 0.38, 0.15, (5.8, 1.5, zt + 1.4), C["steel_dark"], sides=10),
+          vb.ball("Whip", (1.0, 1.0, 0.55), (-3.8, -1.5, zr + 4.9), WH, segments=14, rings=8),
+          vb.ball("Cherry", (0.28, 0.28, 0.28), (-3.6, -1.4, zr + 5.55), "#FF3B5C", segments=10, rings=6),
+          vb.cyl("OrangeSlice", 0.75, 0.75, 0.15, (-2.35, -1.0, zr + 3.9), fruit[0], sides=16, rot=(math.pi / 2, 0, 0.3))]
+    for i in range(4):
+        P.append(S(f"ACGrille{i}", (1.8, 0.06, 0.12), (3.5, -1.68, zt + 0.25 + i * 0.25), DARK, bevel=0.0))
+    # interior seen through the glass: counter, blenders, cups, menu board
+    P.append(S("InnerCounter", (7.5, 1.0, 1.6), (-1.5, fy - 2.2, z0), WOOD))
+    for i, x in enumerate((-4.2, -2.4, -0.6, 1.2)):
+        P.append(S(f"BlenderBase{i}", (0.6, 0.6, 0.35), (x, fy - 2.2, z0 + 1.6), DARK))
+        P.append(vb.cyl(f"BlenderJar{i}", 0.22, 0.3, 0.8, (x, fy - 2.2, z0 + 1.95), fruit[i], sides=10))
+    P.append(S("MenuBoard", (6.0, 0.15, 2.0), (-1.5, -D / 2 + 0.9, z0 + 3.5), DARK))
+    for r in range(3):
+        P.append(S(f"MenuLine{r}", (4.8, 0.06, 0.18), (-1.5, -D / 2 + 1.0, z0 + 3.9 + r * 0.5), fruit[r], bevel=0.0))
+    # outdoor seating + A-frame menu + crates + drainpipe
+    tx, ty = -4.5, fy + 3.6
+    P += [vb.cyl("TableLeg", 0.15, 0.15, 1.2, (tx, ty, 0), DARK, sides=8),
+          vb.cyl("TableTop", 1.0, 1.0, 0.15, (tx, ty, 1.2), WH, sides=16),
+          vb.cyl("UmbrellaPole", 0.08, 0.08, 2.6, (tx, ty, 1.35), WH, sides=8),
+          vb.cyl("Umbrella", 1.9, 0.12, 0.8, (tx, ty, 3.6), C["accent"], sides=8),
+          vb.ball("UmbrellaTop", (0.15, 0.15, 0.15), (tx, ty, 4.45), WH, segments=8, rings=5)]
+    for i, dx in enumerate((-1.5, 1.5)):
+        P.append(vb.cyl(f"Stool{i}", 0.42, 0.42, 0.75, (tx + dx, ty, 0), C["frame"], sides=12))
+    for i, tilt in enumerate((12, -12)):
+        P.append(S(f"AFrame{i}", (1.4, 0.12, 2.0), (0.6, fy + 3.2 + (0.25 if i else -0.25), 0), DARK,
+                   rot=(math.radians(tilt), 0, 0)))
+    for r in range(3):
+        P.append(S(f"AFrameLine{r}", (1.0, 0.05, 0.15), (0.6, fy + 3.48, 0.6 + r * 0.4), fruit[r], bevel=0.0,
+                   rot=(math.radians(-12), 0, 0)))
+    for i, z in enumerate((0, 0.8)):
+        P.append(vb.rounded(f"Crate{i}", (1.3, 1.0, 0.8), (W / 2 + 1.6, fy + 1.6, z), WOOD, radius=0.08))
+    for j in range(3):
+        P.append(vb.ball(f"CrateFruit{j}", (0.25, 0.25, 0.25), (W / 2 + 1.25 + j * 0.35, fy + 1.6, 1.85), fruit[j],
+                         segments=8, rings=5))
+    P.append(vb.cyl("Drainpipe", 0.18, 0.18, H1 + H2 + 1.0, (W / 2 + 0.95, -D / 2 - 0.95, z0), C["steel"], sides=8))
     return P
 
 

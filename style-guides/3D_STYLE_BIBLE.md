@@ -1,6 +1,6 @@
 # 3D Style Bible — DRAFT (not final until the owner approves the test collection)
 
-Status: **DRAFT v3.1** · Source: 11 reference images + 20 video frames in `3d-model-references/`
+Status: **DRAFT v4** (stud size approved: 0.5) · Source: 11 reference images + 20 video frames in `3d-model-references/`
 (style references only — never copy their objects, characters, layouts or assets).
 Test collection: `blender/templates/test_collection.py` → renders in `references/images/pending/`.
 
@@ -20,14 +20,17 @@ conveyors were an "absolute no"; tiny jittered voxels were "too bricky — merge
 ## 2. Studs — TEXTURE ONLY
 - Studs are **never geometry**. They come from a tiling stud texture:
   `blender/textures/stud_height.png` (Blender bump preview) + `stud_normal.png` (Roblox normal map).
-- Tile = **1 stud**: stud diameter **0.60**, height **0.18** (LEGO-like ratio), soft shoulder 0.035.
-- UVs: world-scaled box projection, **1 UV unit = 1 stud** (`vault_blocky.stud_surface`).
+- **Stud spacing = 0.5 studs** (owner picked option B, half the 1-stud default). One texture tile
+  = one stud bump; stud diameter ≈ 0.54 of the tile, rounded raised top, soft shoulder.
+- Set by `vault_blocky.STUD_PITCH = 0.5`; UVs are world-space so the size never changes with scale.
+- UVs: world-space box projection, **1 UV unit = 0.5 studs** (`vault_blocky.stud_surface`).
 - Placement: **ALL sides of every block** (owner, L-20261104-05) — floors, walls, pillars, beams,
   roofs, trunks, leaf cubes, rocks, machines, crates, pedestals, baseplates.
   Exceptions only: **glass**, **neon/glow pieces**, and **face pieces** on collectibles.
 - Profile: rounded raised top (height 0.55→1.0 dome) so studs shade light→dark, not as flat rings.
-- Roblox: MeshPart + `MaterialVariant`/`SurfaceAppearance` using `stud_normal.png`, tinted by part
-  colour. Large terrain/baseplates may use Roblox's own studded material instead.
+- Roblox: apply the stud texture to MeshParts/Parts with `Texture` instances on each face,
+  **StudsPerTileU = StudsPerTileV = 0.5** (matches the Blender preview), or a MaterialVariant using
+  `stud_normal.png` with the same tiling. Verify on the first import and record it in lessons.
 
 ## 3. Shape & silhouette
 - **Few, big, readable masses.** Typical prop: 8–25 solids; building: 40–70; tree: 15–25.
@@ -37,6 +40,13 @@ conveyors were an "absolute no"; tiny jittered voxels were "too bricky — merge
   ±20° yaw) in 2–3 shades, never a perfect stepped pyramid.
 - Every model has **one silhouette feature** readable at 50 studs (rooftop prop, straw, crest, machine box).
 - Overlapping coplanar faces are forbidden (they render black/z-fight): panels must butt, not overlap.
+
+### 3b. Detail parity (owner, L-20261104-07)
+Buildings and props carry detail **on par with collectibles — not more** (collectibles stay the
+focal point). A building needs at minimum: framed windows (mullions + sills), door frame + lamps +
+step/mat, trim bands (baseboard/cornice), an awning or canopy with an edge detail, signage with
+icons, roof clutter (parapet, AC/vents, rooftop theme prop), something visible inside the glass,
+and 2–3 exterior props (seating, signs, crates, planters). Reference: Smoothie Shack v4 (~190 pieces).
 
 ## 4. Edges & bevels
 | Element | Bevel (studs) | Segments |
