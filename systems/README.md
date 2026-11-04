@@ -17,7 +17,7 @@ system instances), so they're tested under Lune (`lune run systems/tests/run`). 
 | `Shared/Tycoon` | purchase graph (requires, gamepass gates), income, progress, reset | `specs/Tycoon` |
 | `Shared/Upgrades` | leveled curves + tier ladders (x2 → x1,250) | `specs/Upgrades` |
 | `Shared/Rebirth` | cost curve, reset hooks, permanent multiplier, next-goal data | `specs/Rebirth` |
-| `Shared/Trading` | request/accept, offers, anti-scam ready reset, confirm delay, re-validation, rollback | `specs/Trading` |
+| `Shared/Trading` ⛔ PROHIBITED by standards/GAME_SYSTEMS.md (no player-to-player trading) — never wire into a game | request/accept, offers, anti-scam ready reset, confirm delay, re-validation, rollback | `specs/Trading` |
 | `Shared/Rewards` | quests, 7-day daily streak, playtime rewards | `specs/Rewards` |
 | `Shared/Tutorial` | onboarding step machine | `specs/Tutorial` |
 | `Shared/Guard` | remote arg validation + token-bucket rate limiter | `specs/Guard` |

@@ -25,6 +25,11 @@ for g in games/*/src; do [[ -d "$g" ]] && LUAU_DIRS+=("$g"); done
 step "Secrets"
 run scripts/check-secrets.sh
 
+step "Standards: no player-to-player trading"
+if grep -rlE "Shared/Trading|Shared\.Trading|\bTrading\.new" games/*/src templates/game/src 2>/dev/null | grep -q .; then
+  echo "FAILED: a game references the prohibited Trading module"; FAIL=1
+else echo "ok no trading references"; fi
+
 step "Structure"
 for f in CLAUDE.md .claude/skills/make-game/SKILL.md .claude/skills/vault-learn/SKILL.md \
   style/house-style.md systems/default.project.json templates/game/default.project.json; do

@@ -99,7 +99,7 @@ banner + countdown · index with rewards · daily + playtime rewards · pity · 
 progress.
 
 ## 7. Monetization (always on — configure, never publish/buy without approval)
-"2x (something)" pass that upgrades every repurchase up to 100x · strong passes (x2 Cash,
+context-named "x2 [RESOURCE]" ladder x2→x4→x8→x16→x32→x64→x128 max (standards/GAME_SYSTEMS.md) · strong passes (x2 Cash,
 x2 Luck, VIP, +Pet Equip, Auto-collect, faster attacks) · Season 1 pass themed to the game ·
 15-min boosts, potion bundles, starter pack, limited exclusives with countdowns, server luck,
 gifting.
