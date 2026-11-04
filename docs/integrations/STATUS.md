@@ -1,0 +1,31 @@
+# Integration Status
+
+Only mark a tool ✅ after a **live successful call in that environment**. Re-verify at the start of
+every `/make-game` run (step 0) and update this file when anything changes.
+
+Last audit: 2026-11-04 · Environment: Claude Code cloud session (Linux container)
+
+| Tool | Status | Evidence / what is missing |
+|---|---|---|
+| GitHub (MCP) | ✅ Connected | `get_me` → `lyssieugc-prog`; branch listing on `lyssieugc-prog/auto-vault-` OK; git push over proxy OK. |
+| GitHub Actions CI | ⏳ See latest run | `.github/workflows/ci.yml` installs StyLua/Selene/Rojo/Luau/Lune and runs all checks; result recorded below after the first run. |
+| Blender (bpy 5.2.3 Python module) | ✅ Works in cloud + CI | `blender/tests/test_pipeline.py` passed (all templates exported FBX/GLB, budgets OK). Cycles CPU previews render. |
+| Blender MCP (live Blender app) | ❌ Not connected | Local-only server. Needs owner's PC: Blender + `blender-mcp` addon + `uvx blender-mcp`. See `local-setup.md` + `blender/README.md`. |
+| Figma MCP | ❌ Not connected | Figma connector exists in the claude.ai directory but is **not installed** for this account. See `figma/README.md`. |
+| Roblox Studio MCP | ❌ Not connected | Local-only (Studio plugin + MCP server on owner's PC). No computer linked to this session. See `local-setup.md` + `roblox-studio-mcp.md`. |
+| Rojo | ⚠️ CI only | Pinned in `rokit.toml`. `rojo build` runs in CI. Live sync needs Rojo Studio plugin locally. |
+| StyLua / Selene / luau-analyze / Lune | ⚠️ CI only | Installing prebuilt binaries inside the cloud session was blocked by the session's safety policy; CI installs pinned versions from GitHub Releases. Locally: `rokit install`. |
+| Git LFS | ✅ Installed | `git-lfs` present; `.gitattributes` tracks binaries. |
+
+## Manual setup the owner must do (one time)
+1. **Install the Figma connector** at claude.ai → Settings → Connectors → Figma (then re-run audit).
+2. **On your Windows/Mac PC** (for Blender + Studio work), open this repo in Claude Code / Claude
+   Desktop and run `scripts/setup-local.sh` (or follow `docs/integrations/local-setup.md`):
+   Rokit toolchain, Rojo plugin, Blender MCP addon, Roblox Studio MCP plugin.
+3. In Roblox Studio: Game Settings → Security → *Enable Studio Access to API Services* (DataStore
+   tests) — only for a private test place.
+4. Confirm the scale-reference import (see `blender/README.md`).
+
+## CI results log
+| Date | Commit | Result |
+|---|---|---|

@@ -1,0 +1,25 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.mcp.json
+*cookie*.txt
+.claude/settings.local.json
+
+# Build outputs
+*.rbxm.tmp
+/build/
+out/
+previews/
+__pycache__/
+*.pyc
+*.blend1
+*.blend2
+
+# Tooling
+.rokit/
+node_modules/
+.DS_Store
+Thumbs.db

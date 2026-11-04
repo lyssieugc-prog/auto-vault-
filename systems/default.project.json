@@ -1,0 +1,16 @@
+{
+  "name": "VaultSystems",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Vault": {
+        "$className": "Folder",
+        "Shared": { "$path": "src/Shared" },
+        "Client": { "$path": "src/Client" }
+      }
+    },
+    "ServerScriptService": {
+      "VaultServer": { "$path": "src/Server" }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+name: Format (StyLua autofix)
+
+# Manually run (Actions tab or API) to apply StyLua formatting and commit it back to the branch.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install StyLua
+        run: |
+          curl -fsSL -o /tmp/stylua.zip https://github.com/JohnnyMorganz/StyLua/releases/download/v2.0.2/stylua-linux-x86_64.zip
+          unzip -oq /tmp/stylua.zip -d /usr/local/bin && chmod +x /usr/local/bin/stylua
+      - name: Format
+        run: stylua systems/src systems/tests templates/game/src templates/game/tests $(ls -d games/*/src games/*/tests 2>/dev/null)
+      - name: Commit
+        run: |
+          if git diff --quiet; then echo "already formatted"; exit 0; fi
+          git config user.name "vault-format-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "style: stylua format"
+          git push

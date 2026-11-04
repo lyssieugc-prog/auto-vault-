@@ -1,0 +1,26 @@
+{
+  "name": "{{GAME_NAME}}",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Vault": {
+        "$className": "Folder",
+        "Shared": { "$path": "vendor/vault/Shared" },
+        "Client": { "$path": "vendor/vault/Client" }
+      },
+      "GameShared": { "$path": "src/shared" }
+    },
+    "ServerScriptService": {
+      "VaultServer": { "$path": "vendor/vault/Server" },
+      "Game": { "$path": "src/server" }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Game": { "$path": "src/client" }
+      }
+    },
+    "Workspace": {
+      "$properties": { "StreamingEnabled": true }
+    }
+  }
+}

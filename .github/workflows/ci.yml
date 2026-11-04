@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ROJO_VERSION: 7.4.4
+  STYLUA_VERSION: 2.0.2
+  SELENE_VERSION: 0.28.0
+  LUNE_VERSION: 0.8.9
+  LUAU_VERSION: "0.650"
+
+jobs:
+  luau:
+    name: Luau — format, lint, analyze, tests, rojo build, template e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - name: Install pinned toolchain (GitHub Releases)
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/bin" /tmp/dl && cd /tmp/dl
+          curl -fsSL -o stylua.zip "https://github.com/JohnnyMorganz/StyLua/releases/download/v${STYLUA_VERSION}/stylua-linux-x86_64.zip"
+          curl -fsSL -o selene.zip "https://github.com/Kampfkarren/selene/releases/download/${SELENE_VERSION}/selene-${SELENE_VERSION}-linux.zip"
+          curl -fsSL -o rojo.zip "https://github.com/rojo-rbx/rojo/releases/download/v${ROJO_VERSION}/rojo-${ROJO_VERSION}-linux-x86_64.zip"
+          curl -fsSL -o lune.zip "https://github.com/lune-org/lune/releases/download/v${LUNE_VERSION}/lune-${LUNE_VERSION}-linux-x86_64.zip"
+          curl -fsSL -o luau.zip "https://github.com/luau-lang/luau/releases/download/${LUAU_VERSION}/luau-ubuntu.zip"
+          for z in *.zip; do unzip -oq "$z" -d "$HOME/bin"; done
+          chmod +x "$HOME/bin"/*
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+      - name: Tool versions
+        run: |
+          stylua --version; selene --version; rojo --version; lune --version
+          command -v luau-analyze
+      - name: Validate (strict)
+        env:
+          STRICT: "1"
+          SKIP_BLENDER: "1"
+        run: scripts/validate.sh
+
+  blender:
+    name: Blender pipeline (bpy headless)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install bpy
+        run: pip install bpy==5.2.3
+      - name: Run pipeline test
+        run: python blender/tests/test_pipeline.py
