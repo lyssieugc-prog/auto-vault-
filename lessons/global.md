@@ -2,6 +2,19 @@
 
 Read before every build. Newest first. Format in `lessons/README.md`.
 
+### L-20261104-10 — UI art: no code-drawn clipart; one benchmark screen before batches
+- Scope: global (owner: "STOP… icons look like generic mobile-game clipart… Do not continue generating 30 reward-card variants")
+- Root cause: item icons were drawn from vector primitives through the Figma Plugin API, and a
+  card set (30 variants) was batch-generated before one screen had been approved. Sparkles and
+  gradients were added to make up for the missing illustration quality.
+- Rule: item and collectible art comes from Blender renders (or owner-supplied or commissioned
+  illustration) placed in a Figma `Art` image slot. Figma owns frames, type and layout. Build ONE
+  benchmark screen (the shop) to approval before any other screen or any variant batch. If a
+  workflow can't reach the benchmark, say so and propose a better one. Don't present placeholders
+  as finished work.
+- Applied to: `figma/audits/shop-v1-audit.md` (gap audit + method). The rejected icons
+  (`12:3`–`12:101`) and RewardCard v2 (`13:9244`) are kept as rejected examples.
+
 ### L-20261104-09 — Learn the art STYLE, never repeat assets; quality ≠ blocky + studs; plausible detail
 - Scope: global (owner's "permanent 3D art direction"; "doesn't make sense to have spikes on the frog")
 - Rule: bible ★ (verbatim). Test collection = calibration sample only; every game gets ORIGINAL assets
