@@ -2,6 +2,16 @@
 
 Read before every build. Newest first. Format in `lessons/README.md`.
 
+### L-20261104-05 — Stud texture on ALL sides of blocks
+- Scope: global (owner: "all sides of blocks should have stud texture in it")
+- Trigger: test collection v3 had studs on up-facing faces only
+- Root cause: `stud_surface` defaulted to `top`; Claude assumed side studs would be too busy.
+- Rule: every solid gets texture studs on all faces (default `studs="all"`); exceptions only glass,
+  neon pieces and collectible face pieces. Stud profile is a rounded dome so it shades as raised.
+- Applied to: `blender/lib/vault_blocky.py` (defaults + stud profile), `blender/templates/test_collection.py`,
+  `style-guides/3D_STYLE_BIBLE.md` §1–§2, `blender/tests/test_pipeline.py` (all-sides gate)
+- Validation: pipeline test + v3.1 renders reviewed
+
 ### L-20261104-04 — Studs are texture, props are clean solids, collectibles are merged blocks
 - Scope: global (owner: "everything physically has studs on it, it should be a part of the texture")
 - Trigger: owner on test collection v2: building/tree/conveyor "an absolute no"; brainrot "decent,

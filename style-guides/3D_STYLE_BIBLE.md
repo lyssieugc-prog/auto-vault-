@@ -1,6 +1,6 @@
 # 3D Style Bible — DRAFT (not final until the owner approves the test collection)
 
-Status: **DRAFT v3** · Source: 11 reference images + 20 video frames in `3d-model-references/`
+Status: **DRAFT v3.1** · Source: 11 reference images + 20 video frames in `3d-model-references/`
 (style references only — never copy their objects, characters, layouts or assets).
 Test collection: `blender/templates/test_collection.py` → renders in `references/images/pending/`.
 
@@ -11,7 +11,7 @@ Every number below is a default; a game's style profile may override it explicit
 ## 1. Two construction languages
 | Language | Use for | How it's built |
 |---|---|---|
-| **SOLID** | maps, buildings, props, machines, trees, rocks | Clean chunky boxes (few, large), crisp edges, **texture studs** on top faces. No stacked-brick seams. |
+| **SOLID** | maps, buildings, props, machines, trees, rocks | Clean chunky boxes (few, large), crisp edges, **texture studs on all sides**. No stacked-brick seams. |
 | **MERGED VOXEL** | brainrot collectibles, pets, creatures | Shape blocked out in voxels, then **merged into 0.5-stud blocks** (no per-voxel colour noise), plus a crisp cartoon face built from flat pieces. |
 
 Owner corrections that define these (lessons L-20261104-03/04): stacked-brick buildings, trees and
@@ -22,8 +22,10 @@ conveyors were an "absolute no"; tiny jittered voxels were "too bricky — merge
   `blender/textures/stud_height.png` (Blender bump preview) + `stud_normal.png` (Roblox normal map).
 - Tile = **1 stud**: stud diameter **0.60**, height **0.18** (LEGO-like ratio), soft shoulder 0.035.
 - UVs: world-scaled box projection, **1 UV unit = 1 stud** (`vault_blocky.stud_surface`).
-- Placement: **upward-facing surfaces** (normal z > 0.7) by default — floors, plinths, roofs, tops of
-  rocks/canopies/crates/pedestals. Walls, glass, trunks, belts, faces and characters: **no studs**.
+- Placement: **ALL sides of every block** (owner, L-20261104-05) — floors, walls, pillars, beams,
+  roofs, trunks, leaf cubes, rocks, machines, crates, pedestals, baseplates.
+  Exceptions only: **glass**, **neon/glow pieces**, and **face pieces** on collectibles.
+- Profile: rounded raised top (height 0.55→1.0 dome) so studs shade light→dark, not as flat rings.
 - Roblox: MeshPart + `MaterialVariant`/`SurfaceAppearance` using `stud_normal.png`, tinted by part
   colour. Large terrain/baseplates may use Roblox's own studded material instead.
 

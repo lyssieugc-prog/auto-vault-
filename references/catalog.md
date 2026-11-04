@@ -10,6 +10,6 @@ skeleton, not a finished look).
 | images/pending/creature_v2_front.png, _side.png, _back.png | models | PENDING | Rebuilt pet: chibi head, studs on head + back, sparkle eyes, blush, teeth, collar + glowing tag, cheek tufts, flame crest, curled flame tail, rarity aura + orbiters. 97 parts, 8 colours, 5.2k tris. | global |
 | images/rejected/collection_v2_bricks_rejected.png | maps/props | REJECTED (owner: "building is an absolute no, same with the tree and the conveyor"; "everything physically has studs") | Stacked LEGO bricks with seams + physical stud geometry on everything = toy look, not a Roblox game asset. | global |
 | images/rejected/frappo_v1_rejected.png | models | REJECTED (owner: "too bricky", earlier "dorky") | Hundreds of tiny jittered voxels, small head, lumpy cup. | global |
-| images/pending/collection_v3_*.png | models/props | PENDING | v3: clean solids + TEXTURE studs; brainrot = merged 0.5-stud blocks + crisp cartoon face (smug lids, open smirk). | global |
+| images/pending/collection_v3_*.png | models/props | PENDING | v3.1: clean solids + TEXTURE studs on ALL sides (raised dome profile); brainrot = merged 0.5-stud blocks + crisp cartoon face (smug lids, open smirk). | global |
 | images/vault-baseline/map_layout_template.png | maps | BASELINE | Hub plaza + 5 zone islands + water ring + 8 plots + chevron paths. Layout skeleton only — needs props, terraces, landmarks per game. | global |
 | images/vault-baseline/zone_studs_closeup.png | maps | BASELINE | Chunky studs at map scale (radius scales with spacing). | global |

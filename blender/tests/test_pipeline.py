@@ -91,6 +91,10 @@ def main():
     all_objs = [o for objs in groups.values() for o in objs]
     check(not any(o.get("vault_kind") == "studs" for o in all_objs), "collection: no physical stud geometry")
     check(any(m.get("vault_studs") for m in bpy.data.materials), "collection: texture studs in use")
+    solids = [o for objs in groups.values() for o in objs if "vault_sx" in o and not o.data.materials[0].get("roblox_neon")
+              and "Glass" not in o.name and "Window" not in o.name and o.name != "Frappo_Body"]
+    bad = [o.name for o in solids if o.get("vault_stud_mode") != "all"]
+    check(not bad, f"collection: studs on all sides of every solid ({len(solids)} solids, missing: {bad[:5]})")
     names = {o.name for o in groups["Brainrot"]}
     check({"EyeL", "EyeR", "PupilL", "PupilR", "Mouth"} <= names, "brainrot has a full face")
     body = bpy.data.objects["Frappo_Body"]

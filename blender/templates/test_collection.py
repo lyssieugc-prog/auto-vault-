@@ -52,12 +52,12 @@ def S(*a, **k):
 def tree():
     rnd = random.Random(11)
     P = [
-        S("TrunkLow", (1.8, 1.8, 3.0), (0, 0, 0), C["bark"], studs="none"),
-        S("TrunkHigh", (1.3, 1.3, 4.6), (0.25, 0.1, 3.0), C["bark"], studs="none"),
-        S("RootA", (1.0, 0.8, 0.7), (1.2, 0.3, 0), C["bark_dark"], studs="none"),
-        S("RootB", (0.8, 1.0, 0.6), (-0.6, -1.2, 0), C["bark_dark"], studs="none"),
-        S("BranchA", (0.7, 0.7, 2.6), (1.3, 0.1, 4.6), C["bark"], studs="none", rot=(0, math.radians(38), 0)),
-        S("BranchB", (0.6, 0.6, 2.2), (-1.0, -0.3, 5.0), C["bark_dark"], studs="none", rot=(math.radians(-15), math.radians(-35), 0)),
+        S("TrunkLow", (1.8, 1.8, 3.0), (0, 0, 0), C["bark"]),
+        S("TrunkHigh", (1.3, 1.3, 4.6), (0.25, 0.1, 3.0), C["bark"]),
+        S("RootA", (1.0, 0.8, 0.7), (1.2, 0.3, 0), C["bark_dark"]),
+        S("RootB", (0.8, 1.0, 0.6), (-0.6, -1.2, 0), C["bark_dark"]),
+        S("BranchA", (0.7, 0.7, 2.6), (1.3, 0.1, 4.6), C["bark"], rot=(0, math.radians(38), 0)),
+        S("BranchB", (0.6, 0.6, 2.2), (-1.0, -0.3, 5.0), C["bark_dark"], rot=(math.radians(-15), math.radians(-35), 0)),
     ]
     clumps = (  # (x, y, z, size, colour) — a puffy cluster of cubes, rotated a little
         (0, 0, 7.0, 4.4, "leaf"), (2.6, 0.6, 6.6, 3.4, "leaf_dark"), (-2.5, -0.4, 7.0, 3.4, "leaf"),
@@ -96,16 +96,16 @@ def building():
     z0 = 0.6
     # ground floor: solid wall panels around a big shop window + door
     P += [
-        S("Back1", (W, 0.8, H1), (0, -D / 2 + 0.4, z0), C["wall"], studs="none"),
-        S("Left1", (0.8, D - 1.6, H1), (-W / 2 + 0.4, 0, z0), C["wall"], studs="none"),
-        S("Right1", (0.8, D - 1.6, H1), (W / 2 - 0.4, 0, z0), C["wall"], studs="none"),
-        S("FrontSill", (8.0, 0.8, 1.4), (-1.5, fy - 0.4, z0), C["wall"], studs="none"),
-        S("FrontLintel", (W, 0.8, 1.4), (0, fy - 0.4, z0 + H1 - 1.4), C["wall"], studs="none"),
-        S("FrontPierL", (1.5, 0.8, H1 - 1.4), (-W / 2 + 0.75, fy - 0.4, z0), C["wall"], studs="none"),
-        S("FrontPierM", (1.0, 0.8, H1 - 1.4), (3.0, fy - 0.4, z0), C["wall"], studs="none"),
-        S("FrontPierR", (1.0, 0.8, H1 - 1.4), (W / 2 - 0.5, fy - 0.4, z0), C["wall"], studs="none"),
+        S("Back1", (W, 0.8, H1), (0, -D / 2 + 0.4, z0), C["wall"]),
+        S("Left1", (0.8, D - 1.6, H1), (-W / 2 + 0.4, 0, z0), C["wall"]),
+        S("Right1", (0.8, D - 1.6, H1), (W / 2 - 0.4, 0, z0), C["wall"]),
+        S("FrontSill", (8.0, 0.8, 1.4), (-1.5, fy - 0.4, z0), C["wall"]),
+        S("FrontLintel", (W, 0.8, 1.4), (0, fy - 0.4, z0 + H1 - 1.4), C["wall"]),
+        S("FrontPierL", (1.5, 0.8, H1 - 1.4), (-W / 2 + 0.75, fy - 0.4, z0), C["wall"]),
+        S("FrontPierM", (1.0, 0.8, H1 - 1.4), (3.0, fy - 0.4, z0), C["wall"]),
+        S("FrontPierR", (1.0, 0.8, H1 - 1.4), (W / 2 - 0.5, fy - 0.4, z0), C["wall"]),
         S("ShopGlass", (8.0, 0.15, H1 - 2.8), (-1.5, fy - 0.45, z0 + 1.4), C["glass"], studs="none", bevel=0.01),
-        S("Door", (2.5, 0.25, 4.6), (4.75, fy - 0.5, z0), C["door"], studs="none"),
+        S("Door", (2.5, 0.25, 4.6), (4.75, fy - 0.5, z0), C["door"]),
         S("DoorWindow", (1.4, 0.1, 1.2), (4.75, fy - 0.35, z0 + 2.9), C["glass"], studs="none", bevel=0.01),
         S("CounterLedge", (8.6, 1.4, 0.35), (-1.5, fy + 0.3, z0 + 1.4), C["frame"]),
     ]
@@ -113,7 +113,7 @@ def building():
     # awning over the shop window (alternating stripes, tilted)
     for i in range(8):
         a = S(f"Awning{i}", (1.08, 2.4, 0.22), (-5.6 + i * 1.1, fy + 1.0, z0 + H1 - 1.6),
-              C["accent"] if i % 2 == 0 else "#FFFFFF", studs="none", bevel=0.02, rot=(math.radians(-22), 0, 0))
+              C["accent"] if i % 2 == 0 else "#FFFFFF", bevel=0.02, rot=(math.radians(-22), 0, 0))
         P.append(a)
     # chunky frame: corner pillars + floor beam band
     for i, (x, y) in enumerate(((-W / 2, fy), (W / 2, fy), (-W / 2, -D / 2), (W / 2, -D / 2))):
@@ -127,30 +127,30 @@ def building():
     # upper floor
     z1 = z0 + H1 + 1.0
     P += [
-        S("Back2", (W, 0.8, H2), (0, -D / 2 + 0.4, z1), C["wall"], studs="none"),
-        S("Left2", (0.8, D - 1.6, H2), (-W / 2 + 0.4, 0, z1), C["wall"], studs="none"),
-        S("Right2", (0.8, D - 1.6, H2), (W / 2 - 0.4, 0, z1), C["wall"], studs="none"),
-        S("Front2Low", (W, 0.8, 1.2), (0, fy - 0.4, z1), C["wall"], studs="none"),
-        S("Front2High", (W, 0.8, 1.2), (0, fy - 0.4, z1 + H2 - 1.2), C["wall"], studs="none"),
-        S("Front2L", (3.0, 0.8, H2 - 2.4), (-W / 2 + 1.5, fy - 0.4, z1 + 1.2), C["wall"], studs="none"),
-        S("Front2R", (3.0, 0.8, H2 - 2.4), (W / 2 - 1.5, fy - 0.4, z1 + 1.2), C["wall"], studs="none"),
+        S("Back2", (W, 0.8, H2), (0, -D / 2 + 0.4, z1), C["wall"]),
+        S("Left2", (0.8, D - 1.6, H2), (-W / 2 + 0.4, 0, z1), C["wall"]),
+        S("Right2", (0.8, D - 1.6, H2), (W / 2 - 0.4, 0, z1), C["wall"]),
+        S("Front2Low", (W, 0.8, 1.2), (0, fy - 0.4, z1), C["wall"]),
+        S("Front2High", (W, 0.8, 1.2), (0, fy - 0.4, z1 + H2 - 1.2), C["wall"]),
+        S("Front2L", (3.0, 0.8, H2 - 2.4), (-W / 2 + 1.5, fy - 0.4, z1 + 1.2), C["wall"]),
+        S("Front2R", (3.0, 0.8, H2 - 2.4), (W / 2 - 1.5, fy - 0.4, z1 + 1.2), C["wall"]),
         S("UpperGlass", (8.0, 0.15, H2 - 2.4), (0, fy - 0.45, z1 + 1.2), C["glass"], studs="none", bevel=0.01),
         S("UpperSill", (8.8, 1.2, 0.3), (0, fy + 0.1, z1 + 1.2), C["frame_dark"]),
-        S("Mullion", (0.3, 0.2, H2 - 2.4), (0, fy - 0.3, z1 + 1.2), "#FFFFFF", studs="none"),
+        S("Mullion", (0.3, 0.2, H2 - 2.4), (0, fy - 0.3, z1 + 1.2), "#FFFFFF"),
     ]
     P.append(vb.block("InteriorLight2", (11, 7, 0.15), (0, 0, z1 + H2 - 0.3), C["light"], bevel=0.0, emission=3.0))
     # roof + sign + rooftop cup
     zr = z1 + H2
     P += [
         S("Roof", (W + 2.6, D + 2.6, 0.9), (0, 0, zr), C["accent"]),
-        S("RoofTrim", (W + 3.0, D + 3.0, 0.3), (0, 0, zr - 0.3), "#FFFFFF", studs="none"),
-        S("SignBack", (10, 0.6, 2.6), (0, fy + 0.6, zr + 0.9), C["accent"], studs="none"),
-        S("SignFace", (9.2, 0.15, 2.0), (0, fy + 0.95, zr + 1.2), C["sign"], studs="none", bevel=0.01),
-        S("CupBody", (2.6, 2.6, 3.0), (-3.8, -1.5, zr + 0.9), "#FF6FAE", studs="none", bevel=0.1),
-        S("CupBand", (2.8, 2.8, 0.7), (-3.8, -1.5, zr + 2.0), "#FFFFFF", studs="none"),
+        S("RoofTrim", (W + 3.0, D + 3.0, 0.3), (0, 0, zr - 0.3), "#FFFFFF"),
+        S("SignBack", (10, 0.6, 2.6), (0, fy + 0.6, zr + 0.9), C["accent"]),
+        S("SignFace", (9.2, 0.15, 2.0), (0, fy + 0.95, zr + 1.2), C["sign"], bevel=0.01),
+        S("CupBody", (2.6, 2.6, 3.0), (-3.8, -1.5, zr + 0.9), "#FF6FAE", bevel=0.1),
+        S("CupBand", (2.8, 2.8, 0.7), (-3.8, -1.5, zr + 2.0), "#FFFFFF"),
         S("CupLid", (3.2, 3.2, 0.5), (-3.8, -1.5, zr + 3.9), "#FFFFFF"),
-        S("CupDome", (2.0, 2.0, 0.6), (-3.8, -1.5, zr + 4.4), "#FFFFFF", studs="none", bevel=0.2),
-        S("Straw", (0.5, 0.5, 2.8), (-3.4, -1.3, zr + 4.6), C["accent"], studs="none", rot=(0, math.radians(18), 0)),
+        S("CupDome", (2.0, 2.0, 0.6), (-3.8, -1.5, zr + 4.4), "#FFFFFF", bevel=0.2),
+        S("Straw", (0.5, 0.5, 2.8), (-3.4, -1.3, zr + 4.6), C["accent"], rot=(0, math.radians(18), 0)),
     ]
     # planters by the door
     for i, x in enumerate((2.0, 7.6)):
@@ -165,14 +165,14 @@ def conveyor():
     P = []
     for i, x in enumerate((-6.2, -1.5, 3.0)):
         for j, y in enumerate((-1.3, 1.3)):
-            P.append(S(f"Leg{i}{j}", (0.7, 0.7, zt - 0.8), (x, y, 0), C["steel_dark"], studs="none"))
-        P.append(S(f"Brace{i}", (0.4, 2.6, 0.4), (x, 0, 0.6), C["steel_dark"], studs="none"))
-    P.append(S("Frame", (L, Wd, 0.8), (0, 0, zt - 0.8), C["steel"], studs="none"))
-    P.append(S("Belt", (L - 0.4, Wd - 0.9, 0.2), (0, 0, zt), C["belt"], studs="none", bevel=0.01))
+            P.append(S(f"Leg{i}{j}", (0.7, 0.7, zt - 0.8), (x, y, 0), C["steel_dark"]))
+        P.append(S(f"Brace{i}", (0.4, 2.6, 0.4), (x, 0, 0.6), C["steel_dark"]))
+    P.append(S("Frame", (L, Wd, 0.8), (0, 0, zt - 0.8), C["steel"]))
+    P.append(S("Belt", (L - 0.4, Wd - 0.9, 0.2), (0, 0, zt), C["belt"], bevel=0.01))
     for i in range(13):
         P.append(vb.block(f"BeltLine{i}", (0.08, Wd - 0.95, 0.02), (-6.0 + i * 1.0, 0, zt + 0.2), C["belt_line"], bevel=0.0))
     for side in (-1, 1):
-        P.append(S(f"Guard{side}", (L, 0.35, 0.8), (0, side * (Wd / 2 - 0.1), zt), C["hazard"], studs="none"))
+        P.append(S(f"Guard{side}", (L, 0.35, 0.8), (0, side * (Wd / 2 - 0.1), zt), C["hazard"]))
         for i in range(7):  # diagonal hazard stripes on the guard face
             P.append(vb.block(f"Stripe{side}_{i}", (0.35, 0.05, 1.0), (-6.0 + i * 2.0, side * (Wd / 2 + 0.08), zt - 0.1),
                               C["black"], bevel=0.0))
@@ -182,7 +182,7 @@ def conveyor():
         r.rotation_euler[0] = math.pi / 2
         P.append(r)
     # hopper at the start
-    P.append(S("HopperLow", (2.4, 2.4, 1.0), (-5.6, 0, zt + 0.2), C["machine"], studs="none"))
+    P.append(S("HopperLow", (2.4, 2.4, 1.0), (-5.6, 0, zt + 0.2), C["machine"]))
     P.append(S("HopperTop", (3.4, 3.4, 1.0), (-5.6, 0, zt + 1.2), C["machine"]))
     P.append(vb.block("HopperHole", (2.6, 2.6, 0.05), (-5.6, 0, zt + 2.2), C["black"], bevel=0.0))
     # processing box at the end
@@ -190,9 +190,9 @@ def conveyor():
     P += [
         S("Machine", (4.2, Wd + 1.2, 3.8), (bx, 0, zt - 0.8), C["machine"]),
         S("MachineTop", (3.4, Wd + 0.4, 0.6), (bx, 0, zt + 3.0), C["steel"]),
-        S("Tunnel", (0.2, Wd - 1.0, 1.4), (bx - 2.12, 0, zt), C["black"], studs="none", bevel=0.0),
-        S("Pipe0", (0.6, 0.6, 1.6), (bx + 0.8, -1.0, zt + 3.6), C["steel_dark"], studs="none"),
-        S("Pipe1", (0.6, 0.6, 1.1), (bx - 0.5, 1.1, zt + 3.6), C["steel_dark"], studs="none"),
+        S("Tunnel", (0.2, Wd - 1.0, 1.4), (bx - 2.12, 0, zt), C["black"], bevel=0.0),
+        S("Pipe0", (0.6, 0.6, 1.6), (bx + 0.8, -1.0, zt + 3.6), C["steel_dark"]),
+        S("Pipe1", (0.6, 0.6, 1.1), (bx - 0.5, 1.1, zt + 3.6), C["steel_dark"]),
     ]
     P.append(vb.block("MachineWindow", (2.4, 0.1, 1.4), (bx, Wd / 2 + 0.65, zt + 0.9), C["scan"], bevel=0.0, emission=4))
     P.append(vb.block("WarnLight", (0.7, 0.7, 0.5), (bx + 1.2, 1.2, zt + 3.6), "#FF3B3B", bevel=0.15, segments=2, emission=5))
@@ -308,7 +308,7 @@ def build_all():
         "Dummy": offset(r6_dummy(), -4, 3),
     }
     ground = vb.block("Baseplate", (56, 36, 1), (3, 0, -1), C["ground"], bevel=0.0)
-    vb.stud_surface(ground, "top")
+    vb.stud_surface(ground, "all")
     return groups, [ground]
 
 

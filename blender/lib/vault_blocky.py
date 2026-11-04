@@ -226,7 +226,7 @@ def stud_patch(name, center, cols, rows, spacing=0.9, color="white", radius=None
 def studded_plate(name, width, depth, height=1.0, location=(0, 0, 0), color="green", spacing=1.0):
     plate = block(name, (width, depth, height), location, color, bevel=0.04)
     _set_size(plate, (width, depth, height))
-    stud_surface(plate, "top")  # texture studs (L-20261104-04); `spacing` kept for API compat
+    stud_surface(plate, "all")  # texture studs on every side (L-20261104-05)
     plate["vault_kind"] = "studded_plate"
     return plate
 
@@ -558,9 +558,9 @@ def ensure_stud_textures(force=False):
         if r >= R + EDGE:
             return 0.0
         if r <= R:
-            return 0.85 + 0.15 * (1 - (r / R) ** 2)  # slightly domed top
+            return 0.55 + 0.45 * (1 - (r / R) ** 2)  # rounded top: shades light->dark like a raised stud
         t = (R + EDGE - r) / EDGE
-        return 0.85 * t * t * (3 - 2 * t)
+        return 0.55 * t * t * (3 - 2 * t)
 
     H = [[height((x + 0.5) / n, (y + 0.5) / n) for x in range(n)] for y in range(n)]
     hp, np_ = [], []
@@ -602,7 +602,7 @@ def studded_material(base):
     tex.image = img
     bump = nt.nodes.new("ShaderNodeBump")
     bump.inputs["Strength"].default_value = 1.0
-    bump.inputs["Distance"].default_value = 0.06
+    bump.inputs["Distance"].default_value = 0.12
     nt.links.new(uv.outputs["UV"], tex.inputs["Vector"])
     nt.links.new(tex.outputs["Color"], bump.inputs["Height"])
     nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
@@ -610,7 +610,7 @@ def studded_material(base):
     return mat
 
 
-def stud_surface(obj, mode="top"):
+def stud_surface(obj, mode="all"):
     """Applies texture studs to a mesh: world-scaled box UVs (1 UV = 1 stud) and studded
     materials. mode: 'top' (faces pointing up), 'all', or 'none'. Non-studded faces get UVs in
     the flat corner of the tile so they render plain."""
@@ -642,7 +642,7 @@ def stud_surface(obj, mode="top"):
     return obj
 
 
-def solid(name, size, location, color, bevel=0.04, studs="top", emission=0.0, rot=None):
+def solid(name, size, location, color, bevel=0.04, studs="all", emission=0.0, rot=None):
     """Default building block for props/maps: one clean chunky solid with crisp edges and
     texture studs. No seams, no stud geometry."""
     obj = block(name, size, location, color, bevel=bevel, segments=1, emission=emission)
