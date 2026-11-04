@@ -69,6 +69,19 @@ on all timed things · icons/sunbursts idle forever. (Implemented by `systems/sr
 props; oversized distinct silhouette; idle loop.
 **BAD (never)**: few big plain boxes, single flat color, no glow/VFX, no theme, generic realistic
 animal, Minecraft-mob look, smooth generic AI model.
+
+**Pet minimums** (owner rejected creature v1 — see `references/images/rejected/`):
+- Chibi Roblox-pet proportions: head is the biggest part (≥ 1.4× body height), stubby legs.
+- **Studs on the pet itself** (top of head + back), not only on the map.
+- A real face: big white eyes + pupils + sparkle highlights, blush, mouth (teeth/tongue).
+- ≥ 5 colours: body, light belly/muzzle, dark trim/pattern, glow accent, face colours.
+- ≥ 50 parts before join; **no blank faces from any angle** (front, side, back all detailed).
+- A theme feature that changes the silhouette (crest, horns, flame tail, fins…).
+- Enforced by `blender/tests/test_pipeline.py`; looks are judged by the owner from 3-angle renders.
+
+**Approval loop**: new model → 3-angle render → owner says GOOD/BAD → GOOD goes to
+`references/images/approved/` (becomes the bar to beat), BAD to `references/images/rejected/`
+with the reason in `references/catalog.md`.
 - Rarer = more glow, particles, orbiting props, bigger aura.
 - Write a model handoff (`blender/handoff-template.md`), preview (GLB/OBJ), then build in Blender.
 

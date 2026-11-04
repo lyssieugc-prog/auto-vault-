@@ -39,6 +39,10 @@ def setup_scene():
         sun.data.energy = 4
         sun.rotation_euler = (0.7, 0.2, 0.6)
         scene.collection.objects.link(sun)
+        fill = bpy.data.objects.new("PreviewFill", bpy.data.lights.new("PreviewFill", "SUN"))
+        fill.data.energy = 1.5
+        fill.rotation_euler = (1.0, -0.4, 3.6)
+        scene.collection.objects.link(fill)
     return scene
 
 
@@ -60,7 +64,10 @@ def main(out_dir, which="both"):
     outputs = []
     if which in ("creature", "both"):
         creature.build()
-        outputs.append(shoot(os.path.join(out_dir, "creature.png"), (7, 9, 5), (0, 1, 1.8)))
+        target = (0, 0.0, 2.7)
+        for name, loc in (("creature.png", (7.5, 11, 6.0)), ("creature_side.png", (13, 0.0, 4.0)),
+                          ("creature_back.png", (-7.5, -11, 6.5))):
+            outputs.append(shoot(os.path.join(out_dir, name), loc, target, lens=45))
     if which in ("map", "both"):
         map_layout.build()
         outputs.append(shoot(os.path.join(out_dir, "map.png"), (0, -260, 220), (0, 0, 0), lens=30))

@@ -189,6 +189,28 @@ def studs(target, spacing=1.0, color=None, margin=0.5, max_studs=MAX_STUDS_PER_S
     return obj
 
 
+def stud_patch(name, center, cols, rows, spacing=0.9, color="white", radius=None, height=None, parent=None):
+    """Studs placed at an exact world position (z = surface top). Use on characters/pets where
+    studs must sit on a specific visible area (top of head, back), not the whole top face."""
+    r = radius if radius is not None else STUD_RADIUS * spacing * 1.1
+    h = height if height is not None else STUD_HEIGHT * spacing * 1.2
+    cx, cy, cz = center
+    bm = bmesh.new()
+    for ix in range(cols):
+        for iy in range(rows):
+            ret = bmesh.ops.create_cone(bm, cap_ends=True, segments=10, radius1=r, radius2=r, depth=h)
+            for vert in ret["verts"]:
+                vert.co.x += cx + (ix - (cols - 1) / 2) * spacing
+                vert.co.y += cy + (iy - (rows - 1) / 2) * spacing
+                vert.co.z += cz + h / 2
+    obj = _new_mesh_object(name, bm)
+    _assign(obj, palette_material(color, color))
+    obj["vault_kind"] = "studs"
+    if parent is not None:
+        obj.parent = parent
+    return obj
+
+
 def studded_plate(name, width, depth, height=1.0, location=(0, 0, 0), color="green", spacing=1.0):
     plate = block(name, (width, depth, height), location, color, bevel=0.06)
     studs(plate, spacing=spacing)

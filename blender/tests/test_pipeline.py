@@ -25,7 +25,8 @@ import vault_blocky as vb  # noqa: E402
 
 # qa/performance-budget.md — Roblox MeshPart hard limit is 20k tris; we keep headroom.
 MAX_TRIS_PER_MESH = 15000
-MIN_PARTS_CREATURE = 15  # BAD list: "few big plain boxes"
+MIN_PARTS_CREATURE = 50  # BAD list: "few big plain boxes" (v1 had 18 and was rejected)
+MIN_CREATURE_COLOURS = 5  # BAD list: "single flat colour"
 
 failures = []
 
@@ -49,9 +50,19 @@ def main():
     check(cube is not None and abs(cube.dimensions.z - 4.0) < 1e-4, "scale cube is exactly 4 units tall")
     manifest.append(r)
 
+    # Style gates (lessons L-20261104-03): checked on the built parts before joining.
+    _, parts = creature.build()
+    names = {p.name for p in parts}
+    colours = {p.data.materials[0].name for p in parts if p.type == "MESH" and p.data.materials}
+    head, body = bpy.data.objects["Head"], bpy.data.objects["Body"]
+    check(len(parts) >= MIN_PARTS_CREATURE, f"creature has {len(parts)} parts (>= {MIN_PARTS_CREATURE})")
+    check(len(colours) >= MIN_CREATURE_COLOURS, f"creature uses {len(colours)} colours (>= {MIN_CREATURE_COLOURS})")
+    check(any(p.get("vault_kind") == "studs" for p in parts), "creature has visible studs")
+    check({"Eye1", "Eye-1", "Pupil1", "Pupil-1", "Sparkle1", "Mouth"} <= names, "creature has a full face")
+    check(head.dimensions.z >= body.dimensions.z * 1.4, "chibi proportions: head >= 1.4x body height")
+
     r = creature.main(os.path.join(out, "creature"))
     check(os.path.getsize(r["fbx"]) > 0 and os.path.getsize(r["glb"]) > 0, "creature FBX + GLB exported")
-    check(r["objects"] >= MIN_PARTS_CREATURE, f"creature built from many parts ({r['objects']})")
     check(r["tris"] <= MAX_TRIS_PER_MESH, f"creature tris {r['tris']} <= {MAX_TRIS_PER_MESH}")
     mats = {m.name for m in bpy.data.materials}
     check(any(bpy.data.materials[m].get("roblox_neon") for m in mats), "creature has a glow (neon) material")

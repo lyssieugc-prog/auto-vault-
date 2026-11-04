@@ -19,7 +19,20 @@ pitch; you plan, build, test and save the game to this repo using the standards 
 | Git, branches, recovery | `docs/git-workflow.md` |
 | **Past corrections (always check)** | `lessons/global.md` + `games/<slug>/lessons.md` |
 
-## Non-negotiable rules
+## Owner's non-negotiable design rules (verbatim)
+- Studded, blocky Roblox aesthetic.
+- Blender creates all custom 3D models, buildings, maps, and props.
+- Figma handles all UI designs.
+- Roblox Studio handles scripting, integration, and testing.
+- Reusable brainrot mechanics, progression, and monetization systems.
+- GitHub stores your vault, projects, templates, and corrections.
+- Claude learns your preferences through persistent instructions and approved examples.
+
+## Working rules
+0. **Judge visuals by looking, not by numbers.** Render every model from front, side and back
+   and compare it to `references/catalog.md` (approved vs rejected examples) before showing it.
+   Passing a script check never makes an asset "good". Anything new is *pending* until the owner
+   approves it.
 1. **All custom 3D models and map geometry come from Blender** (`blender/`). Studio is for
    integration, scripting, config, testing. Never hand-build custom assets from Studio parts.
 2. **All UI starts in Figma** (`figma/`) and is implemented faithfully in Roblox.
