@@ -114,6 +114,23 @@ def prism(name, pts, depth, axis, base, col, emission=0.0, studs="all"):
     return vb._finish(obj, col, emission, studs, None)
 
 
+def flat_poly(name, pts, center, yaw, z, h, col, emission=0.0, studs="all"):
+    """Flat polygon (x, y local) rotated by yaw, extruded up by h (floor chevrons, arrows)."""
+    bm = bmesh.new()
+    c, s = math.cos(yaw), math.sin(yaw)
+    cx, cy = center
+    w = [(cx + px * c - py * s, cy + px * s + py * c) for px, py in pts]
+    lo = [bm.verts.new((u, v, z)) for u, v in w]
+    hi = [bm.verts.new((u, v, z + h)) for u, v in w]
+    bm.faces.new(lo)
+    bm.faces.new(list(reversed(hi)))
+    for i in range(len(w)):
+        j = (i + 1) % len(w)
+        bm.faces.new((lo[i], lo[j], hi[j], hi[i]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return vb._finish(vb._new_mesh_object(name, bm), col, emission, studs, None)
+
+
 def ring(name, ro, ri, h, loc, col, sides=28, emission=0.0, studs="all"):
     """Hollow ring / collar (pad rims, neon rings, rope coils)."""
     bm = bmesh.new()
@@ -198,7 +215,7 @@ def bone_icon(prefix, cx, y, cz, L, col, rot=0.0, depth=0.22, knob=None):
            rot=(0, -rot, 0))]
     for i, (dx, dz) in enumerate(((-1, -1), (-1, 1), (1, -1), (1, 1))):
         ox, oz = dx * L * 0.37, dz * knob * 0.8
-        P.append(disc_y(f"{prefix}Knob{i}", cx + ox * c - oz * s, y, cz + ox * s + oz * c, knob, depth, col, sides=10))
+        P.append(disc_y(f"{prefix}Knob{i}", cx + ox * c - oz * s, y, cz + ox * s + oz * c, knob, depth + 0.06, col, sides=10))
     return P
 
 
@@ -527,12 +544,10 @@ def lift_pad():
          C("LiftDisc", 3.0, 3.0, 0.4, (x, y, 0.45), BLUE["base"], sides=28),
          C("LiftDiscIn", 1.9, 1.9, 0.12, (x, y, 0.85), BLUE["light"], sides=24)]
     # chevron ring: 8 gold chevrons on the rim pointing clockwise (lift is "go")
-    for i in range(8):
-        a = 2 * math.pi * i / 8
-        cx, cy = x + math.cos(a) * 2.45, y + math.sin(a) * 2.45
-        for k, sgn in enumerate((-1, 1)):
-            P.append(S(f"LiftChev{i}_{k}", (0.85, 0.28, 0.12), (cx + math.cos(a) * sgn * 0.2, cy + math.sin(a) * sgn * 0.2, 0.85),
-                       GOLD["light"], rot=(0, 0, a + D90 + sgn * 0.7), bevel=0.03))
+    chev = [(-0.35, -0.55), (0.15, 0.0), (-0.35, 0.55), (0.05, 0.55), (0.55, 0.0), (0.05, -0.55)]
+    for i in range(10):
+        a = 2 * math.pi * i / 10
+        P.append(flat_poly(f"LiftChev{i}", chev, (x + math.cos(a) * 2.45, y + math.sin(a) * 2.45), a + D90, 0.85, 0.14, GOLD["light"]))
     # big up-arrow in the centre pointing at the mountain (+y)
     P += [S("LiftArrowStem", (0.7, 1.4, 0.12), (x, y - 0.5, 0.97), SNOW, bevel=0.03),
           prism("LiftArrowHead", [(-1.1, 0), (1.1, 0), (0, 1.2)], 0.12, "x", (x, y + 0.2, 0.97), SNOW)]

@@ -407,19 +407,19 @@ def avalanche_pug():
     for sx in (-1, 1):
         for (y0, y1) in ((0.0, 1.0), (-2.0, -1.0)):
             V.box((min(sx * 0.75, sx * 1.75), y0, 0.0), (max(sx * 0.75, sx * 1.75), y1, 1.0), snow["base"])
-    V.sell((0, -0.6, 1.65), (1.9, 1.85, 1.05), snow["base"], p=2.5)  # chunky torso
-    V.sell((0, 0.4, 3.6), (2.45, 1.7, 1.65), snow["base"], p=4.0)  # wide, flat pug head
+    V.sell((0, -0.6, 1.6), (1.9, 1.85, 1.0), snow["base"], p=2.5)  # chunky torso
+    V.sell((0, 0.4, 3.35), (2.55, 1.75, 1.45), snow["base"], p=3.5)  # wide, squat pug head
     V.carve(lambda x, y, z: z > 1.9 and y > 1.85)
-    V.sell((0, 2.05, 2.5), (1.5, 0.55, 0.6), ice["base"], p=2.5)  # short pug muzzle (ice mask)
-    V.paint(lambda x, y, z: y > 1.4 and z > 2.9 and z < 4.4 and ((abs(x) - 1.1) / 0.95) ** 2 + ((z - 3.7) / 0.85) ** 2 < 1,
+    V.sell((0, 2.05, 2.4), (1.5, 0.55, 0.6), ice["base"], p=2.5)  # short pug muzzle (ice mask)
+    V.paint(lambda x, y, z: y > 1.4 and z > 2.9 and z < 4.5 and ((abs(x) - 1.12) / 0.95) ** 2 + ((z - 3.65) / 0.85) ** 2 < 1,
             ice["base"])  # eye-patch mask
-    # crash helmet (same merged mesh, so no coplanar overlaps): orange dome, darker rim, white stripe, dent
-    V.sell((0, 0.3, 4.4), (2.7, 2.05, 1.85), hel["base"], p=3.0, pred=lambda x, y, z: z > 4.35)
+    # crash helmet (same merged mesh, so no coplanar overlaps): domed, darker rim, white stripe, dent
+    V.sell((0, 0.3, 4.3), (2.8, 2.1, 1.65), hel["base"], p=2.3, pred=lambda x, y, z: z > 4.4)
     V.paint(lambda x, y, z: z < 5.0, hel["dark"], only={hel["base"]})
     V.paint(lambda x, y, z: abs(x) < 0.5 and z > 5.0, WHITE, only={hel["base"]})
-    dent = Vector((-1.7, 1.0, 5.55))
-    V.paint(lambda x, y, z: (Vector((x, y, z)) - dent).length < 1.05, hel["deep"], only={hel["base"], hel["dark"]})
-    V.carve(lambda x, y, z: (Vector((x, y, z)) - dent).length < 0.6 and z > 5.0)
+    dent = Vector((-1.6, 0.9, 5.45))
+    V.paint(lambda x, y, z: (Vector((x, y, z)) - dent).length < 1.0, hel["deep"], only={hel["base"], hel["dark"]})
+    V.carve(lambda x, y, z: (Vector((x, y, z)) - dent).length < 0.55 and z > 5.0)
     V.paint(lambda x, y, z: z > 5.6 and x > 0.4 and y > 0.2, hel["light"], only={hel["base"]})  # gloss highlight
     V.paint(lambda x, y, z: z < 0.5, ice["light"], only={snow["base"]})  # frosty socks
     V.paint(lambda x, y, z: z < 1.25 and z >= 0.5 and abs(x) < 1.3, snow["dark"], only={snow["base"]})  # belly shade
@@ -429,8 +429,8 @@ def avalanche_pug():
     # ---- face ----
     for sx in (-1, 1):
         ex = sx * 1.12
-        seat_front(V, f"EyeRim{sx}", (1.6, 0.1, 1.62), ex, 2.95, ice["deep"], bevel=0.18, seg=2)
-        seat_front(V, f"Eye{sx}", (1.36, 0.14, 1.38), ex, 3.07, WHITE, dy=0.03, bevel=0.18, seg=2)
+        seat_front(V, f"EyeRim{sx}", (1.6, 0.1, 1.55), ex, 2.95, ice["deep"], bevel=0.18, seg=2)
+        seat_front(V, f"Eye{sx}", (1.36, 0.14, 1.32), ex, 3.06, WHITE, dy=0.03, bevel=0.18, seg=2)
         seat_front(V, f"Pupil{sx}", (0.76, 0.1, 0.96), ex - sx * 0.16, 3.2, PUPIL, dy=0.1, bevel=0.14, seg=2)
         seat_front(V, f"PupilGlint{sx}", (0.36, 0.06, 0.36), ex - sx * 0.16, 3.32, ice["dark"], dy=0.15, bevel=0.06)
         seat_front(V, f"Sparkle{sx}", (0.28, 0.06, 0.28), ex - sx * 0.38, 3.82, WHITE, dy=0.19, emission=1.5)
@@ -438,7 +438,7 @@ def avalanche_pug():
         seat_front(V, f"Blush{sx}", (0.55, 0.08, 0.26), sx * 1.05, 2.72, BLUSH)
         seat_front(V, f"Jowl{sx}", (0.42, 0.12, 0.16), sx * 1.02, 2.36, MOUTH, rot=(0, sx * -0.6, 0))
         seat_front(V, f"Fang{sx}", (0.2, 0.08, 0.18), sx * 0.42, 2.28, WHITE, dy=0.06)
-    for i, (w, z) in enumerate(((0.8, 3.25), (0.55, 3.55), (0.32, 3.85))):  # pug wrinkles on the nose bridge
+    for i, (w, z) in enumerate(((0.8, 3.15), (0.55, 3.45), (0.32, 3.75))):  # pug wrinkles on the nose bridge
         seat_front(V, f"Wrinkle{i}", (w, 0.12, 0.17), 0, z, ice["dark"], bevel=0.05)
     seat_front(V, "Nose", (0.95, 0.26, 0.5), 0, 2.52, PUPIL, bevel=0.14, seg=2)
     seat_front(V, "NoseShine", (0.24, 0.06, 0.12), -0.2, 2.82, WHITE, dy=0.24, emission=1.0)
@@ -446,15 +446,14 @@ def avalanche_pug():
     seat_front(V, "Tongue", (0.66, 0.16, 0.62), 0.12, 1.72, TONGUE, dy=0.04, bevel=0.14, seg=2)  # tongue blep
     seat_front(V, "TongueLine", (0.08, 0.06, 0.34), 0.12, 1.86, "#E04C7E", dy=0.16)
 
-    # ---- snowball cheeks + snow puffs ----
+    # ---- snowball cheeks (jowly pug silhouette) + floppy folded ears under the helmet rim ----
     for sx in (-1, 1):
-        BALL(f"SnowCheek{sx}", (0.78, 0.62, 0.68), (sx * 1.78, 1.92, 2.62), snow["light"], seg=12, rings=8)
-        BALL(f"SnowPuff{sx}", (0.42, 0.38, 0.38), (sx * 2.25, 1.35, 2.2), snow["dark"], seg=10, rings=6)
-        R(f"Ear{sx}", (0.5, 0.95, 0.85), (sx * 2.52, 0.25, 3.45), ice["dark"], radius=0.15, rot=(0, sx * 0.4, 0))
-        R(f"EarFold{sx}", (0.42, 0.7, 0.35), (sx * 2.72, 0.3, 3.42), ice["deep"], radius=0.1, rot=(0, sx * 0.4, 0))
-
+        BALL(f"SnowCheek{sx}", (0.95, 0.75, 0.85), (sx * 2.15, 1.55, 2.45), snow["light"], seg=12, rings=8)
+        BALL(f"SnowCheekTop{sx}", (0.45, 0.4, 0.4), (sx * 2.45, 1.45, 3.15), ice["light"], seg=10, rings=6)
+        R(f"Ear{sx}", (0.55, 1.05, 1.1), (sx * 2.75, 0.2, 3.55), ice["dark"], radius=0.16, rot=(0, sx * 0.55, 0))
+        R(f"EarFold{sx}", (0.45, 0.8, 0.4), (sx * 3.05, 0.25, 3.5), ice["deep"], radius=0.1, rot=(0, sx * 0.55, 0))
     # ---- helmet hardware: goggles, flipped-up visor, chin straps, stickers, back plate ----
-    gz = 4.55
+    gz = 4.6
     gy = max(V.front_y(x, gz + 0.4) or 0 for x in (-1.2, -0.6, 0.6, 1.2))
     for sx in (-1, 1):
         CYL(f"GoggleFrame{sx}", 0.52, 0.52, 0.34, (sx * 0.78, gy - 0.12, gz + 0.45), NAVY, sides=12, rot=(-math.pi / 2, 0, 0))
@@ -479,26 +478,20 @@ def avalanche_pug():
     for i, (p0, p1) in enumerate((((-1.95, 1.55, 5.95), (-1.5, 1.4, 5.55)), ((-1.5, 1.4, 5.55), (-1.6, 1.55, 5.15)))):
         bar(f"DentCrack{i}", p0, p1, 0.14, 0.14, hel["deep"])
     by = V.back_y(0.25, 5.25)
-    R("BackPlate", (1.2, 0.2, 0.85), (0, by - 0.06, 4.85), GOLD, radius=0.06)
-    FACE("BackPlateNum", (0.22, 0.08, 0.55), (0, by - 0.2, 5.0), NAVY)
-    FACE("BackPlateNumFoot", (0.45, 0.08, 0.16), (0, by - 0.2, 4.95), NAVY)
-    for i, x in enumerate((-0.45, 0.45)):
-        BALL(f"BackPlateBolt{i}", (0.09, 0.09, 0.09), (x, by - 0.2, 5.27), NAVY, seg=8, rings=4, studs="none")
-
-    # ---- frosty mane collar: tilted snow clumps with icy tips (fluffy, NOT spikes) ----
-    k = 0
-    rows = ((2.05, 2.05, [math.radians(a) for a in (-50, -20, 10, 35, 145, 170, 200, 225, 250, 275, 300)], 0.9),
-            (1.7, 2.6, [math.radians(a) for a in (195, 225, 255, 285, 315, 345)], 0.8))
-    for rad, z, angles, s in rows:
-        for a in angles:
-            x, y = math.cos(a) * rad, -0.5 + math.sin(a) * (rad + 0.1)
-            ss = s * rnd.uniform(0.85, 1.1)
-            R(f"Mane{k}", (ss, ss, ss * 0.8), (x, y, z - ss * 0.3), snow["light"] if k % 3 else snow["dark"], radius=ss * 0.28,
-              rot=(rnd.uniform(-0.3, 0.3), rnd.uniform(-0.3, 0.3), a))
-            R(f"ManeTip{k}", (ss * 0.55, ss * 0.55, ss * 0.4), (x * 1.08, y * 1.04 - 0.02, z + ss * 0.42), ice["light"],
-              radius=ss * 0.15, rot=(0, 0, a + 0.4))
-            k += 1
-
+    R("BackPlate", (1.3, 0.2, 0.95), (0, by - 0.06, 4.75), GOLD, radius=0.06)
+    snowflake("BackPlateFlake", (0, by - 0.2, 5.22), 0.7, NAVY, yaw=0.0, strength=0.0, fx=False, thick=0.13)
+    # ---- frosty mane collar: an ORDERED ruff of chunky snow puffs, alternating snow / ice (fluffy, NOT spikes) ----
+    for i in range(11):
+        a = math.radians(150 + 240 * i / 10)  # sides + back, leaves the face clear
+        x, y = math.cos(a) * 2.15, -0.5 + math.sin(a) * 2.1
+        col = snow["light"] if i % 2 == 0 else ice["light"]
+        R(f"Mane{i}", (1.05, 1.05, 0.85), (x, y, 1.75), col, radius=0.3, rot=(0, 0, a))
+        R(f"ManeTip{i}", (0.55, 0.55, 0.4), (x * 1.12, -0.5 + (y + 0.5) * 1.12, 2.15), ice["base"] if i % 2 == 0 else snow["light"],
+          radius=0.15, rot=(0, 0, a))
+    for i in range(6):
+        a = math.radians(205 + 130 * i / 5)
+        R(f"ManeBack{i}", (0.85, 0.85, 0.7), (math.cos(a) * 1.55, -0.5 + math.sin(a) * 1.6, 2.5), ice["light"] if i % 2 else snow["light"],
+          radius=0.25, rot=(0, 0, a))
     # ---- chest: collar band + glowing snowflake tag ----
     S("Collar", (2.5, 0.4, 0.4), (0, 1.0, 1.9), ice["deep"], bevel=0.08)
     CYL("TagRing", 0.2, 0.2, 0.12, (0, 1.16, 1.85), GOLD, sides=8, rot=(-math.pi / 2, 0, 0))
@@ -519,20 +512,20 @@ def avalanche_pug():
                 bar(f"FlankFlake{sx}_{i}_{j}", c - d, c + d, 0.22, 0.12, ice["dark"])
 
     # ---- curly tail with glowing snowball tip ----
-    for i, (y, z, s) in enumerate(((-2.55, 2.0, 0.66), (-2.85, 2.5, 0.6), (-2.78, 3.0, 0.55), (-2.4, 3.22, 0.5))):
-        R(f"Tail{i}", (s, s, s), (0, y, z), snow["light"] if i % 2 == 0 else ice["light"], radius=s * 0.25,
+    for i, (y, z, s) in enumerate(((-2.65, 2.55, 0.66), (-3.0, 3.0, 0.6), (-2.95, 3.5, 0.55), (-2.6, 3.8, 0.5))):
+        R(f"Tail{i}", (s, s, s), (0, y, z), ice["base"] if i % 2 == 0 else ice["light"], radius=s * 0.25,
           rot=(0.4 * i, 0, 0))
-    BALL("TailTip", (0.38, 0.38, 0.38), (0, -2.02, 3.48), NEON_L, seg=10, rings=6, emission=3.0, studs="none")
+    BALL("TailTip", (0.38, 0.38, 0.38), (0, -2.25, 4.1), NEON, seg=10, rings=6, emission=3.0, studs="none")
 
     # ---- FX (Legendary): snowflake orbiters, double aura ring, frost sparkles ----
-    for i in range(8):
-        a = 2 * math.pi * i / 8 + 0.2
-        snowflake(f"Orbit{i}_", (math.cos(a) * 3.8, -0.3 + math.sin(a) * 3.8, 2.6 + (i % 3) * 1.0), 0.95,
-                  NEON if i % 2 else NEON_L, yaw=a - math.pi / 2, strength=4.0)
+    for i, deg in enumerate((15, 50, 135, 170, 215, 270, 325)):  # never parked in front of the face
+        a = math.radians(deg)
+        snowflake(f"Orbit{i}_", (math.cos(a) * 3.9, -0.3 + math.sin(a) * 3.9, 2.4 + (i % 3) * 1.15), 0.95,
+                  NEON, yaw=a - math.pi / 2, strength=3.0, thick=0.18)
     ring_of("AuraOuter", 26, 3.45, 0.04, (0.72, 0.36, 0.1), [NEON, ice["light"]], ctr=(0, -0.3), strength=3.0)
     ring_of("AuraInner", 18, 2.85, 0.04, (0.5, 0.26, 0.08), [NEON_L], ctr=(0, -0.3), strength=2.0, phase=0.1)
     sparkles("Frost", [(-3.0, 1.4, 5.2), (3.1, 1.0, 5.6), (-2.6, -2.4, 4.8), (2.5, -2.6, 1.8), (0.0, 2.9, 6.2),
-                       (-3.4, 0.0, 1.3)], NEON_L, size=0.26)
+                       (-3.4, 0.0, 1.3)], NEON, size=0.26)
     return B
 
 
@@ -887,8 +880,7 @@ def _camera(loc, target, lens):
 
 def _floor():
     if "PreviewFloor" not in bpy.data.objects:
-        f = vb.solid("PreviewFloor", (80, 80, 1.0), (0, 0, -1.0), "#F3DFB2", bevel=0.0)
-        f["vault_rig"] = True
+        vb.solid("PreviewFloor", (80, 80, 1.0), (0, 0, -1.0), "#F3DFB2", bevel=0.0)
 
 
 def _azim_dir(az_deg, el_deg):

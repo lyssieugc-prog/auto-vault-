@@ -14,5 +14,8 @@ Order (run each through Studio MCP `run_code`, or paste into the Studio command 
    `python3 games/ragdoll-off-a-mountain/studio/gen_markers.py`). It creates `Workspace.Map.Markers.*`
    anchored, invisible, CanCollide=false parts the server scripts look up by name.
 4. **Rojo** — `rojo serve games/ragdoll-off-a-mountain/default.project.json` and connect the plugin.
+4b. **Edit-mode preview (owner rule L-11)** — run `build_edit_preview.luau`: puts every ScreenGui in
+   StarterGui (mock data) and places base camps + hub props on their markers, all saved in the place,
+   so map + UI are visible WITHOUT pressing Play. Flip screens with `preview_screen.luau`.
 5. **Game Settings (owner)** — Max Players **6**, Avatar **R15**, Studio API access only in a private test place.
 6. Play (Server + 1 client) and follow `qa/playtest.md`. Never publish.

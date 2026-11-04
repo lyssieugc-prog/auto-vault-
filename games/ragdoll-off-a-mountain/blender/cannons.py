@@ -386,7 +386,7 @@ def setup_render(samples=28, res=(1280, 720), transparent=False, icon=False):
     world.use_nodes = True
     bg = world.node_tree.nodes["Background"]
     bg.inputs[0].default_value = (0.33, 0.64, 1.0, 1)
-    bg.inputs[1].default_value = 0.9 if not icon else 0.55
+    bg.inputs[1].default_value = 0.5 if not icon else 0.35
     for o in [o for o in scene.objects if o.type == "LIGHT"]:
         bpy.data.objects.remove(o)
     if icon:
@@ -473,7 +473,7 @@ def mount_ring(prefix="Mount", r=4.0):
 def party_popper():
     """Tier 1 — giant cardboard party-popper tube on a gift-box stand."""
     name = "Cannon1_PartyPopper"
-    KR = SH("#D99A55")
+    KR = SH("#D98B3A")
     PINK, TEAL, YEL, PUR = SH("#FF5FA2"), SH("#22C3A6"), SH(GOLD), SH("#B678EA")
     P = []
     # --- base: studded round plate + wrapped gift box + bow + spilled confetti
@@ -537,27 +537,21 @@ def party_popper():
     for sx, a in ((1, 0), (-1, 180)):
         st = prism(f"PPStar{sx}", star_pts(0.9, 0.42), 0.16, YEL["base"], plane="xy")
         BP.append(xf([st], radial(a, r_at(0.2) + 0.02, 0.2, 90))[0])
-    # paper fringe around the mouth (alternating tabs, flared outward)
-    for i in range(16):
-        a = 360.0 * i / 16
-        tab = S(f"PPFringe{i}", (0.12, 0.55, 0.7), (0, 0, 0), stripe_cols[i % 5], bevel=0.02)
-        xf([tab], Rz(-a) @ T(r_at(4.9) + 0.25, 0, 5.1) @ Ry(25))
-        BP.append(tab)
-    # curly streamers spilling over the rim (chained, curling segments)
-    for k, (a0, col) in enumerate(((70, PINK["base"]), (125, TEAL["base"]), (20, YEL["base"]), (160, PUR["light"]),
-                                   (250, PINK["light"]), (300, TEAL["light"]))):
-        x0, y0 = polar(a0, r_at(5) + 0.2)
-        p = Vector((x0, y0, 5.3))
+    # streamers spilling out of the mouth and draping down over the rim (gravity = world down)
+    down = Vector((0, math.sin(math.radians(90 - TILT)), -math.cos(math.radians(90 - TILT))))
+    for k, (a0, col) in enumerate(((60, PINK["base"]), (95, TEAL["base"]), (128, YEL["base"]), (25, PUR["light"]),
+                                   (160, PINK["light"]), (205, TEAL["light"]), (335, YEL["light"]))):
+        x0, y0 = polar(a0, r_at(4.9) - 0.15)
+        p = Vector((x0, y0, 4.7))
         outward = Vector((x0, y0, 0)).normalized()
-        dirv = (outward * 0.55 + Vector((0, 0, 0.8))).normalized()
-        for j in range(4):
-            seg_len = 0.8 - j * 0.08
-            q = p + dirv * seg_len
-            BP.append(beam(f"PPStreamer{k}_{j}", p, q, 0.42, 0.14, col))
+        dirv = (outward * 0.6 + Vector((0, 0, 1.0))).normalized()
+        nseg = 5 if 30 < a0 < 150 else 3
+        for j in range(nseg):
+            q = p + dirv * (0.75 if j else 0.9)
+            BP.append(beam(f"PPStreamer{k}_{j}", p, q, 0.5, 0.14, col))
             p = q
-            # curl: rotate direction back toward outward/down each step
-            dirv = (dirv * 0.55 + outward * 0.5 + Vector((0, 0, -0.35))).normalized()
-        BP.append(B(f"PPStreamerEnd{k}", (0.22, 0.22, 0.22), tuple(p), col, segments=8, rings=5))
+            dirv = (dirv * 0.45 + down * 0.75 + outward * 0.25 + Vector((0, 0, 0.12))).normalized()
+        BP.append(xf([S(f"PPStreamerEnd{k}", (0.5, 0.14, 0.32), (0, 0, 0), col)], T(*p) @ aim(dirv) @ Rz(25))[0])
     # pull-string out of the back cap + ring tab
     BP.append(C("PPStringBoss", 0.38, 0.38, 0.35, (0, -0.6, -2.85), KR["deep"], sides=10))
     BP.append(beam("PPString0", (0, -0.6, -2.7), (0, 0.6, -3.5), 0.3, 0.3, "#FFFFFF", kind="cyl", sides=8))
@@ -829,13 +823,16 @@ def mega_mortar():
            tube("MMBand0", ro + 0.35, ro + 0.35, 0.8, 0.5, (0, 0, -1.4), GUN["light"], sides=32),
            tube("MMBand1", ro + 0.4, ro + 0.45, 0.8, 0.5, (0, 0, 1.0), GUN["light"], sides=32),
            tube("MMMuzzle", ro + 0.45, ro + 0.95, 1.2, ro + 0.95 - ri, (0, 0, 2.8), GUN["dark"], sides=32),
-           tube("MMMuzzleLip", ro + 1.05, ro + 1.05, 0.35, ro + 1.05 - ri - 0.15, (0, 0, 4.0), BRASS["base"], sides=32),
+           tube("MMMuzzleLip", ro + 1.05, ro + 1.05, 0.45, 0.42, (0, 0, 3.95), BRASS["base"], sides=32),
+           tube("MMMuzzleFace", ro + 0.62, ro + 0.62, 0.12, ro + 0.62 - ri - 0.1, (0, 0, 4.0), GUN["light"], sides=32),
            tube("MMInnerLiner", ri + 0.02, ri + 0.02, 0.8, 0.22, (0, 0, 3.5), BRASS["dark"], sides=32),
            C("MMThroat", ri, ri, 0.15, (0, 0, 0.6), "#151A24", sides=28, studs="none"),
            N(tube("MMThroatGlow", ri, ri, 0.18, 0.22, (0, 0, 0.75), "#A8F03C", sides=28), 3)]
     BP += ring_bolts("MMBandBoltA", ro + 0.37, -1.0, 14, 0, BRASS["light"], 0.15)
     BP += ring_bolts("MMBandBoltB", ro + 0.45, 1.4, 14, 12, BRASS["light"], 0.15)
-    BP += ring_bolts("MMLipBolt", ro + 1.0, 4.36, 16, 0, BRASS["light"], 0.14)
+    BP += ring_bolts("MMLipBolt", ro + 0.3, 4.14, 12, 0, BRASS["light"], 0.16)
+    for j in range(8):  # brass clamp blocks around the muzzle
+        BP.append(xf([S(f"MMClamp{j}", (1.3, 0.9, 0.5), (0, 0, 0), BRASS["dark"])], radial(22.5 + 45 * j, ro + 0.1, 2.5))[0])
     BP += [C("MMBreechKnob", 0.8, 0.8, 0.7, (0, 0, -4.6), BRASS["base"], sides=14),
            B("MMBreechBall", (0.6, 0.6, 0.6), (0, 0, -4.7), BRASS["dark"], segments=10, rings=6)]
     # two pressure gauges on the upper flanks (dial face + neon needle + ticks) with feed pipes
@@ -865,106 +862,132 @@ def mega_mortar():
 
 
 def meteor_launcher():
-    """Tier 5 — sci-fi twin-rail cannon: neon coils, cooling vents, crystal core, hover pedestal."""
+    """Tier 5 — sci-fi twin-rail cannon: armoured shroud, neon coils, cooling vents, big crystal core."""
     name = "Cannon5_MeteorLauncher"
-    NV, WH, PU = SH("#2A2F5A"), SH("#E8ECFF"), SH("#B678EA")
+    NV, WH, PU = SH("#2A2F5A"), SH("#E8ECFF"), SH("#8E4FE0")
+    DK = SH("#171A38")
     CY = "#3EF0FF"
     P = []
-    # --- hover pedestal: octagon base, neon ring, armoured neck
-    P += [C("MLBase", 4.15, 4.0, 0.7, (0, 0, 0), NV["base"], sides=8),
-          N(tube("MLBaseGlow", 3.75, 3.75, 0.22, 0.4, (0, 0, 0.72), CY, sides=8), 4),
-          C("MLBaseTier", 3.4, 3.1, 0.8, (0, 0, 0.7), NV["light"], sides=8),
-          C("MLBaseTop", 2.8, 2.8, 0.3, (0, 0, 1.5), WH["dark"], sides=8)]
-    for i in range(8):  # armour feet
+    # --- pedestal: octagon base with neon groove, armour feet, stepped tiers, armoured neck
+    P += [C("MLBase", 4.3, 4.15, 0.7, (0, 0, 0), DK["base"], sides=8),
+          N(tube("MLBaseGlow", 3.95, 3.95, 0.22, 0.35, (0, 0, 0.72), CY, sides=8), 2.5),
+          C("MLBaseTier", 3.6, 3.3, 0.8, (0, 0, 0.7), NV["base"], sides=8),
+          C("MLBaseTop", 3.0, 3.0, 0.3, (0, 0, 1.5), PU["dark"], sides=8)]
+    for i in range(8):
         a = math.radians(22.5 + 45 * i)
-        P.append(R(f"MLFoot{i}", (1.3, 0.8, 0.55), (math.cos(a) * 3.65, math.sin(a) * 3.65, 0), PU["dark"] if i % 2 else NV["dark"],
+        P.append(R(f"MLFoot{i}", (1.5, 0.9, 0.6), (math.cos(a) * 3.85, math.sin(a) * 3.85, 0), PU["base"] if i % 2 else NV["light"],
                    radius=0.12, rot=(0, 0, a + math.pi / 2)))
-    P += [C("MLNeck", 1.9, 1.5, 2.4, (0, 0, 1.8), NV["dark"], sides=8),
-          tube("MLNeckBand", 1.75, 1.75, 0.35, 0.3, (0, 0, 3.0), PU["base"], sides=8)]
-    for i in range(4):  # neck armour plates
+        P.append(N(S(f"MLFootLed{i}", (0.6, 0.12, 0.18), (math.cos(a) * 4.32, math.sin(a) * 4.32, 0.25), CY, studs="none",
+                     rot=(0, 0, a + math.pi / 2)), 2.5))
+    P += [C("MLNeck", 2.3, 1.9, 2.6, (0, 0, 1.8), NV["dark"], sides=8),
+          tube("MLNeckBand", 2.15, 2.1, 0.4, 0.3, (0, 0, 3.1), PU["base"], sides=8)]
+    for i in range(4):
         a = math.radians(45 + 90 * i)
-        P.append(prism(f"MLNeckPlate{i}", [(-0.7, 0), (0.7, 0), (0.45, 2.2), (-0.45, 2.2)], 0.3, WH["base"], plane="xz",
-                       loc=(0, 0, 0)))
-        xf([P[-1]], T(math.cos(a) * 1.78, math.sin(a) * 1.78, 1.85) @ Rz(math.degrees(a) - 90) @ Rx(-6))
-    pivot = (0, -0.8, 9.0)
-    # gimbal: horizontal ring cradle + arms
-    P.append(C("MLGimbalHub", 2.2, 2.2, 0.7, (0, 0, 4.2), NV["base"], sides=16))
-    P.append(N(tube("MLGimbalGlow", 2.25, 2.25, 0.18, 0.2, (0, 0, 4.45), CY, sides=16), 4))
+        P.append(prism(f"MLNeckPlate{i}", [(-0.8, 0), (0.8, 0), (0.55, 2.3), (-0.55, 2.3)], 0.3, WH["dark"], plane="xz"))
+        xf([P[-1]], T(math.cos(a) * 2.1, math.sin(a) * 2.1, 1.85) @ Rz(math.degrees(a) - 90) @ Rx(-8))
+    pivot = (0, -1.0, 9.2)
+    P.append(C("MLGimbalHub", 2.6, 2.6, 0.8, (0, 0, 4.4), NV["base"], sides=16))
+    P.append(N(tube("MLGimbalGlow", 2.65, 2.65, 0.18, 0.2, (0, 0, 4.7), CY, sides=16), 2.5))
     for sx in (-1, 1):
-        P.append(prism(f"MLArm{sx}", [(-1.4, 0), (1.4, 0), (0.9, 4.9), (-0.9, 4.9)], 0.6, WH["base"], plane="yz",
-                       loc=(sx * 3.2, pivot[1], 4.6)))
-        P.append(S(f"MLArmBase{sx}", (2.4, 2.0, 0.5), (sx * 1.9, pivot[1], 4.6), NV["light"]))
-        P.append(prism(f"MLArmStripe{sx}", [(-0.25, 0.3), (0.25, 0.3), (0.25, 4.3), (-0.25, 4.3)], 0.12, PU["base"], plane="yz",
-                       loc=(sx * 3.54, pivot[1], 4.6)))
-        P.append(C(f"MLTrunnion{sx}", 0.8, 0.8, 0.9, (sx * 2.85, pivot[1], pivot[2]), NV["dark"], sides=12,
+        P.append(S(f"MLArmBase{sx}", (2.4, 2.6, 0.6), (sx * 2.9, pivot[1], 4.8), NV["light"]))
+        P.append(prism(f"MLArm{sx}", [(-1.5, 0), (1.5, 0), (1.0, 4.9), (-1.0, 4.9)], 0.7, NV["base"], plane="yz",
+                       loc=(sx * 3.95, pivot[1], 5.4)))
+        P.append(prism(f"MLArmStripe{sx}", [(-0.3, 0.3), (0.3, 0.3), (0.3, 4.2), (-0.3, 4.2)], 0.12, PU["light"], plane="yz",
+                       loc=(sx * 4.35, pivot[1], 5.4)))
+        P.append(C(f"MLTrunnion{sx}", 0.9, 0.9, 1.0, (sx * 3.5, pivot[1], pivot[2]), DK["base"], sides=12,
                    rot=(0, math.radians(90 * sx), 0)))
-        P.append(N(C(f"MLTrunnionGlow{sx}", 0.45, 0.45, 0.1, (sx * 3.75, pivot[1], pivot[2]), CY, sides=12, studs="none",
-                     rot=(0, math.radians(90 * sx), 0)), 4))
-    # --- rail barrel (barrel-local)
+        P.append(N(C(f"MLTrunnionGlow{sx}", 0.5, 0.5, 0.1, (sx * 4.5, pivot[1], pivot[2]), CY, sides=12, studs="none",
+                     rot=(0, math.radians(90 * sx), 0)), 3))
+    # --- barrel (barrel-local)
     BP = []
-    ro, ri = 2.4, 2.05
-    z0, z1 = -4.6, 7.0
-    BP.append(tube("MLTube", ro, ro, z1 - z0, ro - ri, (0, 0, z0), NV["base"], sides=24))
-    coil_z = (-2.6, -1.2, 0.2, 1.6, 3.0, 4.4)
-    for i, z in enumerate(coil_z):
-        BP.append(N(tube(f"MLCoil{i}", ro + 0.42, ro + 0.42, 0.5, 0.45, (0, 0, z), CY if i % 2 == 0 else "#7CF7FF", sides=24), 4.5))
-        BP.append(tube(f"MLCollar{i}", ro + 0.25, ro + 0.25, 0.35, 0.3, (0, 0, z + 0.55), WH["dark"], sides=24))
-    # twin rails (top + bottom) extending past the muzzle, with struts
+    ro, ri = 2.55, 2.1
+    z0, z1 = -4.8, 7.4
+    BP.append(tube("MLTube", ro, ro, z1 - z0, ro - ri, (0, 0, z0), NV["dark"], sides=24))
+    # armoured rear shroud (octagon, flats on the sides) with purple bands
+    BP += [C("MLShroud", 3.35, 3.35, 5.2, (0, 0, z0), NV["base"], sides=8, rot=(0, 0, math.radians(22.5))),
+           C("MLShroudCap", 3.0, 2.7, 0.6, (0, 0, z0 + 5.2), NV["light"], sides=8, rot=(0, 0, math.radians(22.5)))]
+    for i, z in enumerate((z0 + 0.5, z0 + 3.9)):
+        BP.append(C(f"MLShroudBand{i}", 3.5, 3.5, 0.55, (0, 0, z), PU["base"], sides=8, rot=(0, 0, math.radians(22.5))))
+    for k, a in enumerate((90, 270)):  # neon slit on top/bottom of shroud
+        gx, gy = polar(a, 3.1)
+        BP.append(N(S(f"MLShroudSlit{k}", (0.5, 0.2 if a == 90 else 0.2, 2.2), (gx, gy * 1.0, z0 + 1.35), PU["light"], studs="none"), 3))
+    # neon coils on the exposed front of the tube
+    for i, z in enumerate((1.0, 2.3, 3.6, 4.9)):
+        BP.append(N(tube(f"MLCoil{i}", ro + 0.5, ro + 0.5, 0.55, 0.5, (0, 0, z), CY, sides=24), 3))
+        BP.append(tube(f"MLCollar{i}", ro + 0.3, ro + 0.3, 0.5, 0.35, (0, 0, z + 0.6), DK["light"], sides=24))
+    # twin rails (top + bottom): chunky prongs running past the muzzle
     for k, a in enumerate((90, 270)):
-        rx_, ry_ = polar(a, ro + 1.15)
-        BP.append(S(f"MLRail{k}", (1.3, 0.9, z1 + 2.8 - (z0 + 0.4)), (rx_, ry_, z0 + 0.4), WH["base"]))
-        BP.append(S(f"MLRailStripe{k}", (0.5, 0.94, 5.0), (rx_, ry_, 2.0), PU["base"]))
-        BP.append(N(S(f"MLRailGlow{k}", (0.32, 0.2, 7.5), (rx_, ry_ + (0.48 if a == 270 else -0.48), 0.6), CY, studs="none"), 4))
-        BP.append(R(f"MLRailTip{k}", (1.5, 1.1, 1.0), (rx_, ry_, z1 + 2.4), PU["base"], radius=0.2))
-        for j, z in enumerate((-3.4, -0.5, 2.3, 5.1)):
-            sx_, sy_ = polar(a, ro + 0.35)
-            BP.append(S(f"MLStrut{k}{j}", (0.8, 0.7, 0.5), (sx_, sy_, z + 0.4), NV["light"]))
-    # side cooling vents (fin stacks) on the back half
-    for sx in (-1, 1):
-        vx = sx * (ro + 0.55)
-        BP.append(S(f"MLVentBox{sx}", (1.1, 2.6, 2.6), (vx, 0, z0), NV["light"]))
+        rx_, ry_ = polar(a, ro + 1.45)
+        out = -1 if a == 90 else 1
+        BP += [S(f"MLRail{k}", (1.7, 1.2, z1 + 2.6 - 0.4), (rx_, ry_, 0.4), NV["light"]),
+               S(f"MLRailCap{k}", (1.1, 0.3, z1 + 2.2 - 0.6), (rx_, ry_ + out * 0.7, 0.6), WH["base"]),
+               R(f"MLRailTip{k}", (2.1, 1.5, 1.3), (rx_, ry_, z1 + 2.0), PU["base"], radius=0.25),
+               N(S(f"MLRailTipGlow{k}", (1.4, 0.18, 0.5), (rx_, ry_ - out * 0.75, z1 + 2.4), CY, studs="none"), 3)]
         for j in range(5):
-            BP.append(S(f"MLVentFin{sx}{j}", (0.7, 2.9, 0.26), (vx + sx * 0.7, 0, z0 + 0.2 + j * 0.52), WH["base"] if j % 2 else WH["dark"]))
-        BP.append(N(S(f"MLVentGlow{sx}", (0.12, 1.9, 2.2), (vx + sx * 0.6, 0, z0 + 0.2), PU["light"], studs="none"), 2.5))
-    # muzzle brake: white armoured ring with slots + neon lip
-    BP += [tube("MLMuzzle", ro + 0.7, ro + 0.7, 1.2, ro + 0.7 - ri, (0, 0, z1 - 0.3), WH["base"], sides=24),
-           N(tube("MLMuzzleGlow", ro + 0.75, ro + 0.75, 0.25, 0.3, (0, 0, z1 + 0.9), CY, sides=24), 5)]
-    for j in range(8):
-        a = 22.5 + 45 * j
-        if a in (90 - 22.5, 90 + 22.5, 270 - 22.5, 270 + 22.5):
-            pass
-        sl = S(f"MLMuzzleSlot{j}", (0.7, 0.4, 0.14), (0, 0, 0), NV["dark"], studs="none")
-        BP.append(xf([sl], radial(a, ro + 0.69, z1 + 0.25, 90))[0])
+            BP.append(N(S(f"MLRailLed{k}{j}", (0.25, 0.2, 0.6), (rx_ + 0.62, ry_ + out * 0.62, 1.2 + j * 1.6), CY, studs="none"), 3))
+        for j, z in enumerate((0.6, 1.9, 3.2, 4.5, 5.8)):
+            sx_, sy_ = polar(a, ro + 0.45)
+            BP.append(S(f"MLStrut{k}{j}", (1.0, 0.75, 0.35), (sx_, sy_, z + 0.05), WH["dark"]))
+    # side cooling vents (fin stacks) on the shroud flats
+    for sx in (-1, 1):
+        vx = sx * 3.15
+        BP.append(S(f"MLVentBox{sx}", (0.8, 2.8, 2.6), (vx, 0, z0 + 0.95), DK["base"]))
+        for j in range(5):
+            BP.append(S(f"MLVentFin{sx}{j}", (0.75, 3.0, 0.26), (vx + sx * 0.6, 0, z0 + 1.0 + j * 0.56), WH["dark"] if j % 2 else WH["base"]))
+        BP.append(N(S(f"MLVentGlow{sx}", (0.12, 2.0, 2.3), (vx + sx * 0.45, 0, z0 + 1.1), PU["light"], studs="none"), 3))
+    # muzzle brake: armoured ring + slots + neon lip
+    BP += [tube("MLMuzzle", ro + 0.8, ro + 0.8, 1.3, ro + 0.8 - ri, (0, 0, z1 - 0.3), WH["base"], sides=24),
+           tube("MLMuzzleBand", ro + 0.9, ro + 0.9, 0.35, 0.3, (0, 0, z1 - 0.3), PU["base"], sides=24),
+           N(tube("MLMuzzleGlow", ro + 0.85, ro + 0.85, 0.25, 0.35, (0, 0, z1 + 1.0), CY, sides=24), 3.5)]
+    for j in range(6):
+        sl = S(f"MLMuzzleSlot{j}", (0.7, 0.45, 0.14), (0, 0, 0), DK["base"], studs="none")
+        BP.append(xf([sl], radial(30 + 60 * j, ro + 0.79, z1 + 0.45, 90))[0])
     BP.append(C("MLThroat", ri, ri, 0.15, (0, 0, 2.2), "#120E2A", sides=24, studs="none"))
-    BP.append(N(tube("MLThroatGlow", ri, ri, 0.2, 0.22, (0, 0, 2.38), "#C45BFF", sides=24), 4))
-    # crystal core at the breech: cradle ring + clamps + faceted crystal + shards
-    BP += [C("MLBreech", ro + 0.3, ro + 0.3, 0.8, (0, 0, z0 - 0.8), NV["dark"], sides=24),
-           tube("MLCoreRing", 2.3, 2.3, 0.6, 0.5, (0, 0, z0 - 3.6), PU["base"], sides=20)]
+    BP.append(N(tube("MLThroatGlow", ri, ri, 0.22, 0.25, (0, 0, 2.38), "#C45BFF", sides=24), 3))
+    # crystal core at the breech: open cage (2 rings + 4 bars) holding a big faceted crystal
+    cz = z0 - 2.4
+    BP += [C("MLBreech", 2.9, 2.9, 0.7, (0, 0, z0 - 0.7), DK["base"], sides=8, rot=(0, 0, math.radians(22.5))),
+           tube("MLCageRingA", 2.7, 2.7, 0.5, 0.45, (0, 0, z0 - 1.1), PU["base"], sides=16),
+           tube("MLCageRingB", 2.5, 2.5, 0.5, 0.45, (0, 0, z0 - 4.2), PU["base"], sides=16),
+           C("MLCageEnd", 1.2, 1.2, 0.5, (0, 0, z0 - 4.6), DK["light"], sides=8)]
     for j in range(4):
         a = 45 + 90 * j
-        cx_, cy_ = polar(a, 1.9)
-        BP.append(beam(f"MLClamp{j}", (cx_ * 0.85, cy_ * 0.85, z0 - 0.8), (cx_, cy_, z0 - 3.3), 0.45, 0.45, WH["base"]))
-    crystal = B("MLCrystal", (1.35, 1.35, 2.3), (0, 0, z0 - 2.6), "#C45BFF", segments=6, rings=2, studs="none")
+        cx_, cy_ = polar(a, 2.45)
+        BP.append(beam(f"MLCageBar{j}", (cx_, cy_, z0 - 0.7), (cx_ * 0.92, cy_ * 0.92, z0 - 4.2), 0.42, 0.42, WH["base"]))
+        dx_, dy_ = polar(a, 0.9)
+        BP.append(beam(f"MLCageSpoke{j}", (cx_ * 0.92, cy_ * 0.92, z0 - 4.0), (dx_, dy_, z0 - 4.3), 0.3, 0.3, WH["dark"]))
+    crystal = B("MLCrystal", (1.7, 1.7, 1.9), (0, 0, cz), "#C45BFF", segments=6, rings=2, studs="none")
     crystal.data.polygons.foreach_set("use_smooth", [False] * len(crystal.data.polygons))
-    BP.append(N(crystal, 6))
+    BP.append(N(crystal, 4))
+    inner = B("MLCrystalHeart", (0.9, 0.9, 2.5), (0, 0, cz), "#F3C4FF", segments=4, rings=2, studs="none", rot=(0, 0, math.radians(30)))
+    inner.data.polygons.foreach_set("use_smooth", [False] * len(inner.data.polygons))
+    BP.append(N(inner, 5))
     for j in range(3):
-        a = 120 * j + 30
-        cx_, cy_ = polar(a, 1.1)
-        sh_ = B(f"MLShard{j}", (0.4, 0.4, 0.8), (cx_, cy_, z0 - 4.1), "#E8A6FF", segments=4, rings=2, studs="none",
-                rot=(math.radians(25), 0, math.radians(a)))
+        a = 120 * j + 90
+        cx_, cy_ = polar(a, 1.55)
+        sh_ = B(f"MLShard{j}", (0.45, 0.45, 0.9), (cx_, cy_, z0 - 4.0), "#E8A6FF", segments=4, rings=2, studs="none")
         sh_.data.polygons.foreach_set("use_smooth", [False] * len(sh_.data.polygons))
-        BP.append(N(sh_, 5))
-    # cables from vents to breech
+        BP.append(N(sh_, 4))
     for sx in (-1, 1):
-        BP.append(beam(f"MLCable{sx}", (sx * (ro + 0.4), 0.8, z0 + 0.3), (sx * 1.2, 1.4, z0 - 0.7), 0.35, 0.35, INK, kind="cyl", sides=8))
+        BP.append(beam(f"MLCable{sx}", (sx * 3.3, 1.0, z0 + 0.6), (sx * 2.3, 1.6, z0 - 0.9), 0.4, 0.4, INK, kind="cyl", sides=8))
     BM = barrel_matrix(pivot)
     xf(BP, BM)
     P += BP
-    att = {"Pivot": T(*pivot) @ Rx(TILT), "Seat": BM @ T(0, 0, 3.0) @ Rx(90), "Muzzle": BM @ T(0, 0, z1 + 1.0) @ Rx(90)}
+    att = {"Pivot": T(*pivot) @ Rx(TILT), "Seat": BM @ T(0, 0, 3.0) @ Rx(90), "Muzzle": BM @ T(0, 0, z1 + 1.2) @ Rx(90)}
     return name, P, att
 
 
 CANNONS = [party_popper, barrel_blaster, rocket_rig, mega_mortar, meteor_launcher]
+SCALE = {"Cannon3_RocketRig": 1.08}
+
+
+def build(fn):
+    name, P, att = fn()
+    k = SCALE.get(name, 1.0)
+    if k != 1.0:
+        vb.scale_group(P, k)
+        att = {n: T(*(M.to_translation() * k)) @ M.to_3x3().to_4x4() for n, M in att.items()}
+    return name, P, att
 
 
 # ================================================================================================
@@ -987,7 +1010,7 @@ def lineup(prev_dir, samples):
     xs = [-26.0, -14.0, -1.5, 11.5, 26.0]
     allm = []
     for i, fn in enumerate(CANNONS):
-        _, P, _ = fn()
+        _, P, _ = build(fn)
         P += mount_ring(f"Mount{i}")
         P.append(prism(f"Plaque{i}", [(-1.4, 0), (1.4, 0), (1.4, 1.0), (-1.4, 1.0)], 0.3, GOLD, plane="xz", loc=(0, 5.0, -0.4)))
         for k in range(i + 1):
@@ -1045,7 +1068,7 @@ def main():
         if opts["only"] and opts["only"] not in fn.__name__ and opts["only"] not in str(n):
             continue
         vb.reset_scene()
-        name, P, att = fn()
+        name, P, att = build(fn)
         entry, meshes = finish_model(name, P, opts["out"], "cannon", att)
         entries.append(entry)
         if opts["render"]:

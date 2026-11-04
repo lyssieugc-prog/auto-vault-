@@ -1,26 +1,5 @@
 [
   {
-    "name": "Cannon1_PartyPopper",
-    "file": "assets/export/props/Cannon1_PartyPopper.fbx",
-    "tris": 8468,
-    "meshes": {
-      "Cannon1_PartyPopper_Body": 8148,
-      "Cannon1_PartyPopper_Neon": 320
-    },
-    "parts": 126,
-    "kind": "cannon",
-    "size": [
-      9.99,
-      11.3,
-      12.44
-    ],
-    "attachments": [
-      "Muzzle",
-      "Pivot",
-      "Seat"
-    ]
-  },
-  {
     "name": "Cannon2_BarrelBlaster",
     "file": "assets/export/props/Cannon2_BarrelBlaster.fbx",
     "tris": 8680,
@@ -97,6 +76,27 @@
       8.3,
       19.97,
       17.03
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  },
+  {
+    "name": "Cannon1_PartyPopper",
+    "file": "assets/export/props/Cannon1_PartyPopper.fbx",
+    "tris": 7820,
+    "meshes": {
+      "Cannon1_PartyPopper_Body": 7500,
+      "Cannon1_PartyPopper_Neon": 320
+    },
+    "parts": 114,
+    "kind": "cannon",
+    "size": [
+      7.9,
+      10.34,
+      10.48
     ],
     "attachments": [
       "Muzzle",

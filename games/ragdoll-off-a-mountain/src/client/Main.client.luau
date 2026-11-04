@@ -5,8 +5,8 @@
 	Real UI = ScreenGuis built from the Figma file (figma/ui-spec.md) and bound here by layer NAME:
 	  HUD.Cash, HUD.Gems, HUD.LaunchButton, HUD.ChargeBar.Fill, HUD.LiftButton, HUD.Boosts,
 	  RunSummary (Bones, Cash, Combo, NewBest), Announcement.Text
-	If the HUD is missing (no Figma build imported yet) a clearly labelled DEV HUD is created so the
-	loop can be playtested. It is NOT the final UI and must never ship.
+	Screens come from src/shared/UIScreens.luau (also used in Edit mode so the owner sees every screen
+	without pressing Play — rule L-11). Figma restyle pending (benchmark screen first, lesson L-10).
 ]]
 
 local ContextActionService = game:GetService("ContextActionService")
@@ -29,79 +29,44 @@ local gui = player:WaitForChild("PlayerGui")
 local state = nil
 local CHARGE_SECONDS = 1.2
 
--- DEV HUD fallback (playtest only) ------------------------------------------------------------------
-
-local function devLabel(parent, name, text, pos, size)
-	local label = Instance.new("TextLabel")
-	label.Name = name
-	label.Text = text
-	label.Position = pos
-	label.Size = size
-	label.BackgroundColor3 = Color3.fromHex("#1E1B33")
-	label.TextColor3 = Color3.new(1, 1, 1)
-	label.Font = Enum.Font.FredokaOne
-	label.TextScaled = true
-	label.Parent = parent
-	return label
+-- Screens: the real ScreenGuis live in StarterGui (built in Edit mode by studio/build_edit_preview.luau,
+-- owner rule L-11). If a screen is missing (place not prepared yet) build it from the same module.
+local UIScreens = require(ReplicatedStorage.GameShared:WaitForChild("UIScreens"))
+for _, entry in UIScreens.order do
+	if not gui:FindFirstChild(entry[1]) then
+		(UIScreens :: any)[entry[2]](gui, Config)
+	end
+end
+-- runtime: only the HUD starts open; mock preview text is replaced by server state below
+for _, entry in UIScreens.order do
+	local screen = gui:FindFirstChild(entry[1])
+	if screen and screen:IsA("ScreenGui") then
+		screen.Enabled = entry[1] == "HUD"
+	end
 end
 
-local function devButton(parent, name, text, pos, size, color)
-	local button = Instance.new("TextButton")
-	button.Name = name
-	button.Text = text
-	button.Position = pos
-	button.Size = size
-	button.BackgroundColor3 = Color3.fromHex(color or "#7ADE43")
-	button.TextColor3 = Color3.new(1, 1, 1)
-	button.Font = Enum.Font.FredokaOne
-	button.TextScaled = true
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0.3, 0)
-	corner.Parent = button
-	button.Parent = parent
-	return button
+local function openScreen(name: string)
+	local screen = gui:FindFirstChild(name)
+	if screen and screen:IsA("ScreenGui") then
+		screen.Enabled = true
+		local win = screen:FindFirstChild("Window")
+		if win and win:IsA("GuiObject") then
+			UIAnim.popOpen(win)
+		end
+	end
 end
 
-local function buildDevHud(): ScreenGui
-	warn("[Client] HUD ScreenGui not found — building DEV HUD (playtest only, not the Figma UI)")
-	local screen = Instance.new("ScreenGui")
-	screen.Name = "HUD"
-	screen.ResetOnSpawn = false
-	screen:SetAttribute("DevFallback", true)
-	devLabel(
-		screen,
-		"DevBanner",
-		"DEV HUD — replace with Figma UI",
-		UDim2.fromScale(0.35, 0),
-		UDim2.fromScale(0.3, 0.04)
-	)
-	devLabel(screen, "Cash", "0", UDim2.fromScale(0.4, 0.05), UDim2.fromScale(0.2, 0.06))
-	devLabel(screen, "Gems", "0", UDim2.fromScale(0.62, 0.05), UDim2.fromScale(0.1, 0.06))
-	devButton(
-		screen,
-		"LaunchButton",
-		"HOLD TO LAUNCH",
-		UDim2.fromScale(0.4, 0.82),
-		UDim2.fromScale(0.2, 0.1),
-		"#FF8A1F"
-	)
-	local bar = devLabel(screen, "ChargeBar", "", UDim2.fromScale(0.4, 0.78), UDim2.fromScale(0.2, 0.03))
-	local fill = Instance.new("Frame")
-	fill.Name = "Fill"
-	fill.Size = UDim2.fromScale(0, 1)
-	fill.BackgroundColor3 = Color3.fromHex("#FFD93B")
-	fill.Parent = bar
-	devButton(screen, "LiftButton", "LIFT ⬆", UDim2.fromScale(0.02, 0.4), UDim2.fromScale(0.1, 0.07))
-	devButton(screen, "BuyCannonButton", "CANNON", UDim2.fromScale(0.02, 0.48), UDim2.fromScale(0.1, 0.07))
-	devButton(screen, "UnlockPeakButton", "PEAK", UDim2.fromScale(0.02, 0.56), UDim2.fromScale(0.1, 0.07))
-	devButton(screen, "HatchButton", "EGG", UDim2.fromScale(0.02, 0.64), UDim2.fromScale(0.1, 0.07))
-	devButton(screen, "DailyButton", "DAILY", UDim2.fromScale(0.02, 0.72), UDim2.fromScale(0.1, 0.07))
-	devLabel(screen, "Boosts", "", UDim2.fromScale(0.75, 0.05), UDim2.fromScale(0.23, 0.05))
-	screen.Parent = gui
-	return screen
+for _, entry in UIScreens.order do
+	local screen = gui:FindFirstChild(entry[1])
+	local close = screen and screen:FindFirstChild("CloseButton", true)
+	if close and close:IsA("GuiButton") then
+		MobileUI.onTap(close, function()
+			screen.Enabled = false
+		end)
+	end
 end
 
-local hud = gui:WaitForChild("HUD", 5) or buildDevHud()
+local hud = gui:WaitForChild("HUD")
 MobileUI.applySafeArea(hud)
 MobileUI.scaleForDevice(hud)
 for _, d in hud:GetDescendants() do
@@ -213,8 +178,10 @@ end
 Remotes:WaitForChild("BonePop").OnClientEvent:Connect(bonePop)
 
 Remotes:WaitForChild("RunSummary").OnClientEvent:Connect(function(summary)
-	local panel = gui:FindFirstChild("RunSummary", true)
-	if panel and panel:IsA("GuiObject") then
+	local summaryGui = gui:FindFirstChild("RunSummary")
+	local panel = summaryGui and summaryGui:FindFirstChild("Window")
+	if summaryGui and summaryGui:IsA("ScreenGui") and panel and panel:IsA("GuiObject") then
+		summaryGui.Enabled = true
 		local function set(name, text)
 			local label = panel:FindFirstChild(name, true)
 			if label and label:IsA("TextLabel") then
@@ -225,10 +192,9 @@ Remotes:WaitForChild("RunSummary").OnClientEvent:Connect(function(summary)
 		set("Cash", "+$" .. Format.abbreviate(summary.earned))
 		set("Combo", string.format("x%.1f", summary.bestCombo))
 		set("NewBest", if summary.newBest then "NEW BEST!" else "")
-		panel.Visible = true
 		UIAnim.popOpen(panel)
 		task.delay(3, function()
-			UIAnim.close(panel)
+			summaryGui.Enabled = false
 		end)
 	else
 		UIAnim.numberPop(hud, string.format("%d/206 BONES  +$%s", summary.bones, Format.abbreviate(summary.earned)))
@@ -240,14 +206,15 @@ Remotes:WaitForChild("RunSummary").OnClientEvent:Connect(function(summary)
 end)
 
 Remotes:WaitForChild("Announcement").OnClientEvent:Connect(function(text)
-	local banner = gui:FindFirstChild("Announcement", true)
-	local label = banner and banner:FindFirstChild("Text", true)
-	if label and label:IsA("TextLabel") then
+	local announcement = gui:FindFirstChild("Announcement")
+	local banner = announcement and announcement:FindFirstChild("Banner")
+	local label = banner and banner:FindFirstChild("Text")
+	if announcement and announcement:IsA("ScreenGui") and label and label:IsA("TextLabel") then
 		label.Text = text
-		banner.Visible = true
+		announcement.Enabled = true
 		UIAnim.popOpen(banner)
 		task.delay(4, function()
-			UIAnim.close(banner)
+			announcement.Enabled = false
 		end)
 	else
 		UIAnim.numberPop(hud, text, Color3.fromHex("#B678EA"))
@@ -346,16 +313,45 @@ local function bindTap(name: string, callback: () -> ())
 	end
 end
 
+for buttonName, screenName in {
+	ShopButton = "Shop",
+	PetsButton = "Pets",
+	IndexButton = "EggHatch",
+	UpgradesButton = "CannonShop",
+	RewardsButton = "DailyRewards",
+	SeasonButton = "Season1Pass",
+	X2CashButton = "Shop",
+} do
+	bindTap(buttonName, function()
+		openScreen(screenName)
+	end)
+end
+
 bindTap("LiftButton", function()
 	Remotes.Lift:InvokeServer(nil)
 end)
-bindTap("BuyCannonButton", function()
+local function bindIn(screenName: string, buttonName: string, callback: () -> ())
+	local screen = gui:FindFirstChild(screenName)
+	local button = screen and screen:FindFirstChild(buttonName, true)
+	if button and button:IsA("GuiButton") then
+		MobileUI.onTap(button, callback)
+	end
+end
+bindIn("CannonShop", "BuyButton", function()
 	Remotes.BuyCannon:InvokeServer()
 end)
-bindTap("UnlockPeakButton", function()
-	Remotes.UnlockPeak:InvokeServer()
+bindIn("Rebirth", "ConfirmButton", function()
+	Remotes.Rebirth:InvokeServer()
 end)
-bindTap("HatchButton", function()
+bindIn("Codes", "RedeemButton", function()
+	local box = gui.Codes:FindFirstChild("CodeBox", true)
+	local response = Remotes.RedeemCode:InvokeServer(box and box.Text or "")
+	local result = gui.Codes:FindFirstChild("Result", true)
+	if result and result:IsA("TextLabel") then
+		result.Text = if response and response.result then "REDEEMED!" else string.upper(tostring(response and response.error))
+	end
+end)
+bindIn("EggHatch", "HatchButton", function()
 	local response = Remotes.Hatch:InvokeServer("Trailhead")
 	local result = response and response.result
 	if result then
@@ -363,9 +359,21 @@ bindTap("HatchButton", function()
 		Remotes.Equip:InvokeServer(result.uid)
 	end
 end)
-bindTap("DailyButton", function()
+bindIn("DailyRewards", "ClaimButton", function()
 	Remotes.ClaimDaily:InvokeServer()
 end)
+local questsGui = gui:FindFirstChild("Quests")
+if questsGui then
+	for _, quest in Config.periodicQuests.quests do
+		local row = questsGui:FindFirstChild(quest.id, true)
+		local claim = row and row:FindFirstChild("ClaimButton", true)
+		if claim and claim:IsA("GuiButton") then
+			MobileUI.onTap(claim, function()
+				Remotes.ClaimQuest:InvokeServer(quest.id)
+			end)
+		end
+	end
+end
 
 -- live boost countdowns
 task.spawn(function()

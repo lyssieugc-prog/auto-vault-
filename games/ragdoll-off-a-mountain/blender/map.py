@@ -26,8 +26,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 sys.path[:0] = [os.path.join(ROOT, "blender", "lib")]
 
+import bpy  # noqa: E402  (bpy must load before bmesh)
 import bmesh  # noqa: E402
-import bpy  # noqa: E402
 
 import vault_blocky as vb  # noqa: E402
 import vault_kit as kit  # noqa: E402
@@ -198,7 +198,8 @@ GLYPH = {
     "K": ["101", "101", "110", "101", "101"], "A": ["010", "101", "111", "101", "101"],
     "H": ["101", "101", "111", "101", "101"], "G": ["111", "100", "101", "101", "111"],
     "S": ["111", "100", "111", "001", "111"], "!": ["1", "1", "1", "0", "1"], " ": ["00", "00", "00", "00", "00"],
-    "^": ["010", "111", "101", "000", "000"], "+": ["000", "010", "111", "010", "000"],
+    "^": ["010", "111", "101", "000", "000"], "Y": ["101", "101", "010", "010", "010"],
+    "$": ["011", "110", "111", "011", "110"], "+": ["000", "010", "111", "010", "000"],
 }
 
 
@@ -233,15 +234,16 @@ def pixtext(p, s, x, y, z, px, col, face="-y", depth=0.3, em=0.0):
     return out
 
 
-def sign_board(p, x, y, z, w, h, board, frame, text=None, tcol=NAVY, px=0.5, face="-y", posts=2, post_col=WOOD_D):
+def sign_board(p, x, y, z, w, h, board, frame, text=None, tcol=NAVY, px=0.5, face="-y", posts=2, post_col=WOOD_D,
+               lift=1.4):
     """Post-mounted board with a raised frame and block text; front faces `face`."""
     sgn = -1 if face == "-y" else 1
     if posts == 2:
         for dx in (-w / 2 + 0.6, w / 2 - 0.6):
-            S(p + "Post", (0.7, 0.7, z + h + 0.4 - z), (x + dx, y - sgn * 0.6, z), post_col)
+            S(p + "Post", (0.7, 0.7, lift + h + 0.4), (x + dx, y - sgn * 0.6, z), post_col)
     elif posts == 1:
-        S(p + "Post", (0.8, 0.8, h + 0.6), (x, y - sgn * 0.6, z), post_col)
-    bz = z + (0.0 if posts == 0 else 0.0)
+        S(p + "Post", (0.8, 0.8, lift + h + 0.6), (x, y - sgn * 0.6, z), post_col)
+    bz = z + (lift if posts else 0.0)
     S(p + "Board", (w, 0.5, h), (x, y, bz), board)
     S(p + "FrameT", (w + 0.5, 0.7, 0.4), (x, y, bz + h), frame)
     S(p + "FrameB", (w + 0.5, 0.7, 0.4), (x, y, bz - 0.4), frame)
@@ -620,6 +622,13 @@ def biome_ledge(pk, s, fx, gx, ty, rnd, i):
             R("Drift", (4.5, 2.8, 1.0), (gx, ty, z - 0.1), LAVSNOW if storm else SNOW, radius=0.4)
 
 
+def axis_offset(rot, L):
+    from mathutils import Euler, Vector
+
+    v = Euler(rot, "XYZ").to_matrix() @ Vector((0, 0, L))
+    return v.x, v.y, v.z
+
+
 def crystal_cluster(p, x, y, z, rnd, big=False):
     out = []
     k = 1.4 if big else 1.0
@@ -631,11 +640,8 @@ def crystal_cluster(p, x, y, z, rnd, big=False):
         rot = (math.radians(tilt), math.radians(-tilt * 0.7), rnd.uniform(0, 1))
         out.append(C(p + "Prism", r, r * 0.92, h * 0.72, (x + dx, y + dy, z - 0.2), col, sides=6, rot=rot))
         # pointed tip sits on the prism (same rotation, offset along the tilted axis)
-        ax = rot[0]
-        ay = rot[1]
-        ox = h * 0.72 * math.sin(ay)
-        oy = -h * 0.72 * math.sin(ax)
-        out.append(C(p + "Tip", r * 0.92, 0.08, h * 0.32, (x + dx + ox, y + dy + oy, z - 0.2 + h * 0.72 * math.cos(ax) * math.cos(ay)),
+        o = axis_offset(rot, h * 0.72 - 0.02)
+        out.append(C(p + "Tip", r * 0.92, 0.08, h * 0.32, (x + dx + o[0], y + dy + o[1], z - 0.2 + o[2]),
                      CRYSTAL_L if j != 2 else CRYSTAL, sides=6, rot=rot))
     out.append(S(p + "Base", (3.6 * k, 3.0 * k, 0.7), (x, y, z - 0.1), SLATE_D, bevel=0.1))
     return out
@@ -648,7 +654,7 @@ def flank_tiers(pk, yface, ylast, rnd):
     px, pz = pk["x"], pk["z"]
     xl, xr = pk["dom"]
     for sgn in (-1, 1):
-        edge = px + sgn * (CH_HW - 1.0)
+        edge = px + sgn * (CH_HW - 3.0)
         bound = xl if sgn < 0 else xr
         outer = (pk["n"] == 1 and sgn < 0) or (pk["n"] == 5 and sgn > 0)
         x = edge
@@ -784,12 +790,11 @@ def launch_pad(pk, ylip, rnd):
     for k in range(3):
         S("Flag", (2.2, 0.3, 4.2), (fx + 1.3 + k * 2.2, fy + (0.25 if k % 2 else 0), top + 11.0 - k * 0.3), pk["flag"], bevel=0.05,
           rot=(0, 0, math.radians(8 if k % 2 else -8)))
-    pixtext("FlagNum", str(n), fx + 3.5, fy - 0.2, top + 11.6, 0.55, WHITE)
+    pixtext("FlagNum", str(n), fx + 3.5, fy - 0.15, top + 11.6, 0.55, WHITE)
     # height sign (front-right) — "<height>" + up arrow
-    sign_board("HSign", px + 11.0, ylip + 2.6, top, 9.0, 4.2, CREAM, acc, text=f"{int(pz)}", px=0.6)
-    pixtext("HArrow", "^", px + 11.0, ylip + 2.3, top + 4.9, 0.5, acc)
+    sign_board("HSign", px + 11.0, ylip + 2.6, top, 9.0, 4.0, CREAM, acc, text=f"^{int(pz)}", px=0.5, lift=1.0)
     # cannon mount ring (Ø 9.2) + bolts + aim chevrons
-    cy = ylip + 8.0
+    cy = ylip + 9.5
     RING("MountRing", 3.4, 4.6, 0.55, (px, cy, top - 0.05), STEEL, sides=20)
     C("MountDisc", 3.45, 3.45, 0.35, (px, cy, top - 0.05), STEEL_D, sides=20)
     for k in range(8):
@@ -797,9 +802,8 @@ def launch_pad(pk, ylip, rnd):
         C("Bolt", 0.28, 0.28, 0.3, (px + math.cos(a) * 4.0, cy + math.sin(a) * 4.0, top + 0.5), GOLD, sides=6)
     RING("MountGlow", 4.7, 5.1, 0.15, (px, cy, top - 0.05), N_ORANGE, sides=20, em=3, studs="none")
     for k in range(2):  # chevrons pointing down the fall line (-y)
-        yy = ylip + 3.2 - k * 0.0 + 0.0
         for sx in (-1, 1):
-            S("AimChev", (3.0, 0.7, 0.12), (px + sx * 1.0, yy + 1.6 * k + 0.6, top), ORANGE, bevel=0.03,
+            S("AimChev", (3.0, 0.7, 0.12), (px + sx * 1.1, ylip + 2.3 + 1.5 * k, top), ORANGE, bevel=0.03,
               rot=(0, 0, math.radians(sx * -35)))
     mark(f"Peak{n}Pad", (px, ylip + D / 2, top), 180.0, (30, 24, 0), peak=pk["name"], launchLipY=round(ylip, 2))
     mark(f"CannonMount{n}", (px, cy, top), 180.0, (9.2, 9.2, 0))
@@ -818,7 +822,7 @@ def launch_pad(pk, ylip, rnd):
     S("GateBeamTrim", (23.6, 3.6, 0.6), (px, gy, dz + 13.0), acc)
     S("GateKey", (8.0, 3.6, 2.4), (px, gy, dz + 16.4), acc)
     S("GateKeyTop", (5.0, 3.2, 1.4), (px, gy, dz + 18.8), b["body"][2])
-    pixtext("GateNum", str(n), px, gy - 1.85, dz + 16.6, 0.4, WHITE)
+    pixtext("GateNum", str(n), px, gy - 1.8, dz + 16.6, 0.4, WHITE)
     # hanging lock sign (+ price plate). Peak 1 is free: open green lock.
     lock_col = GRASS if n == 1 else GOLD
     for sx in (-1, 1):
@@ -918,9 +922,10 @@ def summit(pk, px, y0, pz, rnd):
             cx, cy = px + math.cos(a) * ring_r, y0 + 16 + math.sin(a) * ring_r * 0.8
             tilt = math.radians(14)
             rot = (-math.sin(a) * tilt, math.cos(a) * tilt, a)
+            rot = (math.sin(a) * -tilt, math.cos(a) * tilt, 0.0)
             C("CrownPrism", 2.6, 2.4, h, (cx, cy, pz + 35), (CRYSTAL, CRYSTAL_D, CRYSTAL_L)[k % 3], sides=6, rot=rot)
-            C("CrownTip", 2.4, 0.15, 5.5, (cx + math.cos(a) * h * math.sin(tilt), cy + math.sin(a) * h * math.sin(tilt) * 0.8,
-                                         pz + 35 + h * math.cos(tilt)), CRYSTAL_L, sides=6, rot=rot)
+            o = axis_offset(rot, h - 0.05)
+            C("CrownTip", 2.4, 0.15, 5.5, (cx + o[0], cy + o[1], pz + 35 + o[2]), CRYSTAL_L, sides=6, rot=rot)
         C("CrownHeart", 4.0, 0.3, 26, (px, y0 + 16, pz + 35), CRYSTAL_L, sides=6)
         for k in range(3):
             a = math.pi * (0.25 + 0.75 * k)
@@ -1015,9 +1020,16 @@ def build_mountain(seed=11):
         rnd = random.Random(seed + pk["n"] * 101)
         steps = gen_face(pk, rnd)
         faces[pk["n"]] = (steps, face_fn(steps))
-    S_base = None
     chunk("Map_Peak1")
-    S_base = SPAN("MountainFloor", -292, 302, 104, 1000, -3.0, -0.2, STONE_D, bevel=0.2)
+    SPAN("MountainFloor", -292, 302, 104, 1000, -3.0, -0.8, DIRT_D, bevel=0.2)
+    SPAN("MountainFloorTurf", -292, 302, 104, 1000, -0.8, -0.2, GRASS_D, bevel=0.2)
+    frnd = random.Random(seed + 5)
+    for k in range(16):  # foothill pine wood west of Pebble Hill
+        x, y = frnd.uniform(-284, -222), frnd.uniform(116, 236)
+        pine("FootPine", x, y, -0.2, frnd.uniform(11, 16), frnd) if k % 3 else round_tree("FootTree", x, y, -0.2, 11, frnd)
+    for k in range(5):
+        rock_cluster("FootRock", frnd.uniform(-280, -225), frnd.uniform(118, 230), -0.2, frnd.uniform(2.5, 4), (STONE, STONE_L, STONE_D),
+                     frnd, cap=GRASS_L)
     for i, pk in enumerate(PEAKS):
         chunk(f"Map_Peak{pk['n']}")
         rnd = random.Random(seed + pk["n"] * 7)
@@ -1052,7 +1064,7 @@ GX0, GX1, GY0, GY1 = -290.0, 300.0, -280.0, 110.0
 def rim_edge(x):
     for bx, by in BASES:
         if abs(x - bx) <= 40:
-            return math.floor((by + 26) / CELL) * CELL + CELL
+            return math.floor((by + 26) / CELL) * CELL
     return -170.0
 
 
@@ -1082,6 +1094,7 @@ def vh(x, y):
 
 def valley_ground():
     chunk("Map_BoneZone")
+    srnd = random.Random(42)
     nx, ny = int((GX1 - GX0) / CELL), int((GY1 - GY0) / CELL)
     hx, hy = HUB
 
@@ -1129,6 +1142,12 @@ def valley_ground():
                                 L = (x1 - x0) if horiz else CELL
                                 S("TerrLip", (L + 0.3, 0.6, 0.3) if horiz else (0.6, L + 0.3, 0.3),
                                   (ex, ey, h - 0.9), GRASS_D, bevel=0.04)
+                                if srnd.random() < 0.45 and h - 0.9 > 0.8:
+                                    st = srnd.uniform(0.9, 1.5)
+                                    ox = srnd.uniform(-L / 2 + 1, L / 2 - 1)
+                                    R("CliffStone", (st * 1.3, st, min(st, h - 1.0)),
+                                      (ex + (ox if horiz else 0), ey + (0 if horiz else ox), max(-0.1, (h - 1.0) * 0.2)),
+                                      STONE if srnd.random() < 0.5 else STONE_D, radius=0.15)
             i = k + 1
 
 
@@ -1330,8 +1349,14 @@ def paths(rnd):
     lines.append([(-196, 14), (-120, 14), (-60, 16), (-24, 16)])
     lines.append([(24, 16), (60, 16), (120, 14), (196, 14)])
     tiles = kit.path_network(lines, tile=6.6, step=7.6, colors=(CREAM, "#E8D9AE"), rnd=rnd, edge=STONE_D)
+    keep = []
     for o in tiles:
+        if STREAM_X0 - 4 < o.location.x < STREAM_X1 + 4 and o.location.y > -30:
+            bpy.data.objects.remove(o, do_unlink=True)
+            continue
         o.name = nm(o.name)
+        keep.append(o)
+    tiles = keep
     reg(tiles)
     follow_ground(tiles)
     # chevrons along the road (pointing toward the hub / lift)
@@ -1405,7 +1430,7 @@ def hay_heap(x, y, rnd):
     for k in range(14):
         S("Straw", (rnd.uniform(1, 2.2), 0.2, 0.2), (x + rnd.uniform(-20, 20), y + rnd.uniform(-15, 6), 0.02), HAY,
           bevel=0.02, rot=(0, 0, rnd.uniform(0, 3)))
-    sign_board("HaySign", x + 20, y - 14, 0, 7, 2.6, CREAM, GOLD, text="+$", px=0.42)
+    sign_board("HaySign", x + 20, y - 14, 0, 8, 2.8, CREAM, GOLD, text="HAY", px=0.42)
 
 
 def trampoline(x, y, r, mat=BLUE):
@@ -1479,12 +1504,6 @@ def landing(rnd):
     S("BZRimB", (31.0, 1.2, 0.6), (bx, by, 13.4), ORANGE)
     pixtext("BZTxt", "BONE ZONE", bx, by - 0.5, 15.2, 0.52, CREAM)
     mark("LandingZone", (0, 62, 20), 0.0, (440, 96, 44), kind="trigger")
-    # score posts between catch areas (purposeful: distance markers along the foot)
-    for k, x in enumerate((-120, -40, 40, 120)):
-        if x == -40:
-            continue
-        sign_board("FootSign", x, 92, 0, 6.0, 2.6, CREAM, (GOLD, PINE_L, ICE_D, ORANGE)[k], text=f"P{k + 1 if x < 0 else k + 2}",
-                   px=0.4) if False else None
     first_aid(-120, 30, rnd, face=1)
     first_aid(122, 30, rnd, face=1)
 
@@ -1544,6 +1563,17 @@ def bone(p, x, y, z, k=1.0, col=CREAM):
             B(p + "Knob", (0.75 * k, 0.6 * k, 0.75 * k), (x + sx * 2.1 * k, y, z + 4.5 * k + sz * 0.55 * k), col, seg=10, rings=6)
 
 
+def lifted(dz, fn, *a, **k):
+    """Run a builder, then raise everything it made by dz (terrace tops)."""
+    n0 = len(CH[CUR[0]])
+    fn(*a, **k)
+    new = CH[CUR[0]][n0:]
+    for o in new:
+        o.location.z += dz
+    vb.restud(new)
+    return new
+
+
 def vignettes(rnd):
     chunk("Map_BoneZone")
     # west meadow terrace (top z=3): picnic spot + rock garden + trees + bench lookout
@@ -1555,7 +1585,7 @@ def vignettes(rnd):
         round_tree("MeadowTree", x, y, vh(x, y), h, rnd, leaf=GRASS, fruit=RED if h > 11 else None)
     reg(kit.signpost(nm("Sign"), (-108, -86), z=0.0, arrows=((ORANGE, 0), (TEAL, 120), (GOLD, -110))))
     # east first-aid terrace (top z=3): main aid camp + flower beds + trees
-    first_aid(165, -90, rnd)
+    lifted(3.0, first_aid, 165, -90, rnd)
     reg(kit.rock_garden(nm("RockG"), (185, -112), z=3.0, rnd=rnd))
     for (x, y, h) in ((195, -70, 12), (140, -66, 11), (200, -128, 10), (126, -120, 12)):
         round_tree("EastTree", x, y, vh(x, y), h, rnd, leaf=GRASS_D if h == 12 else GRASS)
@@ -1654,7 +1684,6 @@ def build(seed=11):
     rnd = random.Random(seed)
     build_mountain(seed)
     valley_ground()
-    terrace_stones(rnd)
     hub(rnd)
     lift_plaza(rnd)
     paths(rnd)
