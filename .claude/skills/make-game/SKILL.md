@@ -38,6 +38,13 @@ Write `games/<slug>/plan.md` from `blueprints/dev-plan-template.md`. Choose syst
 module with tests if it is generic, else in `games/<slug>/src`).
 
 ## 5. Assets (Blender — ALL custom models/maps)
+- **Originality:** design ORIGINAL assets for THIS game with the shared modeling language
+  (`style-guides/3D_STYLE_BIBLE.md` ★). Never reuse calibration-sample objects
+  (`blender/templates/test_collection.py`) or copy reference objects/compositions. Build with the
+  technique toolkit `blender/lib/vault_kit.py` (+ `vault_blocky.py`).
+- **Quality gate:** for every major asset run the professional-asset review (bible §13) and write
+  in `games/<slug>/assets/review.md`: "Pro simulator asset or generic procedural block model?" +
+  the fixes made. Detail must make sense for the subject (no frog spikes).
 - Write `games/<slug>/blender/handoff.md` for hero/collectible assets.
 - Copy + adapt `blender/templates/*.py` into `games/<slug>/blender/`; run them (Blender MCP if
   connected, else `bpy`/CLI) → `games/<slug>/assets/export/`.

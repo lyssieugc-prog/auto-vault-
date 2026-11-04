@@ -1,4 +1,7 @@
 """
+CALIBRATION SAMPLE — demonstrates modeling techniques only. NEVER reuse these objects, layout or
+composition in a game; every game designs ORIGINAL assets with blender/lib/vault_kit.py.
+
 Style test collection v4 (style-guides/3D_STYLE_BIBLE.md — DRAFT until the owner approves).
 
 Owner feedback applied:
@@ -22,6 +25,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "lib"))
 import vault_blocky as vb  # noqa: E402
+import vault_kit as kit  # noqa: E402
 
 C = {
     "leaf": "#4CC24A", "leaf_dark": "#2E9A3E", "leaf_light": "#86E05A",
@@ -65,17 +69,7 @@ def tree():
         vb.cyl("BranchA", 0.35, 0.25, 2.6, (0.3, 0.1, 4.4), C["bark"], sides=8, rot=(0, math.radians(40), 0)),
         vb.cyl("BranchB", 0.32, 0.22, 2.2, (-0.3, -0.1, 5.0), C["bark_dark"], sides=8, rot=(math.radians(-15), math.radians(-38), 0)),
     ]
-    clumps = (
-        (0, 0, 7.0, 4.4, "leaf"), (2.6, 0.6, 6.6, 3.4, "leaf_dark"), (-2.5, -0.4, 7.0, 3.4, "leaf"),
-        (0.4, 2.5, 6.8, 3.2, "leaf_dark"), (-0.3, -2.5, 6.9, 3.0, "leaf"), (1.2, 0.8, 9.6, 3.4, "leaf_light"),
-        (-1.4, -0.6, 9.4, 3.0, "leaf"), (2.9, -1.9, 8.6, 2.4, "leaf_light"), (-2.6, 2.0, 8.4, 2.4, "leaf_light"),
-        (0.1, 0.0, 11.6, 2.4, "leaf_light"), (3.6, 1.8, 5.8, 1.8, "leaf"), (-3.4, -2.2, 6.2, 1.8, "leaf_dark"),
-    )
-    for i, (x, y, z, s, col) in enumerate(clumps):
-        rot = (math.radians(rnd.uniform(-8, 8)), math.radians(rnd.uniform(-8, 8)), math.radians(rnd.uniform(-20, 20)))
-        P.append(vb.rounded(f"Leaves{i}", (s, s, s * 0.85), (x, y, z), C[col], radius=s * 0.16, rot=rot))
-    for i, (x, y, z) in enumerate(((3.9, -0.6, 7.6), (-3.2, 2.6, 7.8), (1.8, -3.0, 8.2))):
-        P.append(vb.ball(f"Fruit{i}", (0.4, 0.4, 0.4), (x, y, z), "#FF4D4D", segments=10, rings=6))
+    P += kit.canopy("Tree", (0, 0, 6.0), radius=4.6, height=5.5, clusters=14, leaf="#4CC24A", rnd=rnd, fruit="#FF4D4D")
     return P
 
 
@@ -362,21 +356,26 @@ def frappo():
     feat("Mouth", (3.0, 0.16, 0.9), 0.2, 4.95, "#141414", rot=(0, math.radians(-6), 0))  # open smirk
     feat("Tongue", (1.3, 0.14, 0.42), -0.2, 5.0, "#FF6F9B", dy=0.06)
     feat("Emblem", (0.7, 0.12, 0.7), 0.0, 2.75, G)  # leaf logo on the cup sleeve
-    # spike ridge over the top/back of the head (standard 6: spikes)
+    # frog-appropriate detail (owner: no spikes on a frog): warts, framed eye domes, throat pouch,
+    # lily-pad hat with a flower — 2 darker skin shades for intentional colour variation
     hc, hr = (0.0, 0.125, 6.625), (2.75, 2.125, 2.0)
-    for i in range(6):
-        t = 0.25 + i * 0.24
-        y, z = hc[1] - hr[1] * 1.0 * math.sin(t), hc[2] + hr[2] * 1.0 * math.cos(t)
-        P.append(vb.cyl(f"Spike{i}", 0.55 - i * 0.04, 0.03, 1.4 - i * 0.08, (0, y, z), "#2F9A22" if i % 2 else "#FFC21A",
-                        sides=6, rot=(t, 0, 0)))
-    # scale plates on the head sides (standard 6: scales)
-    for sx in (-1, 1):
-        for yy in (-0.9, -0.3, 0.3):
-            for zz in (6.0, 6.6, 7.2):
-                u = 1 - ((yy - hc[1]) / hr[1]) ** 2 - ((zz - hc[2]) / hr[2]) ** 2
-                xx = sx * (hr[0] * math.sqrt(max(u, 0.0)) + 0.12)
-                P.append(vb.rounded(f"Scale{sx}_{yy}_{zz}", (0.2, 0.5, 0.45), (xx, yy, zz - 0.22), "#3AAE2C", radius=0.08,
-                                    rot=(0, 0, math.radians(sx * 8))))
+    sk = kit.shades("#4FD13A")
+    warts = ((130, 35, 0.40), (160, 55, 0.30), (195, 40, 0.38), (225, 60, 0.26), (250, 30, 0.34), (110, 62, 0.24),
+             (175, 20, 0.30), (205, 15, 0.26), (75, 55, 0.22), (285, 55, 0.22), (145, 10, 0.24), (240, 10, 0.28))
+    for i, (az, el, r) in enumerate(warts):
+        az, el = math.radians(az), math.radians(el)
+        pos = (hc[0] + hr[0] * math.cos(el) * math.sin(az), hc[1] + hr[1] * math.cos(el) * math.cos(az),
+               hc[2] + hr[2] * math.sin(el))
+        P.append(vb.ball(f"Detail_Wart{i}", (r, r, r * 0.8), pos, sk["dark"] if i % 3 else sk["deep"], segments=10, rings=6))
+    for sx, side in ((-1, "L"), (1, "R")):
+        o = feat(f"Detail_EyeRim{side}", (2.1, 0.12, 2.0), sx * 1.25, 7.3, sk["dark"], dy=-0.06)
+        o["vault_face"] = False
+    P.append(vb.ball("Detail_Pouch", (1.5, 0.8, 0.6), (0.0, 1.55, 4.55), "#D8F7A8", segments=14, rings=8))
+    P.append(vb.cyl("Detail_LilyPad", 1.55, 1.55, 0.16, (0.0, -0.9, 8.3), sk["deep"], sides=18, rot=(math.radians(-14), 0, 0)))
+    P.append(vb.cyl("Detail_LilyVein", 1.2, 1.2, 0.04, (0.0, -0.87, 8.46), sk["base"], sides=18, rot=(math.radians(-14), 0, 0)))
+    P.append(vb.solid("Detail_HatStem", (0.14, 0.14, 0.5), (0.7, -1.0, 8.5), sk["dark"], bevel=0.02))
+    P.append(vb.rounded("Detail_HatBloom", (0.7, 0.7, 0.4), (0.7, -1.0, 8.95), "#FF8FC8", radius=0.12, rot=(0, 0, 0.6)))
+    P.append(vb.ball("Detail_HatBloomCore", (0.18, 0.18, 0.12), (0.7, -1.0, 9.38), "#FFD93B", segments=8, rings=5))
     # layered body bands on the cup + lid rim (standard 6: layered body parts)
     P.append(vb.cyl("BandLow", 1.66, 1.7, 0.3, (0, 0, 1.85), "#FFD93B", sides=20))
     P.append(vb.cyl("BandHigh", 1.78, 1.82, 0.25, (0, 0, 4.1), "#FF6FAE", sides=20))
@@ -448,29 +447,13 @@ def terrain_height(x, y):
 
 
 def terrain():
-    P = []
     gx0, gx1, gy0, gy1 = GROUND
-    P.append(vb.solid("Baseplate", (gx1 - gx0, gy1 - gy0, 1.0), ((gx0 + gx1) / 2, (gy0 + gy1) / 2, -1.0), C["ground"], bevel=0.0))
-    for i, (x0, x1, y0, y1, h) in enumerate(TERRACES):  # layered: dirt/stone body + grass cap
-        P.append(vb.solid(f"TerraceBody{i}", (x1 - x0, y1 - y0, h - 0.6), ((x0 + x1) / 2, (y0 + y1) / 2, 0), "#9A6B45", bevel=0.05))
-        P.append(vb.solid(f"TerraceCap{i}", (x1 - x0 + 0.3, y1 - y0 + 0.3, 0.6), ((x0 + x1) / 2, (y0 + y1) / 2, h - 0.6),
-                          "#5BCB3F", bevel=0.06))
-    rnd = random.Random(5)
-    for li, line in enumerate(PATHS):  # stone path tiles (two tones, slight jitter)
-        for si in range(len(line) - 1):
-            (ax, ay), (bx, by) = line[si], line[si + 1]
-            n = max(1, int(math.hypot(bx - ax, by - ay) / 3.2))
-            for k in range(0 if (si == 0 and li == 0) else 1, n + 1):  # skip shared tiles (no coplanar overlap)
-                t = k / n
-                x, y = ax + (bx - ax) * t, ay + (by - ay) * t
-                P.append(vb.solid(f"PathTile{li}_{si}_{k}", (2.9, 2.9, 0.25), (x, y, 0), "#E4D3A8" if (k + si) % 2 else "#D2BE8E",
-                                  bevel=0.05, rot=(0, 0, math.radians(rnd.uniform(-6, 6)))))
-    for i in range(4):  # lamp posts along the main path
-        x, y = -8 + (3.6 if i % 2 else -3.6), 40 - i * 11
-        P.append(vb.cyl(f"LampPost{i}", 0.28, 0.22, 4.2, (x, y, 0), "#2E3440", sides=8))
-        P.append(vb.rounded(f"LampHead{i}", (0.9, 0.9, 0.9), (x, y, 4.2), "#2E3440", radius=0.1))
-        P.append(vb.ball(f"LampGlow{i}", (0.34, 0.34, 0.34), (x, y, 4.65), C["light"], segments=10, rings=6, emission=5))
-    for side in (-1, 1):  # picket fence at the entrance
+    P = [vb.solid("Baseplate", (gx1 - gx0, gy1 - gy0, 1.0), ((gx0 + gx1) / 2, (gy0 + gy1) / 2, -1.0), C["ground"], bevel=0.0)]
+    P += kit.terrace_field(TERRACES, rnd=random.Random(5))
+    P += kit.path_network(PATHS, rnd=random.Random(6))
+    for i in range(4):
+        P += kit.lamp_post(f"Lamp{i}_", (-8 + (3.6 if i % 2 else -3.6), 40 - i * 11))
+    for side in (-1, 1):  # picket fence framing the entrance
         for i in range(7):
             P.append(vb.solid(f"Picket{side}_{i}", (0.35, 0.35, 1.6), (-8 + side * 2.6, 44 - i * 1.4, 0), "#FFFFFF", bevel=0.05))
         P.append(vb.solid(f"Rail{side}", (0.2, 9.0, 0.25), (-8 + side * 2.6, 39.8, 0.9), "#FFFFFF", bevel=0.03))
@@ -478,43 +461,51 @@ def terrain():
 
 
 def decorations():
-    """Dense themed decoration (standard 7), avoiding paths + gameplay footprints."""
+    """Purposeful vignettes (owner: no repetitive procedural-looking decoration). Each one is a
+    placed story beat made of >= 3 different pieces. Prefix Deco_<Vignette>_ for the QA gates."""
     rnd = random.Random(21)
     P = []
-    gx0, gx1, gy0, gy1 = GROUND
-    flowers = ("#FF5FA2", "#FFD93B", "#FF9F1C", "#B678EA", "#FFFFFF")
-    placed, tries = 0, 0
-    while placed < 190 and tries < 4000:
-        tries += 1
-        x, y = rnd.uniform(gx0 + 2, gx1 - 2), rnd.uniform(gy0 + 2, gy1 - 2)
-        if path_dist(x, y) < 3.5 or any(x0 <= x <= x1 and y0 <= y <= y1 for x0, x1, y0, y1 in KEEP_CLEAR):
-            continue
-        z = terrain_height(x, y)
-        kind = rnd.random()
-        tag = f"Deco{placed}"
-        if kind < 0.35:  # flower: stem + angular bloom
-            P.append(vb.solid(f"{tag}_Stem", (0.18, 0.18, 0.8), (x, y, z), C["leaf_dark"], bevel=0.02))
-            P.append(vb.solid(f"{tag}_Bloom", (0.6, 0.6, 0.45), (x, y, z + 0.8), flowers[rnd.randrange(5)], bevel=0.08,
-                              rot=(0, 0, math.radians(rnd.uniform(0, 45)))))
-        elif kind < 0.6:  # grass tuft: three tilted angular blades
-            for j in range(3):
-                P.append(vb.solid(f"{tag}_Blade{j}", (0.22, 0.12, 0.9), (x + (j - 1) * 0.22, y, z), C["leaf_light"], bevel=0.02,
-                                  rot=(0, math.radians((j - 1) * 18), math.radians(rnd.uniform(0, 90)))))
-        elif kind < 0.82:  # bush: cluster of angular leaf cubes
-            for j in range(3):
-                s = rnd.uniform(1.0, 1.6)
-                P.append(vb.rounded(f"{tag}_Bush{j}", (s, s, s * 0.85), (x + rnd.uniform(-0.6, 0.6), y + rnd.uniform(-0.6, 0.6), z),
-                                    C["leaf"] if j % 2 else C["leaf_dark"], radius=s * 0.15,
-                                    rot=(0, 0, math.radians(rnd.uniform(-25, 25)))))
-        elif kind < 0.92:  # mushroom
-            P.append(vb.cyl(f"{tag}_Stalk", 0.22, 0.25, 0.7, (x, y, z), "#FFF4E0", sides=8))
-            P.append(vb.rounded(f"{tag}_Cap", (1.0, 1.0, 0.5), (x, y, z + 0.65), "#FF3B3B", radius=0.18))
-            P.append(vb.solid(f"{tag}_Dot", (0.22, 0.22, 0.06), (x + 0.2, y - 0.15, z + 1.15), "#FFFFFF", bevel=0.02))
-        else:  # pebble stack
-            P.append(vb.rounded(f"{tag}_Pebble", (1.1, 0.8, 0.5), (x, y, z), C["stone"], radius=0.15,
-                                rot=(0, 0, math.radians(rnd.uniform(0, 90)))))
-            P.append(vb.rounded(f"{tag}_Pebble2", (0.6, 0.5, 0.35), (x + 0.2, y, z + 0.45), C["stone_dark"], radius=0.1))
-        placed += 1
+    P += kit.flower_bed("Deco_BedWest_", (-12.6, 8), (-12.6, 22), rnd=rnd)
+    P += kit.flower_bed("Deco_BedNorth_", (0, 29.6), (26, 29.6), colors=("#FF9F1C", "#FF5FA2", "#FFFFFF"), rnd=rnd)
+    P += kit.signpost("Deco_Sign_", (-12.6, 30.6))
+    P += kit.rock_garden("Deco_RockGarden_", (-40, 30), rnd=rnd)
+    P += kit.picnic_spot("Deco_Picnic_", (52, 24))
+    # pond with stepping stones + reeds beside the picnic
+    P.append(vb.solid("Deco_Pond_Water", (10, 6, 0.12), (42, 36, 0.0), "#3EC6FF", studs="none", bevel=0.02))
+    for i in range(12):
+        a = 2 * math.pi * i / 12
+        P.append(vb.rounded(f"Deco_Pond_Edge{i}", (1.3, 1.0, 0.45), (42 + math.cos(a) * 5.6, 36 + math.sin(a) * 3.6, 0),
+                            ("#8E96A3", "#6E7683")[i % 2], radius=0.15, rot=(0, 0, a)))
+    for i, (dx, dy) in enumerate(((-2.5, 0.5), (0, -0.4), (2.4, 0.6))):
+        P.append(vb.rounded(f"Deco_Pond_Step{i}", (1.1, 1.1, 0.3), (42 + dx, 36 + dy, 0.05), "#B8BEC8", radius=0.12))
+    for i, (dx, dy) in enumerate(((-4.2, 2.0), (-3.6, 2.6), (4.0, -2.2))):
+        P.append(vb.solid(f"Deco_Pond_Reed{i}", (0.16, 0.16, 1.6), (42 + dx, 36 + dy, 0), "#2E9A3E", bevel=0.02))
+        P.append(vb.solid(f"Deco_Pond_ReedTop{i}", (0.26, 0.26, 0.5), (42 + dx, 36 + dy, 1.6), "#8A5530", bevel=0.05))
+    # mushroom ring under the big tree
+    for i in range(7):
+        a = 2 * math.pi * i / 7
+        s_ = rnd.uniform(0.7, 1.3)
+        x, y = -30 + math.cos(a) * 5.5, -12 + math.sin(a) * 5.5
+        P.append(vb.cyl(f"Deco_Ring_Stalk{i}", 0.2 * s_, 0.24 * s_, 0.7 * s_, (x, y, 0), "#FFF4E0", sides=8))
+        P.append(vb.rounded(f"Deco_Ring_Cap{i}", (0.95 * s_, 0.95 * s_, 0.45 * s_), (x, y, 0.65 * s_), ("#FF3B3B", "#B678EA")[i % 2],
+                            radius=0.16 * s_))
+        P.append(vb.solid(f"Deco_Ring_Dot{i}", (0.2 * s_, 0.2 * s_, 0.06), (x + 0.18 * s_, y - 0.12 * s_, 1.1 * s_), "#FFFFFF",
+                          bevel=0.02))
+    # hedge rows along terrace fronts (varied sizes, two shades)
+    for name, (x0, x1, y) in (("HedgeA", (30, 43, -37.0)), ("HedgeB", (-34, -16, -38.0))):
+        x, j = x0, 0
+        sh = kit.shades("#4CC24A")
+        while x < x1:
+            s_ = rnd.uniform(1.2, 1.8)
+            P.append(vb.rounded(f"Deco_{name}_Bush{j}", (s_, s_ * 0.9, s_ * 0.8), (x, y, 0), sh["dark" if j % 2 else "base"],
+                                radius=s_ * 0.15, rot=(0, 0, rnd.uniform(-0.3, 0.3))))
+            if j % 2 == 0:  # blooms dotted through the hedge
+                P.append(vb.rounded(f"Deco_{name}_Bloom{j}", (0.45, 0.45, 0.3), (x + 0.2, y + 0.3, s_ * 0.78),
+                                    ("#FF5FA2", "#FFD93B", "#FFFFFF")[j % 3], radius=0.08))
+            x += s_ * 0.85
+            j += 1
+        for k, px in enumerate((x0 - 1.2, x + 0.4)):  # timber end posts frame the hedge row
+            P.append(vb.solid(f"Deco_{name}_Post{k}", (0.6, 0.6, 1.8), (px, y, 0), "#8A5530"))
     for i, (x, y, k) in enumerate(((-57, -38, 1.3), (60, -26, 1.2), (52, -42, 1.0), (-58, 20, 1.1), (64, 0, 1.0))):
         objs = tree()
         vb.scale_group(objs, k * 1.4)

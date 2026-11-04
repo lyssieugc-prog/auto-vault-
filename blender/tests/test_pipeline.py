@@ -101,13 +101,18 @@ def main():
     world = _
     wn = [o.name for o in world]
     check(sum(n.startswith("TerraceCap") for n in wn) >= 4, "std5: stepped terrain terraces present")
-    check(len({o.name.split("_")[0] for o in world if o.name.startswith("Deco")}) >= 150, "std7: dense decorations (>=150)")
-    check(all(test_collection.path_dist(o.location[0], o.location[1]) >= 3.0 for o in world if o.name.startswith("Deco")),
+    vign = {}
+    for o in world:
+        if o.name.startswith("Deco_"):
+            vign.setdefault(o.name.split("_")[1], set()).add(o.name.split("_")[-1].rstrip("0123456789"))
+    check(len(vign) >= 7, f"std7: purposeful vignettes ({len(vign)} >= 7)")
+    check(all(len(v) >= 3 for v in vign.values()), "std7: every vignette mixes >= 3 different pieces")
+    check(all(test_collection.path_dist(o.location[0], o.location[1]) >= 3.0 for o in world if o.name.startswith("Deco_")),
           "std7: decorations keep paths clear")
-    check(sum(o.name.startswith("Leaves") for o in groups["Tree"]) >= 8, "std4: tree has >= 8 angular leaf clusters")
+    check(sum("Leaf" in o.name for o in groups["Tree"]) >= 8, "std4: tree has >= 8 angular leaf clusters")
     bn = [o.name for o in groups["Brainrot"]]
-    check(sum(n.startswith("Spike") for n in bn) >= 5, "std6: creature spikes >= 5")
-    check(sum(n.startswith("Scale") for n in bn) >= 8, "std6: creature scale plates >= 8")
+    check(sum(n.startswith("Detail_") for n in bn) >= 12, "std6: >= 12 theme-appropriate creature details")
+    check(not any(n.startswith(("Spike", "Scale")) for n in bn), "std6: no implausible spikes/scales on the frog")
     check(bpy.data.objects["EyeL"].dimensions.x >= 0.3 * 5.5, "std6: exaggerated eyes (>= 30% head width)")
     names = {o.name for o in groups["Brainrot"]}
     check({"EyeL", "EyeR", "PupilL", "PupilR", "Mouth"} <= names, "brainrot has a full face")

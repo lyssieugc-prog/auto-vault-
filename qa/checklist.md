@@ -15,6 +15,7 @@
 - [ ] 2x→100x ladder, Season 1 pass, daily + playtime rewards, index, rebirth all present
 - [ ] UI themed to THIS game (frame decor, open animation)
 - [ ] All custom geometry came from Blender (no Studio-built custom models)
+- [ ] Every major asset passed the professional-asset review (`style-guides/3D_STYLE_BIBLE.md` §13) and is ORIGINAL to this game
 
 ## Mobile & performance
 - [ ] Phone emulator (iPhone SE + mid Android): HUD readable, all buttons ≥ 44px, no overlap

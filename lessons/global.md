@@ -2,6 +2,19 @@
 
 Read before every build. Newest first. Format in `lessons/README.md`.
 
+### L-20261104-09 — Learn the art STYLE, never repeat assets; quality ≠ blocky + studs; plausible detail
+- Scope: global (owner's "permanent 3D art direction"; "doesn't make sense to have spikes on the frog")
+- Rule: bible ★ (verbatim). Test collection = calibration sample only; every game gets ORIGINAL assets
+  built with `blender/lib/vault_kit.py` techniques; professional-asset review (§13) before any model is
+  done; creature detail must fit the creature; decoration = purposeful vignettes, never random scatter;
+  ≥ 2 shades per material.
+- Applied to: bible ★/§0/§13, `CLAUDE.md`, `vault_kit.py` (new toolkit), test collection (frog warts/
+  eye rims/pouch/lily-pad hat instead of spikes/scales; canopy tool trees; vignettes), make-game skill,
+  blender-artist agent, qa/checklist.md, pipeline gates (vignettes ≥7 with ≥3 piece types, frog has
+  ≥12 plausible details and no spikes/scales)
+- Honest self-review of the current sample: building ≈ pro; trees improved; frog still reads closer to a
+  generic block model (stepped head mass, low-contrast warts); open grass needs more vignettes.
+
 ### L-20261104-08 — Owner's core art standards ("High-Detail Studded Blocky Roblox Simulator")
 - Scope: global (owner supplied 10 standards)
 - Rule: `style-guides/3D_STYLE_BIBLE.md` §0 (verbatim + measurable table). Notably: stepped

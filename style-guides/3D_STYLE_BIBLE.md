@@ -1,10 +1,48 @@
 # 3D Style Bible — DRAFT (not final until the owner approves the test collection)
 
-Status: **DRAFT v5** (core standards from owner; stud size approved: 0.5) · Source: 11 reference images + 20 video frames in `3d-model-references/`
+Status: **DRAFT v6** (permanent art direction from owner; stud size approved: 0.5) · Source: 11 reference images + 20 video frames in `3d-model-references/`
 (style references only — never copy their objects, characters, layouts or assets).
 Test collection: `blender/templates/test_collection.py` → renders in `references/images/pending/`.
 
 Every number below is a default; a game's style profile may override it explicitly.
+
+## ★ Permanent 3D art direction (owner, verbatim — overrides anything below it)
+
+I want a highly detailed, colorful, studded, blocky Roblox simulator aesthetic.
+
+* Use simple geometric shapes to construct complex, layered models.
+* Add significant geometric detail to buildings, props, creatures, and environments.
+* Use small, densely spaced studs on appropriate surfaces.
+* Build chunky trees with individually modeled leaf clusters and irregular silhouettes.
+* Use vibrant, coordinated colors with multiple shades per material.
+* Give models exaggerated, playful proportions.
+* Create detailed terrain with elevation changes, environmental storytelling, and purposeful decoration.
+* Use physical geometry for architectural trim, signs, windows, frames, and other details.
+* Avoid generic low-poly assets, plain cubes, smooth realistic terrain, and repetitive procedural-looking decorations.
+
+**Most important rule: STYLE CONSISTENCY DOES NOT MEAN REPEATING THE SAME ASSETS.**
+If asked for a candy factory → an original candy factory. A fantasy forest → an original fantasy
+forest. A brainrot collectible → an original, highly detailed collectible. All share the same modeling
+language, surface treatment, colors, proportions, and quality standards.
+
+**Learn the visual design language of the references, not their specific objects or compositions.**
+The test collection (Smoothie Shack, trees, conveyor, Frappo, café props) is a CALIBRATION SAMPLE of
+techniques — never copy its objects, layout or composition into a game.
+
+**Blender requirements:** all custom 3D assets and environments are modeled in Blender (never
+assembled from Studio parts); use reusable modeling tools (`blender/lib/vault_kit.py`), procedural
+geometry where appropriate, efficient mesh optimization; export/import in organized batches.
+
+**Quality standard — a model is NOT complete just because it is blocky and has studs.** Every major
+asset must have: a distinctive silhouette · multiple layers of geometric detail · intentional color
+variation · appropriate surface detailing · strong visual readability · a polished, handcrafted look.
+Before completing any model, answer in writing (in the asset report): *"Does this look like a
+professionally designed Roblox simulator asset, or a generic procedural block model?"* — and list
+what would make it more professional. See §13 for the review checklist.
+
+**Detail must make sense for the subject** (owner: "doesn't make sense to have spikes on the frog").
+Creature complexity comes from features that fit the creature/theme — e.g. frog: warts, spots,
+toe pads, throat pouch, eye-dome rims; dragon: spikes, horns, scales; robot: panels, bolts, vents.
 
 ## 0. Core standards — "High-Detail Studded Blocky Roblox Simulator Art Style" (owner, verbatim)
 1. Every major asset should have a recognizable blocky silhouette.
@@ -26,9 +64,9 @@ Every number below is a default; a game's style profile may override it explicit
 | 3 | Stud texture 0.5-stud spacing (§2), identical size everywhere (world-space UVs). |
 | 4 | Trees: ≥ 8 angular leaf clusters (rounded cubes, tilted ±8°, yaw ±20°), 2–3 greens; never one sphere. |
 | 5 | Terrain: rectangular terraces with visible steps of 1.5–6 studs; layered (stone/dirt body + grass cap); flat play areas kept between them. |
-| 6 | Creatures: ≥ 5 spikes or horns, ≥ 8 scale/plate pieces, ≥ 3 stacked body layers, eyes ≥ 30% of head width. |
-| 7 | Decoration density ≥ 1 themed prop per 40 sq studs of non-path ground; keep a ≥ 3-stud clear path and a ≥ 2.5-stud margin around paths and gameplay objects. |
-| 8 | 1 main hue + 1 secondary + 1 accent per model; saturation high; no greys except stone/steel. |
+| 6 | Creatures: ≥ 12 theme-appropriate detail pieces (spots/warts, plates, horns, spikes — only what fits the creature), ≥ 3 stacked body layers, eyes ≥ 30% of head width. |
+| 7 | Decoration is PURPOSEFUL: grouped into vignettes that tell a small story (flower bed edging a path, picnic spot, rock garden, signpost at a fork) — never uniform random scatter. ≥ 1 vignette per ~400 sq studs, every vignette uses ≥ 3 different pieces; keep ≥ 3-stud clear paths. |
+| 8 | 1 main hue + 1 secondary + 1 accent per model; every material uses ≥ 2 shades (`vault_kit.shades`: light/base/dark); saturation high. |
 | 9 | Building detail-parity checklist (§3b). |
 | 10 | Lighting preset (§10): sun 5.0 warm, soft angle 0.12, fill 1.2, sky blue. |
 
@@ -129,6 +167,19 @@ and 2–3 exterior props (seating, signs, crates, planters). Reference: Smoothie
 ## 11. Enforced by tests (`blender/tests/test_pipeline.py`)
 No stud geometry · texture studs in use · brainrot full face · merged blocks < 1,500 cells ·
 tris ≤ 15k · creature minimums. Looks are judged by the owner, not by tests.
+
+## 13. Professional-asset review (run before calling ANY model done)
+| Check | Pass when |
+|---|---|
+| Silhouette | Recognizable as a black shape from 50 studs; not a box/blob |
+| Layers | ≥ 3 depth layers of geometry on main faces (base → trim/panel → props/details) |
+| Colour | ≥ 2 shades per material, 1 accent; coordinated with the theme |
+| Surface | Studs where appropriate + physical trims/frames/edges |
+| Proportion | Exaggerated, playful (big heads/eyes, chunky tops, stubby bases) |
+| Plausibility | Every detail makes sense for the subject (no frog spikes) |
+| Handcrafted | Varied sizes/rotations, intentional placement — no grid-like or random-scatter repetition |
+| Originality | Designed for THIS game; not a copy of a calibration sample or reference |
+Write the verdict + fixes in the asset report; render front/side/back + in-context shot.
 
 ## 12. Open items before FINAL
 - Owner verdict on the v3 test collection.

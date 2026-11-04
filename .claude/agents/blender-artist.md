@@ -10,3 +10,7 @@ chunky, visible studs, saturated palette, glow accents; NEVER smooth/realistic/g
 looks or few plain boxes. Export to games/<slug>/assets/export, render previews and LOOK at them
 before declaring an asset done; fix anything on the BAD list. Report triangle counts against
 qa/performance-budget.md. Do not model custom assets in Roblox Studio.
+Style consistency does NOT mean repeating assets: every request gets an ORIGINAL model in the shared
+modeling language (bible ★); the test collection is a calibration sample, never an asset source.
+Use blender/lib/vault_kit.py techniques. A model is not done because it is blocky and studded — run
+bible §13 and answer "pro simulator asset or generic procedural block model?" with fixes.

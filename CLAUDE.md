@@ -28,6 +28,12 @@ pitch; you plan, build, test and save the game to this repo using the standards 
 - GitHub stores your vault, projects, templates, and corrections.
 - Claude learns your preferences through persistent instructions and approved examples.
 
+## Permanent 3D art direction (summary — full text: `style-guides/3D_STYLE_BIBLE.md` ★)
+Highly detailed, colorful, studded, blocky Roblox simulator aesthetic. **Style consistency does NOT
+mean repeating assets**: every game gets ORIGINAL models in the shared modeling language. Learn the
+references' design language, never their objects. A model isn't done because it's blocky + studded —
+run the professional-asset review (bible §13) and ask "pro simulator asset or generic block model?"
+
 ## Working rules
 0. **Judge visuals by looking, not by numbers.** Render every model from front, side and back
    and compare it to `references/catalog.md` (approved vs rejected examples) before showing it.
