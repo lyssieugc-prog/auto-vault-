@@ -17,13 +17,13 @@ from mathutils import Vector  # noqa: E402
 
 import test_collection  # noqa: E402
 
-SHOTS = {  # cameras on the +y side: every model's front faces +y
-    "collection_wide": ((32, 46, 26), (3, -1, 5), 32),
-    "tree": ((-1, 11, 11), (-13, -5, 8), 38),
-    "rock": ((-5, 17, 6), (-12, 8, 1.5), 40),
-    "building": ((19, 13, 13), (5, -9, 8), 32),
-    "conveyor": ((16, 22, 10), (5, 7, 3), 36),
-    "brainrot": ((23, 23, 9), (20, 2, 6.2), 38),
+SHOTS = {  # real-Roblox-scale layout (test_collection.LAYOUT); cameras on the +y side
+    "collection_wide": ((72, 98, 58), (4, -2, 9), 32),
+    "tree": ((-6, 24, 20), (-30, -12, 13), 34),
+    "rock": ((-13, 33, 10), (-26, 16, 2.5), 40),
+    "building": ((42, 32, 30), (6, -20, 15), 30),
+    "conveyor": ((27, 42, 15), (6, 16, 5), 34),
+    "brainrot": ((39, 27, 10), (34, 6, 6.5), 32),
 }
 
 

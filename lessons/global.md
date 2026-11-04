@@ -2,6 +2,21 @@
 
 Read before every build. Newest first. Format in `lessons/README.md`.
 
+### L-20261104-06 — Everything studded (pets too); any shape allowed; studs must not look huge
+- Scope: global (owner: "it doesn't have to just be cubes… as long as it has the stud texture, and
+  yes EVERYTHING even pets should have stud texture"; "the studs are huge, use the roblox stud texture")
+- Trigger: v3.1 collection; then a round smooth brainrot (v4) — owner: "ewwww that's worse"
+- Root cause: studs mapped too coarse for the model sizes; "too bricky" was over-corrected into
+  smooth blobs, which the owner rejected.
+- Rule: every surface of every model carries stud texture (exceptions: glass, neon, face pieces);
+  cylinders/cones/wedges/rounded shapes are fine for props; studs keep correct size after scaling
+  (world-space UVs); brainrot stays the merged-block v3 shape (round v4 rejected).
+- OPEN: stud size — owner choosing between 1 / 0.5 / 0.25-stud pitch (`vault_blocky.STUD_PITCH`).
+- Applied to: `blender/lib/vault_blocky.py` (world-space `stud_surface`, `restud`, `scale_group`,
+  `cyl`/`ball`/`rounded`, `STUD_PITCH`), `blender/templates/test_collection.py` (real Roblox scale,
+  studded brainrot), `blender/tools/render_collection.py`
+- Validation: pipeline test 0 failures; comparison renders sent to owner
+
 ### L-20261104-05 — Stud texture on ALL sides of blocks
 - Scope: global (owner: "all sides of blocks should have stud texture in it")
 - Trigger: test collection v3 had studs on up-facing faces only

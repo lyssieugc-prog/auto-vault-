@@ -537,6 +537,7 @@ class VoxelCanvas:
 # ---------------------------------------------------------------------------------------------
 
 STUD_TEX_PX = 128
+STUD_PITCH = 1.0  # studs per UV tile spacing in studs; owner picks the visual size (see bible §2)
 _TEX_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "textures")
 
 
@@ -551,7 +552,7 @@ def ensure_stud_textures(force=False):
         return hpath, npath
     os.makedirs(_TEX_DIR, exist_ok=True)
     n = STUD_TEX_PX
-    R, EDGE = 0.30, 0.035  # stud radius (of a 1-stud tile) + soft shoulder
+    R, EDGE = 0.27, 0.03  # Roblox-like stud: ~0.54 stud diameter per 1-stud tile, soft shoulder
 
     def height(u, v):
         r = math.hypot(u - 0.5, v - 0.5)
@@ -611,35 +612,111 @@ def studded_material(base):
 
 
 def stud_surface(obj, mode="all"):
-    """Applies texture studs to a mesh: world-scaled box UVs (1 UV = 1 stud) and studded
-    materials. mode: 'top' (faces pointing up), 'all', or 'none'. Non-studded faces get UVs in
-    the flat corner of the tile so they render plain."""
+    """Texture studs at TRUE Roblox size: world-space box UVs, 1 UV unit = 1 stud, so studs keep
+    their real size no matter how the object is scaled/rotated (call again via restud() after
+    transforming). mode: 'all' (default, owner rule L-20261104-05), 'top', or 'none'."""
     if obj.type != "MESH" or mode == "none":
         return obj
+    bpy.context.view_layer.update()
     me = obj.data
     if not me.uv_layers:
         me.uv_layers.new(name="UVMap")
     uvl = me.uv_layers.active.data
-    loc = obj.location
+    mw = obj.matrix_world
+    rot = mw.to_3x3()
     for poly in me.polygons:
-        nx, ny, nz = poly.normal
+        n = (rot @ poly.normal).normalized()
+        nx, ny, nz = n
         studded = (mode == "all") or (nz > 0.7)
         for li in poly.loop_indices:
-            co = me.vertices[me.loops[li].vertex_index].co
-            wx, wy, wz = co.x + loc.x, co.y + loc.y, co.z + loc.z
+            w = mw @ me.vertices[me.loops[li].vertex_index].co
             if not studded:
                 uvl[li].uv = (0.02, 0.02)
             elif abs(nz) >= max(abs(nx), abs(ny)):
-                uvl[li].uv = (wx, wy)
+                uvl[li].uv = (w.x / STUD_PITCH, w.y / STUD_PITCH)
             elif abs(nx) >= abs(ny):
-                uvl[li].uv = (wy, wz)
+                uvl[li].uv = (w.y / STUD_PITCH, w.z / STUD_PITCH)
             else:
-                uvl[li].uv = (wx, wz)
+                uvl[li].uv = (w.x / STUD_PITCH, w.z / STUD_PITCH)
     for i, m in enumerate(me.materials):
-        if m is not None and not m.get("vault_studs"):
+        if m is not None and not m.get("vault_studs") and not m.get("roblox_neon"):
             me.materials[i] = studded_material(m)
     obj["vault_stud_mode"] = mode
     return obj
+
+
+def restud(objs):
+    """Recompute stud UVs after moving/scaling/rotating objects."""
+    for o in objs:
+        mode = o.get("vault_stud_mode")
+        if mode and mode != "none":
+            stud_surface(o, mode)
+
+
+def scale_group(objs, k, origin=(0.0, 0.0, 0.0)):
+    """Scales a model about an origin (top-level objects), then restuds so studs stay 1 stud."""
+    ox, oy, oz = origin
+    for o in objs:
+        if o.parent is None:
+            o.location = (ox + (o.location[0] - ox) * k, oy + (o.location[1] - oy) * k, oz + (o.location[2] - oz) * k)
+            o.scale = (o.scale[0] * k, o.scale[1] * k, o.scale[2] * k)
+    restud(objs)
+    return objs
+
+
+def _finish(obj, color, emission, studs, rot):
+    _assign(obj, palette_material(color, color, emission))
+    if rot:
+        obj.rotation_euler = rot
+    if emission == 0:
+        stud_surface(obj, studs)
+    return obj
+
+
+def cyl(name, r1, r2, h, location, color, sides=16, studs="all", rot=None, emission=0.0):
+    """Cylinder/cone (r1 bottom, r2 top); location = bottom centre. Studded like every block."""
+    bm = bmesh.new()
+    bmesh.ops.create_cone(bm, cap_ends=True, segments=sides, radius1=r1, radius2=r2, depth=h)
+    for v in bm.verts:
+        v.co.z += h / 2
+    obj = _new_mesh_object(name, bm)
+    obj.location = location
+    return _finish(obj, color, emission, studs, rot)
+
+
+def ball(name, radii, center, color, segments=18, rings=10, studs="all", rot=None, emission=0.0):
+    """Ellipsoid (rx, ry, rz) at a centre point — for heads, eyes, bellies, bushes."""
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=segments, v_segments=rings, radius=1.0)
+    rx, ry, rz = radii
+    for v in bm.verts:
+        v.co.x *= rx
+        v.co.y *= ry
+        v.co.z *= rz
+    obj = _new_mesh_object(name, bm)
+    obj.location = center
+    for p in obj.data.polygons:
+        p.use_smooth = True
+    return _finish(obj, color, emission, studs, rot)
+
+
+def rounded(name, size, location, color, radius=0.3, studs="all", rot=None, emission=0.0):
+    """Soft rounded box (pillowy) — location = bottom centre."""
+    obj = block(name, size, location, color, bevel=radius, segments=3, emission=emission)
+    _set_size(obj, size)
+    if rot:
+        obj.rotation_euler = rot
+    if emission == 0:
+        stud_surface(obj, studs)
+    return obj
+
+
+def ellipsoid_front(center, radii, x, z):
+    """Front (+y) surface y of an ellipsoid at (x, z) — to seat face pieces on round heads."""
+    cx, cy, cz = center
+    rx, ry, rz = radii
+    t = 1 - ((x - cx) / rx) ** 2 - ((z - cz) / rz) ** 2
+    return cy + ry * math.sqrt(max(t, 0.0))
 
 
 def solid(name, size, location, color, bevel=0.04, studs="all", emission=0.0, rot=None):
