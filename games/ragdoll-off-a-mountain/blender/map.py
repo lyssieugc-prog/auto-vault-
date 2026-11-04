@@ -67,9 +67,9 @@ BASE_TOP = 5.0
 RIM_Z = 4.0
 
 PEAKS = [
-    dict(n=1, name="PebbleHill", x=-160.0, z=120.0, riser=(1.5, 3.4), slope=(48, 62), every=(4, 6), ledge=(5, 7.5),
+    dict(n=1, name="PebbleHill", x=-160.0, z=120.0, riser=(1.5, 3.6), slope=(54, 66), every=(5, 7), ledge=(4.5, 6),
          accent=GOLD, flag=GOLD, dom=(-290.0, -120.0)),
-    dict(n=2, name="PineRidge", x=-80.0, z=260.0, riser=(2.0, 4.6), slope=(48, 62), every=(4, 6), ledge=(5.5, 8),
+    dict(n=2, name="PineRidge", x=-80.0, z=260.0, riser=(2.0, 4.8), slope=(52, 64), every=(4, 6), ledge=(5, 7),
          accent=PINE_L, flag=GRASS_D, dom=(-120.0, -40.0)),
     dict(n=3, name="FrostbiteCliffs", x=0.0, z=420.0, riser=(2.5, 5.5), slope=(50, 64), every=(4, 7), ledge=(6, 9),
          accent=ICE_D, flag=ICE_D, dom=(-40.0, 40.0)),
@@ -225,7 +225,7 @@ def pixtext(p, s, x, y, z, px, col, face="-y", depth=0.3, em=0.0):
                         j += 1
                     run = (j - k + 1) * px
                     gx = cx + sgn * -1 * 0 + (k * px + run / 2) * (1 if face == "-y" else -1)
-                    out.append(S(p, (run, depth, px), (gx, y + sgn * depth / 2, z + (4 - r) * px), col, bevel=0.03,
+                    out.append(S(p, (run, depth, px), (gx, y + sgn * depth / 2, z + (4 - r) * px), col, bevel=0.0,
                                  em=em, studs="none" if em else "all"))
                     k = j + 1
                 else:
@@ -275,7 +275,7 @@ def rock_cluster(p, x, y, z, s, cols, rnd, n=3, cap=None):
 def pine(p, x, y, z, h, rnd, snow=False, hero=False, leaf=PINE):
     """Angular-cluster pine: trunk + stacked tiers. hero=True uses kit.canopy clusters per tier."""
     out = [S(p + "Trunk", (h * 0.09, h * 0.09, h * 0.32), (x, y, z), WOOD_D, bevel=0.06)]
-    tiers = 3 if hero else 4
+    tiers = 3
     for t in range(tiers):
         f = 1 - t / (tiers + 0.6)
         tz = z + h * (0.2 + 0.2 * t)
@@ -310,32 +310,34 @@ def flower_patch(p, x, y, z, rnd, cols=(GOLD, WHITE), n=6, r=1.6):
         rr = rnd.uniform(0.2, r * 0.8)
         fx, fy = x + math.cos(a) * rr, y + math.sin(a) * rr
         hh = rnd.uniform(0.5, 1.0)
-        out.append(S(p + "Stem", (0.16, 0.16, hh), (fx, fy, z + 0.25), GRASS_D, bevel=0.02))
+        out.append(S(p + "Stem", (0.16, 0.16, hh), (fx, fy, z + 0.25), GRASS_D, bevel=0.0))
         out.append(S(p + "Bloom", (0.55, 0.55, 0.36), (fx, fy, z + 0.25 + hh), cols[i % len(cols)], bevel=0.08,
                      rot=(0, 0, rnd.uniform(0, 0.8))))
     return out
 
 
-def fence_run(p, x0, x1, y, z, col=WOOD, post=WOOD_D, h=2.6, step=3.0):
+def fence_run(p, x0, x1, y, z, col=WOOD, post=WOOD_D, h=2.6, step=4.0):
     out = []
     n = max(1, int(round(abs(x1 - x0) / step)))
     for i in range(n + 1):
         px = x0 + (x1 - x0) * i / n
-        out.append(S(p + "Post", (0.55, 0.55, h), (px, y, z), post))
-        out.append(S(p + "PostCap", (0.75, 0.75, 0.25), (px, y, z + h), post))
+        out.append(S(p + "Post", (0.55, 0.55, h), (px, y, z), post, bevel=0.0))
+        if i % 2 == 0:
+            out.append(S(p + "PostCap", (0.75, 0.75, 0.25), (px, y, z + h), post, bevel=0.0))
     L = abs(x1 - x0)
     out.append(S(p + "RailT", (L, 0.3, 0.45), ((x0 + x1) / 2, y + 0.05, z + h * 0.72), col))
     out.append(S(p + "RailB", (L, 0.3, 0.45), ((x0 + x1) / 2, y + 0.05, z + h * 0.32), col))
     return out
 
 
-def fence_run_y(p, x, y0, y1, z, col=WOOD, post=WOOD_D, h=2.6, step=3.0):
+def fence_run_y(p, x, y0, y1, z, col=WOOD, post=WOOD_D, h=2.6, step=4.0):
     out = []
     n = max(1, int(round(abs(y1 - y0) / step)))
     for i in range(n + 1):
         py = y0 + (y1 - y0) * i / n
-        out.append(S(p + "Post", (0.55, 0.55, h), (x, py, z), post))
-        out.append(S(p + "PostCap", (0.75, 0.75, 0.25), (x, py, z + h), post))
+        out.append(S(p + "Post", (0.55, 0.55, h), (x, py, z), post, bevel=0.0))
+        if i % 2 == 0:
+            out.append(S(p + "PostCap", (0.75, 0.75, 0.25), (x, py, z + h), post, bevel=0.0))
     L = abs(y1 - y0)
     out.append(S(p + "RailT", (0.3, L, 0.45), (x + 0.05, (y0 + y1) / 2, z + h * 0.72), col))
     out.append(S(p + "RailB", (0.3, L, 0.45), (x + 0.05, (y0 + y1) / 2, z + h * 0.32), col))
@@ -353,10 +355,9 @@ def warn_sign(p, x, y, z, col=HAZ, icon=BLACK):
 
 
 def slalom_pole(p, x, y, z, col, h=5.5):
-    return [S(p + "PoleA", (0.55, 0.55, h * 0.5), (x, y, z), col, bevel=0.05),
-            S(p + "PoleB", (0.55, 0.55, h * 0.5), (x, y, z + h * 0.5), WHITE, bevel=0.05),
-            S(p + "PoleTip", (0.8, 0.8, 0.6), (x, y, z + h), col, bevel=0.1),
-            S(p + "PoleFoot", (1.1, 1.1, 0.35), (x, y, z), STEEL_D)]
+    return [S(p + "PoleA", (0.6, 0.6, h * 0.5), (x, y, z), col, bevel=0.0),
+            S(p + "PoleB", (0.6, 0.6, h * 0.5), (x, y, z + h * 0.5), WHITE, bevel=0.0),
+            S(p + "PoleTip", (0.9, 0.9, 0.6), (x, y, z + h), col, bevel=0.08)]
 
 
 def bumper(p, x, y, z, s, body, band, cap, sides=8):
@@ -454,10 +455,10 @@ def build_face(pk, steps, rnd):
             for side in (-1, 1):
                 x0, x1 = (x - s["hw"], cut) if side < 0 else (cut, x + s["hw"])
                 zz = z + (1.2 if side == hi else 0.0)
-                SPAN("FaceBody", x0, x1, y, y + t + 16, bot, zz - 0.62, body, bevel=0.15)
+                SPAN("FaceBody", x0, x1, y, y + t + 16, bot, zz - 0.62, body, bevel=0.0)
                 SPAN("FaceCap", x0 - 0.25, x1 + 0.25, y - 0.25, y + t + 0.3, zz - 0.62, zz, b["cap"][i % 2], bevel=0.1)
         else:
-            SPAN("FaceBody", x - s["hw"], x + s["hw"], y, y + t + 16, bot, z - 0.62, body, bevel=0.15)
+            SPAN("FaceBody", x - s["hw"], x + s["hw"], y, y + t + 16, bot, z - 0.62, body, bevel=0.0)
             SPAN("FaceCap", x - s["hw"] - 0.25, x + s["hw"] + 0.25, y - 0.25, y + t + 0.3, z - 0.62, z,
                  b["cap"][i % 2], bevel=0.1)
         if s["ledge"]:
@@ -465,7 +466,7 @@ def build_face(pk, steps, rnd):
         # strata band on tall risers: a darker protruding seam (3rd depth layer)
         if r >= 4.2 and i % 2 == 0:
             SPAN("FaceSeam", x - s["hw"] + 1, x + s["hw"] - 1, y - 0.35, y + 0.5, z - r * 0.62, z - r * 0.62 + 0.7,
-                 b["body"][(band + 2) % 3], bevel=0.06)
+                 b["body"][(band + 2) % 3], bevel=0.0)
 
 
 def face_props(pk, steps, rnd, poles_col):
@@ -681,13 +682,13 @@ def flank_tiers(pk, yface, ylast, rnd):
                 xa, xb = min(x, x2), max(x, x2)
                 b = biome(pk, z)
                 body = b["body"][(lvl + int(d / 10)) % 3]
-                SPAN("Tier", xa, xb, f, back, z0, z - 0.75, body, bevel=0.25)
+                SPAN("Tier", xa, xb, f, back, z0, z - 0.75, body, bevel=0.0)
                 SPAN("TierCap", xa - 0.3, xb + 0.3, f - 0.3, back + 0.3, z - 0.75, z, b["cap"][lvl % 2], bevel=0.15)
                 if z - z0 > 14:
                     SPAN("TierBand", xa - 0.35, xb + 0.35, f - 0.6, f + 1.0, z0 + (z - z0) * 0.45, z0 + (z - z0) * 0.45 + 1.4,
-                         b["lip"], bevel=0.1)
+                         b["lip"], bevel=0.0)
                 # occasional prop on the tread in front of the next tier
-                if rnd.random() < 0.33 and not last:
+                if rnd.random() < 0.2 and not last:
                     flank_prop(pk, (xa + xb) / 2 + rnd.uniform(-2, 2), f + rnd.uniform(2, 5), z, rnd)
                 if last:
                     break
@@ -741,12 +742,12 @@ def backdrop(pk, nxt, ylast, rnd):
             dpt = rnd.uniform(24, 34)
             h = pz * 0.75 + (hb - pz * 0.75) * min(1.0, (row + 1) / 3.5) + rnd.uniform(-14, 14)
             b = biome(nxt if h > pz else pk, h)
-            SPAN("Back", x, x + w, y, y + dpt, -0.5, h - 1.0, b["body"][(row + int(x)) % 3], bevel=0.3)
+            SPAN("Back", x, x + w, y, y + dpt, -0.5, h - 1.0, b["body"][(row + int(x)) % 3], bevel=0.0)
             SPAN("BackCap", x - 0.4, x + w + 0.4, y - 0.4, y + dpt + 0.4, h - 1.0, h, b["cap"][row % 2], bevel=0.2)
-            for band in range(1, int(h / 45)):
+            for band in range(1, int(h / 70)):
                 bz = band * 45 + rnd.uniform(-4, 4)
                 if bz < h - 8:
-                    SPAN("BackBand", x - 0.5, x + w + 0.5, y - 0.5, y + 1.5, bz, bz + 2.0, b["lip"], bevel=0.12)
+                    SPAN("BackBand", x - 0.5, x + w + 0.5, y - 0.5, y + 1.5, bz, bz + 2.0, b["lip"], bevel=0.0)
             y += dpt
             row += 1
         x += w
@@ -1129,9 +1130,9 @@ def valley_ground():
                 y0, y1 = cy - CELL / 2, cy + CELL / 2
                 bodyc = DIRT if (i + j) % 2 else DIRT_D
                 if h < 0:
-                    SPAN("Bed", x0, x1, y0, y1, -6, h, STONE_D, bevel=0.1)
+                    SPAN("StreamBed", x0, x1, y0, y1, -6, h, STONE_D, bevel=0.0)
                 else:
-                    SPAN("Ground", x0, x1, y0, y1, -6, h - 0.6, bodyc if h > 0.5 else DIRT, bevel=0.12)
+                    SPAN("Ground", x0, x1, y0, y1, -6, h - 0.6, bodyc if h > 0.5 else DIRT, bevel=0.0)
                     SPAN("Turf", x0, x1, y0, y1, h - 0.6, h, t, bevel=0.08)
                     if h >= 1.5:  # lip trim + exposed stones on terrace edges
                         for (ex, ey, ok) in ((x0, cy, vh(x0 - 1, cy) < h), (x1, cy, vh(x1 + 1, cy) < h),
@@ -1592,9 +1593,11 @@ def vignettes(rnd):
     reg(kit.signpost(nm("Sign"), (108, -98), z=0.0, arrows=((ORANGE, 180), (GRASS_D, 60), (GOLD, -60))))
     # flower beds along the hub exits and the lift-plaza terraces
     for sx in (-1, 1):
-        reg(kit.flower_bed(nm("Bed"), (sx * 82, HUB[1] - 7), (sx * 100, HUB[1] - 7), z=0.0, rnd=rnd))
-        reg(kit.flower_bed(nm("Bed"), (sx * 82, HUB[1] + 7), (sx * 100, HUB[1] + 7), z=0.0, rnd=rnd))
-        reg(kit.flower_bed(nm("Bed"), (sx * 76, -24), (sx * 124, -24), z=1.5, rnd=rnd,
+        reg(kit.flower_bed(nm("Bed"), (sx * 84, HUB[1] - 7), (sx * 96, HUB[1] - 7), z=0.0, rnd=rnd))
+        reg(kit.flower_bed(nm("Bed"), (sx * 84, HUB[1] + 7), (sx * 96, HUB[1] + 7), z=0.0, rnd=rnd))
+        reg(kit.flower_bed(nm("Bed"), (sx * 78, -24), (sx * 92, -24), z=1.5, rnd=rnd,
+                           colors=(GOLD, PINK, "#FFFFFF") if sx < 0 else (PINK, "#B678EA", GOLD)))
+        reg(kit.flower_bed(nm("Bed"), (sx * 108, -24), (sx * 122, -24), z=1.5, rnd=rnd,
                            colors=(GOLD, PINK, "#FFFFFF") if sx < 0 else (PINK, "#B678EA", GOLD)))
         reg(kit.rock_garden(nm("RockG"), (sx * 100, -8), z=1.5, rnd=rnd))
         round_tree("LiftTree", sx * 118, -6, 1.5, 11, rnd, leaf=GRASS_L)
@@ -1661,7 +1664,7 @@ def base_rim(rnd):
         if i < len(BASES) - 1:
             nx_, ny_ = BASES[i + 1]
             gx, gy = (bx + nx_) / 2, (by + ny_) / 2
-            reg(kit.flower_bed(nm("RimBed"), (gx - 1, gy - 12), (gx - 1, gy + 10), z=RIM_Z, rnd=rnd))
+            reg(kit.flower_bed(nm("RimBed"), (gx - 1, gy - 6), (gx - 1, gy + 7), z=RIM_Z, rnd=rnd))
             round_tree("RimTree", gx + 3, gy - 14, RIM_Z, 11, rnd, leaf=GRASS if i % 2 else GRASS_D, fruit=GOLD if i % 2 else None)
             reg(kit.rock_garden(nm("RimRock"), (gx + 3, gy + 6), z=RIM_Z, rnd=rnd))
     # back ridge pines + rocks (frames the bases from the south)

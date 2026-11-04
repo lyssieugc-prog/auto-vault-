@@ -155,10 +155,7 @@ function RagdollScore:finish(run)
 	if full then
 		cash *= self.fullSkeletonMultiplier
 	end
-	local partsHit = {}
-	for name, count in run.broken do
-		partsHit[name] = count
-	end
+	local partsHit = table.clone(run.broken)
 	run.summary = {
 		bones = run.bones,
 		totalBones = self.totalBones,
