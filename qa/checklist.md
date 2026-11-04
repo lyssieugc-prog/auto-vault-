@@ -17,6 +17,10 @@
 - [ ] All custom geometry came from Blender (no Studio-built custom models)
 - [ ] Every major asset passed the professional-asset review (`style-guides/3D_STYLE_BIBLE.md` §13) and is ORIGINAL to this game
 
+## Edit mode (owner rule L-11)
+- [ ] Studio Edit mode (no Play) shows the full map, all 6 bases, hub props and lit scene
+- [ ] Edit mode shows the HUD + every screen from StarterGui with mock data (`studio/preview_screen.luau`)
+
 ## Mobile & performance
 - [ ] Phone emulator (iPhone SE + mid Android): HUD readable, all buttons ≥ 44px, no overlap
 - [ ] Budgets in `performance-budget.md` met

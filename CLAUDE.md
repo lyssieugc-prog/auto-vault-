@@ -52,6 +52,9 @@ run the professional-asset review (bible §13) and ask "pro simulator asset or g
    or the same correction recurs across games (see `lessons/README.md`).
 8. Don't ask unnecessary questions — infer from the style vault. Ask only when the answer would
    materially change the game.
+9. **Edit-mode visible (owner rule, L-11):** the map, bases, props and all UI screens must be
+   visible in Studio Edit mode without pressing Play (map imported into Workspace; ScreenGuis in
+   StarterGui with mock preview data). Previewed ≠ tested.
 
 ## Layout
 `.claude/` skills + agents · `docs/` workflow + integrations · `style/` visual rules ·

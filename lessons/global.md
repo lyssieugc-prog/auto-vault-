@@ -2,6 +2,21 @@
 
 Read before every build. Newest first. Format in `lessons/README.md`.
 
+### L-20261104-11 — Map + UI must be visible in Studio Edit mode (no pressing Play)
+- Scope: global (owner: "make sure my rule that i can see the map and ui without having to press
+  start still exists"; same rule as standards/GAME_SYSTEMS.md "Editor-visible result is mandatory")
+- Root cause: the rule lived only on the `test/foundation-ui-art` branch; this branch's CLAUDE.md,
+  make-game skill and checklist never mentioned it, and the game template built UI/bases only at
+  runtime (client DEV HUD fallback, server-spawned base models).
+- Rule: every game must open in Studio **Edit mode** showing (a) the full imported Blender map +
+  bases + props placed in Workspace (not spawned by scripts at runtime), and (b) the real ScreenGuis
+  under StarterGui with mock preview data, plus a labelled way to flip between screens
+  (`studio/preview_screen.luau`). Runtime scripts may update/replace them but must never be the only
+  way to see them. "Previewed" is still not "Tested" — runtime playtests remain required.
+- Applied to: `CLAUDE.md` (working rule 9), `.claude/skills/make-game/SKILL.md` step 8,
+  `qa/checklist.md`, `games/ragdoll-off-a-mountain` (Rojo StarterGui previews, Edit-mode base/prop
+  placement script, server reuses pre-placed bases)
+
 ### L-20261104-09 — Learn the art STYLE, never repeat assets; quality ≠ blocky + studs; plausible detail
 - Scope: global (owner's "permanent 3D art direction"; "doesn't make sense to have spikes on the frog")
 - Rule: bible ★ (verbatim). Test collection = calibration sample only; every game gets ORIGINAL assets
