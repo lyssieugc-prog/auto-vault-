@@ -354,14 +354,33 @@ def frappo():
 
     for sx, side in ((-1, "L"), (1, "R")):  # big eyes on the eye domes, smug half-lids
         ex = sx * 1.25
-        feat(f"Eye{side}", (1.5, 0.16, 1.5), ex, 7.55, WHITE)
-        feat(f"Pupil{side}", (0.62, 0.14, 0.8), ex - sx * 0.25, 7.7, "#141414", dy=0.08)
+        feat(f"Eye{side}", (1.8, 0.16, 1.7), ex, 7.45, WHITE)  # exaggerated: ~33% of head width
+        feat(f"Pupil{side}", (0.75, 0.14, 0.95), ex - sx * 0.3, 7.65, "#141414", dy=0.08)
         feat(f"Sparkle{side}", (0.24, 0.1, 0.24), ex - sx * 0.05, 8.25, WHITE, dy=0.16, emission=1.0)
-        feat(f"Lid{side}", (1.62, 0.2, 0.5), ex, 8.6, "#2F9A22", dy=0.1, rot=(0, math.radians(sx * -8), 0))
+        feat(f"Lid{side}", (1.92, 0.2, 0.5), ex, 8.75, "#2F9A22", dy=0.1, rot=(0, math.radians(sx * -8), 0))
         feat(f"Blush{side}", (0.7, 0.12, 0.32), sx * 2.15, 6.05, "#FF8FB1")
     feat("Mouth", (3.0, 0.16, 0.9), 0.2, 4.95, "#141414", rot=(0, math.radians(-6), 0))  # open smirk
     feat("Tongue", (1.3, 0.14, 0.42), -0.2, 5.0, "#FF6F9B", dy=0.06)
     feat("Emblem", (0.7, 0.12, 0.7), 0.0, 2.75, G)  # leaf logo on the cup sleeve
+    # spike ridge over the top/back of the head (standard 6: spikes)
+    hc, hr = (0.0, 0.125, 6.625), (2.75, 2.125, 2.0)
+    for i in range(6):
+        t = 0.25 + i * 0.24
+        y, z = hc[1] - hr[1] * 1.0 * math.sin(t), hc[2] + hr[2] * 1.0 * math.cos(t)
+        P.append(vb.cyl(f"Spike{i}", 0.55 - i * 0.04, 0.03, 1.4 - i * 0.08, (0, y, z), "#2F9A22" if i % 2 else "#FFC21A",
+                        sides=6, rot=(t, 0, 0)))
+    # scale plates on the head sides (standard 6: scales)
+    for sx in (-1, 1):
+        for yy in (-0.9, -0.3, 0.3):
+            for zz in (6.0, 6.6, 7.2):
+                u = 1 - ((yy - hc[1]) / hr[1]) ** 2 - ((zz - hc[2]) / hr[2]) ** 2
+                xx = sx * (hr[0] * math.sqrt(max(u, 0.0)) + 0.12)
+                P.append(vb.rounded(f"Scale{sx}_{yy}_{zz}", (0.2, 0.5, 0.45), (xx, yy, zz - 0.22), "#3AAE2C", radius=0.08,
+                                    rot=(0, 0, math.radians(sx * 8))))
+    # layered body bands on the cup + lid rim (standard 6: layered body parts)
+    P.append(vb.cyl("BandLow", 1.66, 1.7, 0.3, (0, 0, 1.85), "#FFD93B", sides=20))
+    P.append(vb.cyl("BandHigh", 1.78, 1.82, 0.25, (0, 0, 4.1), "#FF6FAE", sides=20))
+    P.append(vb.cyl("LidRim", 1.98, 1.98, 0.22, (0, 0, 4.72), "#2B1A10", sides=20))
     for i in range(6):  # glow sparkles
         a = 2 * math.pi * i / 6
         P.append(vb.block(f"Glow{i}", (0.35, 0.35, 0.35), (math.cos(a) * 3.8, math.sin(a) * 3.8, 2.0 + (i % 3) * 1.5),
@@ -391,8 +410,118 @@ def r6_dummy():
 
 LAYOUT = {  # world positions after scaling; every model's FRONT faces +y
     "Tree": (-30, -12), "Rock": (-26, 16), "Building": (6, -20), "Conveyor": (6, 16),
-    "Brainrot": (34, 6), "Dummy": (-10, 8),
+    "Brainrot": (34, 6), "Dummy": (-12, 4),
 }
+
+
+GROUND = (-61, 69, -45, 45)  # x0, x1, y0, y1 of the play field
+TERRACES = [  # (x0, x1, y0, y1, height) — stepped rectangular elevation (standard 5)
+    (-61, -44, -45, -24, 2.0), (-61, -52, -45, -32, 4.5), (-36, -14, -45, -39, 2.0), (28, 69, -45, -38, 2.5),
+    (44, 69, -45, -30, 5.0), (56, 69, -30, 20, 2.0), (62, 69, -22, 8, 4.0), (-61, -55, -24, 40, 1.5),
+]
+PATHS = [  # polylines (standard 7: clear paths)
+    [(-8, 45), (-8, 6), (15.5, -4)],
+    [(-8, 26), (34, 26), (34, 14)],
+]
+KEEP_CLEAR = [  # gameplay/model footprints (x0, x1, y0, y1)
+    (-14, 27, -38, 3), (-42, -18, -24, 0), (-35, -17, 9, 23), (-8, 20, 10, 22), (28, 40, 0, 14), (-15, -9, 1, 7),
+]
+
+
+def _seg_dist(px, py, a, b):
+    (ax, ay), (bx, by) = a, b
+    dx, dy = bx - ax, by - ay
+    t = max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)))
+    return math.hypot(px - (ax + t * dx), py - (ay + t * dy))
+
+
+def path_dist(x, y):
+    return min(_seg_dist(x, y, line[i], line[i + 1]) for line in PATHS for i in range(len(line) - 1))
+
+
+def terrain_height(x, y):
+    h = 0.0
+    for x0, x1, y0, y1, th in TERRACES:
+        if x0 <= x <= x1 and y0 <= y <= y1:
+            h = max(h, th)
+    return h
+
+
+def terrain():
+    P = []
+    gx0, gx1, gy0, gy1 = GROUND
+    P.append(vb.solid("Baseplate", (gx1 - gx0, gy1 - gy0, 1.0), ((gx0 + gx1) / 2, (gy0 + gy1) / 2, -1.0), C["ground"], bevel=0.0))
+    for i, (x0, x1, y0, y1, h) in enumerate(TERRACES):  # layered: dirt/stone body + grass cap
+        P.append(vb.solid(f"TerraceBody{i}", (x1 - x0, y1 - y0, h - 0.6), ((x0 + x1) / 2, (y0 + y1) / 2, 0), "#9A6B45", bevel=0.05))
+        P.append(vb.solid(f"TerraceCap{i}", (x1 - x0 + 0.3, y1 - y0 + 0.3, 0.6), ((x0 + x1) / 2, (y0 + y1) / 2, h - 0.6),
+                          "#5BCB3F", bevel=0.06))
+    rnd = random.Random(5)
+    for li, line in enumerate(PATHS):  # stone path tiles (two tones, slight jitter)
+        for si in range(len(line) - 1):
+            (ax, ay), (bx, by) = line[si], line[si + 1]
+            n = max(1, int(math.hypot(bx - ax, by - ay) / 3.2))
+            for k in range(0 if (si == 0 and li == 0) else 1, n + 1):  # skip shared tiles (no coplanar overlap)
+                t = k / n
+                x, y = ax + (bx - ax) * t, ay + (by - ay) * t
+                P.append(vb.solid(f"PathTile{li}_{si}_{k}", (2.9, 2.9, 0.25), (x, y, 0), "#E4D3A8" if (k + si) % 2 else "#D2BE8E",
+                                  bevel=0.05, rot=(0, 0, math.radians(rnd.uniform(-6, 6)))))
+    for i in range(4):  # lamp posts along the main path
+        x, y = -8 + (3.6 if i % 2 else -3.6), 40 - i * 11
+        P.append(vb.cyl(f"LampPost{i}", 0.28, 0.22, 4.2, (x, y, 0), "#2E3440", sides=8))
+        P.append(vb.rounded(f"LampHead{i}", (0.9, 0.9, 0.9), (x, y, 4.2), "#2E3440", radius=0.1))
+        P.append(vb.ball(f"LampGlow{i}", (0.34, 0.34, 0.34), (x, y, 4.65), C["light"], segments=10, rings=6, emission=5))
+    for side in (-1, 1):  # picket fence at the entrance
+        for i in range(7):
+            P.append(vb.solid(f"Picket{side}_{i}", (0.35, 0.35, 1.6), (-8 + side * 2.6, 44 - i * 1.4, 0), "#FFFFFF", bevel=0.05))
+        P.append(vb.solid(f"Rail{side}", (0.2, 9.0, 0.25), (-8 + side * 2.6, 39.8, 0.9), "#FFFFFF", bevel=0.03))
+    return P
+
+
+def decorations():
+    """Dense themed decoration (standard 7), avoiding paths + gameplay footprints."""
+    rnd = random.Random(21)
+    P = []
+    gx0, gx1, gy0, gy1 = GROUND
+    flowers = ("#FF5FA2", "#FFD93B", "#FF9F1C", "#B678EA", "#FFFFFF")
+    placed, tries = 0, 0
+    while placed < 190 and tries < 4000:
+        tries += 1
+        x, y = rnd.uniform(gx0 + 2, gx1 - 2), rnd.uniform(gy0 + 2, gy1 - 2)
+        if path_dist(x, y) < 3.5 or any(x0 <= x <= x1 and y0 <= y <= y1 for x0, x1, y0, y1 in KEEP_CLEAR):
+            continue
+        z = terrain_height(x, y)
+        kind = rnd.random()
+        tag = f"Deco{placed}"
+        if kind < 0.35:  # flower: stem + angular bloom
+            P.append(vb.solid(f"{tag}_Stem", (0.18, 0.18, 0.8), (x, y, z), C["leaf_dark"], bevel=0.02))
+            P.append(vb.solid(f"{tag}_Bloom", (0.6, 0.6, 0.45), (x, y, z + 0.8), flowers[rnd.randrange(5)], bevel=0.08,
+                              rot=(0, 0, math.radians(rnd.uniform(0, 45)))))
+        elif kind < 0.6:  # grass tuft: three tilted angular blades
+            for j in range(3):
+                P.append(vb.solid(f"{tag}_Blade{j}", (0.22, 0.12, 0.9), (x + (j - 1) * 0.22, y, z), C["leaf_light"], bevel=0.02,
+                                  rot=(0, math.radians((j - 1) * 18), math.radians(rnd.uniform(0, 90)))))
+        elif kind < 0.82:  # bush: cluster of angular leaf cubes
+            for j in range(3):
+                s = rnd.uniform(1.0, 1.6)
+                P.append(vb.rounded(f"{tag}_Bush{j}", (s, s, s * 0.85), (x + rnd.uniform(-0.6, 0.6), y + rnd.uniform(-0.6, 0.6), z),
+                                    C["leaf"] if j % 2 else C["leaf_dark"], radius=s * 0.15,
+                                    rot=(0, 0, math.radians(rnd.uniform(-25, 25)))))
+        elif kind < 0.92:  # mushroom
+            P.append(vb.cyl(f"{tag}_Stalk", 0.22, 0.25, 0.7, (x, y, z), "#FFF4E0", sides=8))
+            P.append(vb.rounded(f"{tag}_Cap", (1.0, 1.0, 0.5), (x, y, z + 0.65), "#FF3B3B", radius=0.18))
+            P.append(vb.solid(f"{tag}_Dot", (0.22, 0.22, 0.06), (x + 0.2, y - 0.15, z + 1.15), "#FFFFFF", bevel=0.02))
+        else:  # pebble stack
+            P.append(vb.rounded(f"{tag}_Pebble", (1.1, 0.8, 0.5), (x, y, z), C["stone"], radius=0.15,
+                                rot=(0, 0, math.radians(rnd.uniform(0, 90)))))
+            P.append(vb.rounded(f"{tag}_Pebble2", (0.6, 0.5, 0.35), (x + 0.2, y, z + 0.45), C["stone_dark"], radius=0.1))
+        placed += 1
+    for i, (x, y, k) in enumerate(((-57, -38, 1.3), (60, -26, 1.2), (52, -42, 1.0), (-58, 20, 1.1), (64, 0, 1.0))):
+        objs = tree()
+        vb.scale_group(objs, k * 1.4)
+        offset(objs, x, y, terrain_height(x, y))
+        vb.restud(objs)
+        P += objs
+    return P
 
 
 def build_all():
@@ -410,9 +539,8 @@ def build_all():
         offset(objs, x, y)
         vb.restud(objs)
         groups[name] = objs
-    ground = vb.block("Baseplate", (130, 90, 1), (4, 0, -1), C["ground"], bevel=0.0)
-    vb.stud_surface(ground, "all")
-    return groups, [ground]
+    world = terrain() + decorations()
+    return groups, world
 
 
 def main(out_dir):

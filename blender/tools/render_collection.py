@@ -24,6 +24,7 @@ SHOTS = {  # real-Roblox-scale layout (test_collection.LAYOUT); cameras on the +
     "building": ((42, 32, 30), (6, -20, 15), 30),
     "conveyor": ((27, 42, 15), (6, 16, 5), 34),
     "brainrot": ((39, 27, 10), (34, 6, 6.5), 32),
+    "brainrot_back": ((44, -6, 13), (34, 6, 7.0), 32),
 }
 
 

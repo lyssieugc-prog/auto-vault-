@@ -1,10 +1,36 @@
 # 3D Style Bible — DRAFT (not final until the owner approves the test collection)
 
-Status: **DRAFT v4** (stud size approved: 0.5) · Source: 11 reference images + 20 video frames in `3d-model-references/`
+Status: **DRAFT v5** (core standards from owner; stud size approved: 0.5) · Source: 11 reference images + 20 video frames in `3d-model-references/`
 (style references only — never copy their objects, characters, layouts or assets).
 Test collection: `blender/templates/test_collection.py` → renders in `references/images/pending/`.
 
 Every number below is a default; a game's style profile may override it explicitly.
+
+## 0. Core standards — "High-Detail Studded Blocky Roblox Simulator Art Style" (owner, verbatim)
+1. Every major asset should have a recognizable blocky silhouette.
+2. Use actual layered geometric details instead of relying on flat image textures.
+3. Apply small, consistent studs to suitable surfaces such as terrain, buildings, platforms, and some models.
+4. Create trees using multiple clusters of angular leaves, not single spheres.
+5. Create terrain using stepped, rectangular geometry with clearly visible elevation changes.
+6. Make creatures visually complex through scales, spikes, layered body parts, and exaggerated facial features.
+7. Populate environments densely with themed decorations, but preserve clear paths and gameplay areas.
+8. Use vibrant, coordinated color palettes rather than realistic, muted colors.
+9. Make buildings visually interesting through trims, awnings, signs, windows, props, and layered architectural pieces.
+10. Use bright lighting, readable silhouettes, and soft shadows to keep the world playful.
+
+### How each standard is measured in Blender
+| # | Measurable rule |
+|---|---|
+| 1 | Silhouette test: model reads from 50 studs as a flat black shape; ≥ 1 silhouette feature (§3). |
+| 2 | Detail is geometry (frames, trims, plates, props). Only studs are a texture. ≥ 3 depth layers on any face larger than 6×6 studs (wall → trim → prop). |
+| 3 | Stud texture 0.5-stud spacing (§2), identical size everywhere (world-space UVs). |
+| 4 | Trees: ≥ 8 angular leaf clusters (rounded cubes, tilted ±8°, yaw ±20°), 2–3 greens; never one sphere. |
+| 5 | Terrain: rectangular terraces with visible steps of 1.5–6 studs; layered (stone/dirt body + grass cap); flat play areas kept between them. |
+| 6 | Creatures: ≥ 5 spikes or horns, ≥ 8 scale/plate pieces, ≥ 3 stacked body layers, eyes ≥ 30% of head width. |
+| 7 | Decoration density ≥ 1 themed prop per 40 sq studs of non-path ground; keep a ≥ 3-stud clear path and a ≥ 2.5-stud margin around paths and gameplay objects. |
+| 8 | 1 main hue + 1 secondary + 1 accent per model; saturation high; no greys except stone/steel. |
+| 9 | Building detail-parity checklist (§3b). |
+| 10 | Lighting preset (§10): sun 5.0 warm, soft angle 0.12, fill 1.2, sky blue. |
 
 ---
 

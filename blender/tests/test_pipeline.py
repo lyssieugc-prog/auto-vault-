@@ -87,7 +87,7 @@ def main():
 
     # Style test collection gates (style-guides/3D_STYLE_BIBLE.md)
     import test_collection
-    groups, _ = test_collection.build_all()
+    groups, _ = test_collection.build_all()  # _ = terrain + decorations
     all_objs = [o for objs in groups.values() for o in objs]
     check(not any(o.get("vault_kind") == "studs" for o in all_objs), "collection: no physical stud geometry")
     check(any(m.get("vault_studs") for m in bpy.data.materials), "collection: texture studs in use")
@@ -97,6 +97,18 @@ def main():
     bad = [o.name for o in solids if o.get("vault_stud_mode") != "all"]
     check(not bad, f"collection: studs on all sides of every solid ({len(solids)} solids, missing: {bad[:5]})")
     check(len(groups["Building"]) >= 150, f"building detail parity ({len(groups['Building'])} pieces >= 150)")
+    # Core standards (bible §0) — measurable parts
+    world = _
+    wn = [o.name for o in world]
+    check(sum(n.startswith("TerraceCap") for n in wn) >= 4, "std5: stepped terrain terraces present")
+    check(len({o.name.split("_")[0] for o in world if o.name.startswith("Deco")}) >= 150, "std7: dense decorations (>=150)")
+    check(all(test_collection.path_dist(o.location[0], o.location[1]) >= 3.0 for o in world if o.name.startswith("Deco")),
+          "std7: decorations keep paths clear")
+    check(sum(o.name.startswith("Leaves") for o in groups["Tree"]) >= 8, "std4: tree has >= 8 angular leaf clusters")
+    bn = [o.name for o in groups["Brainrot"]]
+    check(sum(n.startswith("Spike") for n in bn) >= 5, "std6: creature spikes >= 5")
+    check(sum(n.startswith("Scale") for n in bn) >= 8, "std6: creature scale plates >= 8")
+    check(bpy.data.objects["EyeL"].dimensions.x >= 0.3 * 5.5, "std6: exaggerated eyes (>= 30% head width)")
     names = {o.name for o in groups["Brainrot"]}
     check({"EyeL", "EyeR", "PupilL", "PupilR", "Mouth"} <= names, "brainrot has a full face")
     body = bpy.data.objects["Frappo_Body"]

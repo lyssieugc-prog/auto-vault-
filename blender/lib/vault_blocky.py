@@ -617,12 +617,15 @@ def stud_surface(obj, mode="all"):
     transforming). mode: 'all' (default, owner rule L-20261104-05), 'top', or 'none'."""
     if obj.type != "MESH" or mode == "none":
         return obj
-    bpy.context.view_layer.update()
     me = obj.data
     if not me.uv_layers:
         me.uv_layers.new(name="UVMap")
     uvl = me.uv_layers.active.data
-    mw = obj.matrix_world
+    if obj.parent is None:
+        mw = obj.matrix_basis.copy()  # current loc/rot/scale without a depsgraph update (fast)
+    else:
+        bpy.context.view_layer.update()
+        mw = obj.matrix_world
     rot = mw.to_3x3()
     for poly in me.polygons:
         n = (rot @ poly.normal).normalized()

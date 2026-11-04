@@ -2,6 +2,16 @@
 
 Read before every build. Newest first. Format in `lessons/README.md`.
 
+### L-20261104-08 — Owner's core art standards ("High-Detail Studded Blocky Roblox Simulator")
+- Scope: global (owner supplied 10 standards)
+- Rule: `style-guides/3D_STYLE_BIBLE.md` §0 (verbatim + measurable table). Notably: stepped
+  rectangular terrain, dense themed decoration with clear paths, creatures with spikes/scales/layers
+  and exaggerated faces, trees from ≥8 angular leaf clusters, layered geometric detail.
+- Note: §0.3 says studs on "suitable surfaces … and some models"; L-05/L-06 (owner) said EVERYTHING
+  incl. pets. Kept "everything" until the owner says otherwise.
+- Applied to: bible §0, `test_collection.py` (terrain, paths, lamps, fence, 190 decorations,
+  terrace trees, creature spikes/scales/bands, bigger eyes), pipeline gates for std 4/5/6/7
+
 ### L-20261104-07 — Buildings need detail on par with collectibles (not more)
 - Scope: global (owner: "the brainrot is more detailed than the buildings, that's really not how it
   should be… the buildings should have more detail" → "not MORE than collectibles")
