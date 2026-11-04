@@ -227,7 +227,7 @@ def bone_3d(prefix, center, L, col, rot=(0, 0, 0), emission=0.0):
     shaft = C(f"{prefix}Shaft", r, r, L * 0.78, (0, 0, 0), col, sides=10, rot=(0, D90, 0), emission=emission)
     P.append(shaft)
     for i, (dx, dy) in enumerate(((-1, -1), (-1, 1), (1, -1), (1, 1))):
-        P.append(B(f"{prefix}Knob{i}", (r * 1.55, r * 1.55, r * 1.55), (dx * L * 0.39, dy * r * 1.05, 0), col,
+        P.append(B(f"{prefix}Knob{i}", (r * 1.35, r * 1.35, r * 1.35), (dx * L * 0.39, 0, dy * r * 1.0), col,
                    segments=12, rings=8, emission=emission))
     # centre the shaft and put everything under one transform
     shaft.location = (-L * 0.39, 0, 0)
@@ -1181,7 +1181,7 @@ def stage3():
     # upper floor windows + balcony door (glass)
     for k, (a, b) in enumerate(((-8.6, -5.4), (-3.6, -0.4), (6.4, 9.2))):
         P += window(f"WinU{k}", (a + b) / 2, y1 + 0.05, 10.0, b - a, 3.6, "+y", frame=CREAM["base"],
-                    sill=WOOD["deep"], shutters=RED if k < 2 else None)
+                    sill=WOOD["deep"], shutters=RED if k == 0 else None)
     P += window("BalcDoor", 3.2, y1 + 0.05, f2 + 0.2, 3.6, 5.4, "+y", frame=CREAM["base"], mullions=1)
     P += window("WinUB", 0, y0 - 0.05, 10.0, 6.0, 3.6, "-y", frame=CREAM["base"], sill=WOOD["deep"])
     for k, nrm, xx in (("L", "-x", x0 - 0.05), ("R", "+x", x1 + 0.05)):
@@ -1225,11 +1225,17 @@ def stage3():
           S("BalcChair", (1.2, 1.2, 0.3), (6.0, y1 + 1.4, f2 + 1.0), BLUE["base"]),
           S("BalcChairB", (1.2, 0.3, 1.4), (6.0, y1 + 0.85, f2 + 1.0), BLUE["dark"])]
     # sign above the awning: "LODGE" board with ski + bone icons (blank planks, icons physical)
-    P += sign_board("LodgeSign", -5.2, y1 + 0.1, 8.7, 7.4, 1.6, board=WOOD)
-    P += bone_icon("LodgeSignBone", -7.6, y1 + 0.45, 9.55, 1.8, CREAM["light"], rot=0.2)
+    # rooftop billboard on the front slope (silhouette feature + signage with icons)
+    sgx, sgy, sgz = -4.5, -8.6, 19.6
+    P += [S("LodgeSignPostL", (0.5, 0.5, 4.0), (sgx - 3.2, sgy - 0.4, sgz - 3.0), WOOD["deep"]),
+          S("LodgeSignPostR", (0.5, 0.5, 4.0), (sgx + 3.2, sgy - 0.4, sgz - 3.0), WOOD["deep"])]
+    P += sign_board("LodgeSign", sgx, sgy, sgz, 8.0, 2.2, board=WOOD, border=RED["dark"])
+    P += bone_icon("LodgeSignBone", sgx - 2.6, sgy + 0.35, sgz + 1.15, 2.2, CREAM["light"], rot=0.2)
     for i, (col, rr) in enumerate(((RED["base"], 0.5), (BLUE["base"], -0.5))):
-        P.append(S(f"LodgeSignSki{i}", (0.35, 0.2, 2.0), (-3.0 + i * 0.4, y1 + 0.55, 8.55), col, rot=(0, rr, 0)))
-    P += mountain_icon("LodgeSignPeak", -5.2, y1 + 0.45, 8.85, 1.6, depth=0.12)
+        P.append(S(f"LodgeSignSki{i}", (0.4, 0.2, 2.4), (sgx + 2.4 + i * 0.5, sgy + 0.45, sgz - 0.1), col, rot=(0, rr, 0)))
+    P += mountain_icon("LodgeSignPeak", sgx, sgy + 0.35, sgz + 0.2, 2.0, depth=0.12)
+    for i in range(5):
+        P.append(B(f"LodgeSignBulb{i}", (0.2, 0.2, 0.2), (sgx - 3.2 + i * 1.6, sgy + 0.45, sgz + 2.6), LAMP, segments=8, rings=5, emission=4))
     section("LodgeRoof")
     # roof: red, ridge along X, gables on the sides, snow cap, chimney + vents + weather vane
     P += roof("Roof", 0, yc, top, D / 2 + 0.4, W + 2.4, 6.5, ridge="x", col=RED, ov=1.6, bands=4, snow=0.55, rnd=rnd)
@@ -1562,15 +1568,16 @@ def stage5():
     P += [S("DoorTransom", (4.0, 0.2, 1.6), (0, y1 + 0.1, f1 + 7.0), GLASS, studs="none"),
           S("DoorTransomBar", (4.6, 0.4, 0.3), (0, y1 + 0.2, f1 + 8.7), GOLD["base"])]
     # banners hanging between pilasters (red cloth, gold edges, bone emblem, tassels)
-    for k, xx in enumerate((-10.5, -5.5, 5.5, 10.5)):
+    for k, xx in enumerate((-13.0, -8.0, 8.0, 13.0)):
         col = RED if k % 2 == 0 else GRN
         P += [S(f"BanRod{k}", (3.0, 0.3, 0.3), (xx, y1 + 0.75, 15.6), GOLD["dark"]),
-              S(f"Ban{k}", (2.4, 0.18, 6.6), (xx, y1 + 0.85, 9.0), col["base"]),
-              S(f"BanEdgeL{k}", (0.25, 0.22, 6.6), (xx - 1.2, y1 + 0.85, 9.0), GOLD["base"]),
-              S(f"BanEdgeR{k}", (0.25, 0.22, 6.6), (xx + 1.2, y1 + 0.85, 9.0), GOLD["base"]),
-              prism(f"BanTail{k}", [(-1.32, 0), (1.32, 0), (1.32, -1.2), (0, -0.4), (-1.32, -1.2)], 0.18, "y", (xx, y1 + 0.76, 9.0), col["dark"])]
-        P += bone_icon(f"BanBone{k}", xx, y1 + 0.94, 13.0, 1.6, CREAM["light"], rot=0.9, depth=0.12)
-        P.append(S(f"BanStripe{k}", (2.4, 0.2, 0.3), (xx, y1 + 0.9, 11.0), GOLD["base"]))
+              S(f"Ban{k}", (1.9, 0.18, 6.6), (xx, y1 + 0.85, 9.0), col["base"]),
+              S(f"BanEdgeL{k}", (0.22, 0.22, 6.6), (xx - 0.95, y1 + 0.85, 9.0), GOLD["base"]),
+              S(f"BanEdgeR{k}", (0.22, 0.22, 6.6), (xx + 0.95, y1 + 0.85, 9.0), GOLD["base"]),
+              prism(f"BanTail{k}", [(-1.06, 0), (1.06, 0), (1.06, -1.2), (0, -0.4), (-1.06, -1.2)], 0.18, "y", (xx, y1 + 0.76, 9.0), col["dark"])]
+        P += bone_icon(f"BanBone{k}", xx, y1 + 0.94, 13.2, 1.4, CREAM["light"], rot=0.9, depth=0.12)
+        P.append(S(f"BanStripe{k}", (1.9, 0.2, 0.3), (xx, y1 + 0.9, 11.0), GOLD["base"]))
+        P.append(B(f"BanTassel{k}", (0.3, 0.3, 0.36), (xx, y1 + 0.85, 8.0), GOLD["base"], segments=8, rings=6))
     # front banners hide the front windows -> they hang in front of the PILASTER gaps... keep narrow
     section("HallRoof")
     # main roof: red with gold ridge, ridge along X
@@ -1637,8 +1644,9 @@ def stage5():
         hnd.location = (sxx * 2.5, sy + 0.2, zr + 13.0)
         vb.restud([hnd])
     # giant gold bone crossing behind the skull + the friendly skull on the cup
-    P += bone_3d("SpBone", (0, sy - 0.8, zr + 16.4), 8.5, GOLD["light"], rot=(0, 0.45, 0))
-    P += friendly_skull("SpSkull", 0, sy + 0.3, zr + 14.1, s=1.15)
+    P += bone_3d("SpBone", (0, sy - 1.9, zr + 17.6), 7.2, GOLD["light"], rot=(0, 0.42, 0))
+    P += bone_3d("SpBoneB", (0, sy - 2.1, zr + 17.6), 7.2, GOLD["base"], rot=(0, -0.42, 0))
+    P += friendly_skull("SpSkull", 0, sy + 0.2, zr + 14.0, s=1.45)
     for i in range(6):
         a2 = i * math.pi / 3
         P.append(S(f"SpSpark{i}", (0.5, 0.5, 0.5), (math.cos(a2) * 4.4, sy + math.sin(a2) * 4.4, zr + 15.5 + (i % 2) * 1.5),
@@ -1753,7 +1761,7 @@ def export_all(out_dir):
         e["title"] = STAGE_NAMES[n]
         entries.append(e)
     markers = {"origin": "pad top centre", "pad": [48, 40], "front": "+Y (toward the mountain)", "units": "studs",
-               "axes": "Blender Z-up; Roblox: X same, Blender +Y -> Roblox -Z, Blender Z -> Roblox Y",
+               "axes": "Blender coords (Z up, +Y = pad front). FBX exported Y-up/forward -Z by vault_blocky; confirm the Roblox mapping on first import (blender/templates/scale_reference.py)",
                "markers": {k: MARKERS[k] for k in ("Spawn", "LiftPad", "ClinicBed", "PetPedestal1", "PetPedestal2",
                                                    "PetPedestal3", "PetPedestal4", "TrophyBoard", "OwnerSign")},
                "stageDoors": MARKERS.get("StageDoors", {})}
@@ -1832,15 +1840,17 @@ def render_all(samples=32, only=None):
         vb.reset_scene()
         if n == "lineup":
             for k in range(1, 6):
-                ox = (k - 3) * 54.0
+                ox = (k - 3) * 52.0
                 objs = collect(build_kit) + collect(STAGES[k])
                 for o in objs:
-                    o.location.x += ox
-                preview_ground(ox)
+                    o.location.x -= ox  # viewed from +y: stage 1 on the left
+                S(f"PvPad{k}", (48, 40, 1.0), (-ox, 0, -1.0), "#D9C9A3", bevel=0.05)
+                S(f"PvPadLip{k}", (48.6, 40.6, 0.3), (-ox, 0, -1.25), "#B8A47A", bevel=0.05)
             apply_glass(list(bpy.data.objects))
             scene, cam = setup_render(samples)
-            S("PvGrassWide", (400, 160, 1.0), (0, 0, -2.6), "#43B032", bevel=0.0)
-            shoot(scene, cam, os.path.join(PREVIEWS, "basecamp_lineup.png"), (0, 175, 95), (0, -4, 9), 30)
+            scene.render.resolution_x, scene.render.resolution_y = 2400, 800
+            S("PvGrassWide", (420, 220, 1.0), (0, 0, -2.0), "#4FC33A", bevel=0.0)
+            shoot(scene, cam, os.path.join(PREVIEWS, "basecamp_lineup.png"), (0, 150, 62), (0, -6, 10), 24)
             continue
         collect(build_kit)
         if n:
@@ -1849,8 +1859,8 @@ def render_all(samples=32, only=None):
         apply_glass(list(bpy.data.objects))
         scene, cam = setup_render(samples)
         h = STAGE_H[n]
-        dist = 52 + h * 0.9
-        tz = h * 0.35
+        dist = 46 + h * 0.85
+        tz = h * 0.42
         if n == 0:
             shoot(scene, cam, os.path.join(PREVIEWS, "kit_front.png"), (0, 52, 22), (0, 8, 2.5), 32)
             shoot(scene, cam, os.path.join(PREVIEWS, "kit_lift_closeup.png"), (8, 30, 10), (16.0, 13.0, 4.5), 35)
@@ -1858,13 +1868,13 @@ def render_all(samples=32, only=None):
             shoot(scene, cam, os.path.join(PREVIEWS, "kit_boards_pets_closeup.png"), (0, 34, 8), (0, 12, 2.5), 35)
             continue
         if "front" in VIEWS:
-            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_front.png"), (0, dist, h * 0.55 + 14), (0, -3, tz), 30)
+            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_front.png"), (0, dist, h * 0.45 + 12), (0, -4, tz), 32)
         if "side" in VIEWS:
-            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_side.png"), (dist, -4, h * 0.55 + 12), (0, -4, tz), 30)
+            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_side.png"), (dist, -5, h * 0.45 + 10), (0, -5, tz), 32)
         if "back" in VIEWS:
-            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_back.png"), (6, -dist, h * 0.55 + 14), (0, -4, tz), 30)
+            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_back.png"), (4, -dist, h * 0.45 + 12), (0, -5, tz), 32)
         if "hero" in VIEWS:
-            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_hero.png"), (dist * 0.55, dist * 0.7, h * 0.4 + 6), (0, -6, tz + 1), 30)
+            shoot(scene, cam, os.path.join(PREVIEWS, f"{tag}_hero.png"), (dist * 0.6, dist * 0.72, h * 0.45 + 8), (0, -6, tz + 1), 30)
 
 
 if __name__ == "__main__":

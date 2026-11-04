@@ -3,8 +3,8 @@
     "name": "BaseCamp_Kit",
     "file": "assets/export/basecamp/BaseCamp_Kit.fbx",
     "glb": "assets/export/basecamp/BaseCamp_Kit.glb",
-    "tris": 17664,
-    "parts": 360,
+    "tris": 20988,
+    "parts": 429,
     "kind": "basecamp",
     "meshes": [
       {
@@ -15,7 +15,7 @@
       {
         "name": "BaseCamp_Kit_Lift_Body",
         "model": "Lift",
-        "tris": 2596
+        "tris": 2140
       },
       {
         "name": "BaseCamp_Kit_Lift_Neon",
@@ -25,7 +25,7 @@
       {
         "name": "BaseCamp_Kit_Yard_Body",
         "model": "Yard",
-        "tris": 9752
+        "tris": 13532
       },
       {
         "name": "BaseCamp_Kit_Yard_Neon",
@@ -48,14 +48,14 @@
     "name": "BaseCamp_Stage1",
     "file": "assets/export/basecamp/BaseCamp_Stage1.fbx",
     "glb": "assets/export/basecamp/BaseCamp_Stage1.glb",
-    "tris": 7556,
-    "parts": 169,
+    "tris": 12556,
+    "parts": 284,
     "kind": "basecamp",
     "meshes": [
       {
         "name": "BaseCamp_Stage1_Campsite_Body",
         "model": "Campsite",
-        "tris": 5324
+        "tris": 10324
       },
       {
         "name": "BaseCamp_Stage1_Campsite_Neon",
@@ -80,8 +80,8 @@
     "name": "BaseCamp_Stage2",
     "file": "assets/export/basecamp/BaseCamp_Stage2.fbx",
     "glb": "assets/export/basecamp/BaseCamp_Stage2.glb",
-    "tris": 20368,
-    "parts": 465,
+    "tris": 21952,
+    "parts": 501,
     "kind": "basecamp",
     "meshes": [
       {
@@ -112,7 +112,7 @@
       {
         "name": "BaseCamp_Stage2_Yard_Body",
         "model": "Yard",
-        "tris": 4668
+        "tris": 6252
       }
     ],
     "stage": 2,
@@ -122,14 +122,19 @@
     "name": "BaseCamp_Stage3",
     "file": "assets/export/basecamp/BaseCamp_Stage3.fbx",
     "glb": "assets/export/basecamp/BaseCamp_Stage3.glb",
-    "tris": 28220,
-    "parts": 504,
+    "tris": 29860,
+    "parts": 539,
     "kind": "basecamp",
     "meshes": [
       {
         "name": "BaseCamp_Stage3_LodgeFront_Body",
         "model": "LodgeFront",
-        "tris": 4056
+        "tris": 4144
+      },
+      {
+        "name": "BaseCamp_Stage3_LodgeFront_Neon",
+        "model": "LodgeFront",
+        "tris": 320
       },
       {
         "name": "BaseCamp_Stage3_LodgeInterior_Body",
@@ -154,7 +159,7 @@
       {
         "name": "BaseCamp_Stage3_LodgeShell_Body",
         "model": "LodgeShell",
-        "tris": 7536
+        "tris": 7184
       },
       {
         "name": "BaseCamp_Stage3_LodgeShell_Glass",
@@ -169,7 +174,7 @@
       {
         "name": "BaseCamp_Stage3_Yard_Body",
         "model": "Yard",
-        "tris": 5608
+        "tris": 7192
       },
       {
         "name": "BaseCamp_Stage3_Yard_Neon",
@@ -184,8 +189,8 @@
     "name": "BaseCamp_Stage4",
     "file": "assets/export/basecamp/BaseCamp_Stage4.fbx",
     "glb": "assets/export/basecamp/BaseCamp_Stage4.glb",
-    "tris": 29764,
-    "parts": 621,
+    "tris": 31348,
+    "parts": 657,
     "kind": "basecamp",
     "meshes": [
       {
@@ -231,7 +236,7 @@
       {
         "name": "BaseCamp_Stage4_Yard_Body",
         "model": "Yard",
-        "tris": 3936
+        "tris": 5520
       },
       {
         "name": "BaseCamp_Stage4_Yard_Neon",
@@ -246,14 +251,14 @@
     "name": "BaseCamp_Stage5",
     "file": "assets/export/basecamp/BaseCamp_Stage5.fbx",
     "glb": "assets/export/basecamp/BaseCamp_Stage5.glb",
-    "tris": 26340,
-    "parts": 562,
+    "tris": 28952,
+    "parts": 607,
     "kind": "basecamp",
     "meshes": [
       {
         "name": "BaseCamp_Stage5_HallFacade_Body",
         "model": "HallFacade",
-        "tris": 4932
+        "tris": 5252
       },
       {
         "name": "BaseCamp_Stage5_HallFacade_Glass",
@@ -293,7 +298,7 @@
       {
         "name": "BaseCamp_Stage5_Spire_Body",
         "model": "Spire",
-        "tris": 2712
+        "tris": 3420
       },
       {
         "name": "BaseCamp_Stage5_Spire_Neon",
@@ -318,7 +323,7 @@
       {
         "name": "BaseCamp_Stage5_Yard_Body",
         "model": "Yard",
-        "tris": 3352
+        "tris": 4936
       },
       {
         "name": "BaseCamp_Stage5_Yard_Neon",

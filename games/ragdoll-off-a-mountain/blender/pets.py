@@ -398,7 +398,7 @@ def avalanche_pug():
     global B
     B = Builder("AvalanchePug")
     rnd = random.Random(23)
-    snow = {"base": "#F4FBFF", "dark": "#D6E8F5", "light": "#FFFFFF"}
+    snow = {"base": "#E8F3FB", "dark": "#C6DCEE", "light": "#FFFFFF"}
     ice = {"base": "#7FC4F0", "dark": "#4E96D6", "deep": "#3A6FB0", "light": "#BFE6FF"}
     hel = {"base": "#FF8A1F", "dark": "#E06A0C", "light": "#FFB066", "deep": "#B85208"}
     NEON, NEON_L = "#7CF7FF", "#BFFBFF"
@@ -422,6 +422,8 @@ def avalanche_pug():
     V.carve(lambda x, y, z: (Vector((x, y, z)) - dent).length < 0.55 and z > 5.0)
     V.paint(lambda x, y, z: z > 5.6 and x > 0.4 and y > 0.2, hel["light"], only={hel["base"]})  # gloss highlight
     V.paint(lambda x, y, z: z < 0.5, ice["light"], only={snow["base"]})  # frosty socks
+    V.paint(lambda x, y, z: y < -0.8 and 3.4 < z < 4.5, ice["light"], only={snow["base"]})  # frosted back of head
+    V.paint(lambda x, y, z: y < -0.8 and 2.2 < z < 4.5 and abs(x) < 0.5, ice["base"], only={snow["base"], ice["light"]})
     V.paint(lambda x, y, z: z < 1.25 and z >= 0.5 and abs(x) < 1.3, snow["dark"], only={snow["base"]})  # belly shade
     V.paint_top(lambda x, y, z: y < -0.7 and z < 3.2, ice["light"], depth=1, only={snow["base"]})  # frost saddle
     B.add(V.mesh("AvalanchePug_Blocks"))
@@ -454,21 +456,23 @@ def avalanche_pug():
         R(f"EarFold{sx}", (0.45, 0.8, 0.4), (sx * 3.05, 0.25, 3.5), ice["deep"], radius=0.1, rot=(0, sx * 0.55, 0))
     # ---- helmet hardware: goggles, flipped-up visor, chin straps, stickers, back plate ----
     gz = 4.6
-    gy = max(V.front_y(x, gz + 0.4) or 0 for x in (-1.2, -0.6, 0.6, 1.2))
+    gy = max(V.front_y(x, z) or 0 for x in (-1.2, -0.6, 0.6, 1.2) for z in (4.6, 4.9, 5.2, 5.5))
+    vz = (V.top_z(0.25, 1.25) or 5.5) - 0.35
     for sx in (-1, 1):
         CYL(f"GoggleFrame{sx}", 0.52, 0.52, 0.34, (sx * 0.78, gy - 0.12, gz + 0.45), NAVY, sides=12, rot=(-math.pi / 2, 0, 0))
         CYL(f"GoggleLens{sx}", 0.38, 0.38, 0.08, (sx * 0.78, gy + 0.2, gz + 0.45), NEON, sides=12,
-            rot=(-math.pi / 2, 0, 0), emission=3.0)
+            rot=(-math.pi / 2, 0, 0), emission=1.6)
         FACE(f"GoggleGlint{sx}", (0.16, 0.06, 0.3), (sx * 0.78 - 0.18, gy + 0.3, gz + 0.5), WHITE, emission=2.0,
              rot=(0, 0.5, 0))
         S(f"GoggleStrap{sx}", (0.22, 2.6, 0.42), (sx * (V.side_x(0.3, 4.75, sx) * sx + 0.08), 0.3, 4.55), NAVY_D, bevel=0.04)
         bar(f"ChinStrap{sx}", (sx * 2.5, 0.35, 4.55), (sx * 2.3, 0.7, 2.15), 0.34, 0.2, hel["dark"])
         S(f"ChinBuckle{sx}", (0.24, 0.42, 0.36), (sx * 2.33, 0.68, 2.0), GOLD, bevel=0.05)
-        S(f"VisorHinge{sx}", (0.3, 0.6, 0.6), (sx * 1.98, 1.5, 5.45), NAVY, bevel=0.08)
+        CYL(f"VisorScrew{sx}", 0.22, 0.22, 0.2, (sx * 1.86, 1.55, vz + 0.1), NAVY, sides=8, rot=(0, sx * math.pi / 2, 0))
     bar("GoggleBridge", (-0.22, gy + 0.05, gz + 0.45), (0.22, gy + 0.05, gz + 0.45), 0.25, 0.25, NAVY)
-    visor = vb.solid("Visor", (3.9, 0.22, 1.05), (0, 1.8, 5.62), GLASS, bevel=0.06, studs="none", rot=(0.95, 0, 0))
-    B.add(visor, glass=True)
-    S("VisorTrim", (3.95, 0.3, 0.2), (0, 1.86, 5.56), NAVY, bevel=0.04, rot=(0.95, 0, 0))
+    # motocross-style peak visor jutting forward over the goggles (silhouette feature)
+    S("Visor", (3.7, 1.5, 0.26), (0, 2.0, vz), hel["light"], bevel=0.06, rot=(0.22, 0, 0))
+    S("VisorStripe", (0.62, 1.52, 0.3), (0, 2.0, vz + 0.01), WHITE, bevel=0.04, rot=(0.22, 0, 0))
+    S("VisorEdge", (3.8, 0.3, 0.34), (0, 2.72, vz + 0.12), NAVY, bevel=0.05, rot=(0.22, 0, 0))
     # stickers (flat raised decals on the dome sides) — bone (theme) + star
     sxp = V.side_x(0.6, 5.25, 1)
     cartoon_bone("StickerBone", (sxp + 0.04, 0.0, 5.05), (sxp + 0.04, 1.15, 5.5), 0.12, 0.17, "#FFF1CF")
@@ -484,24 +488,26 @@ def avalanche_pug():
     for i in range(11):
         a = math.radians(150 + 240 * i / 10)  # sides + back, leaves the face clear
         x, y = math.cos(a) * 2.15, -0.5 + math.sin(a) * 2.1
-        col = snow["light"] if i % 2 == 0 else ice["light"]
+        col = snow["light"] if i % 2 == 0 else ice["base"]
         R(f"Mane{i}", (1.05, 1.05, 0.85), (x, y, 1.75), col, radius=0.3, rot=(0, 0, a))
-        R(f"ManeTip{i}", (0.55, 0.55, 0.4), (x * 1.12, -0.5 + (y + 0.5) * 1.12, 2.15), ice["base"] if i % 2 == 0 else snow["light"],
+        R(f"ManeTip{i}", (0.55, 0.55, 0.4), (x * 1.12, -0.5 + (y + 0.5) * 1.12, 2.15), ice["dark"] if i % 2 == 0 else ice["light"],
           radius=0.15, rot=(0, 0, a))
     for i in range(6):
         a = math.radians(205 + 130 * i / 5)
         R(f"ManeBack{i}", (0.85, 0.85, 0.7), (math.cos(a) * 1.55, -0.5 + math.sin(a) * 1.6, 2.5), ice["light"] if i % 2 else snow["light"],
           radius=0.25, rot=(0, 0, a))
+    hb = V.back_y(0.25, 3.25)
+    snowflake("HeadBackFlake", (0, hb - 0.1, 3.0), 0.9, ice["deep"], strength=0.0, fx=False, thick=0.16)
     # ---- chest: collar band + glowing snowflake tag ----
     S("Collar", (2.5, 0.4, 0.4), (0, 1.0, 1.9), ice["deep"], bevel=0.08)
     CYL("TagRing", 0.2, 0.2, 0.12, (0, 1.16, 1.85), GOLD, sides=8, rot=(-math.pi / 2, 0, 0))
-    snowflake("Tag", (0, 1.3, 1.42), 0.85, NEON, yaw=0.0, strength=4.0, fx=False, thick=0.17)
+    snowflake("Tag", (0, 1.3, 1.42), 0.85, NEON, yaw=0.0, strength=2.0, fx=False, thick=0.17)
 
     # ---- paws: glowing ice toe pads ----
     for sx in (-1, 1):
         for ly, fy in ((0.5, 1.0), (-1.5, -1.0)):
             for t, tx in enumerate((-0.32, 0.0, 0.32)):
-                GLOW(f"ToePad{sx}_{ly}_{t}", (0.26, 0.14, 0.24), (sx * 1.25 + tx, fy + 0.05, 0.04), NEON, 3.0)
+                GLOW(f"ToePad{sx}_{ly}_{t}", (0.26, 0.14, 0.24), (sx * 1.25 + tx, fy + 0.05, 0.04), NEON, 1.8)
         S(f"HeelPad{sx}", (0.62, 0.12, 0.42), (sx * 1.25, -2.04, 0.14), ice["base"], bevel=0.05)
         for i, (y, z) in enumerate(((-0.9, 1.35), (-0.15, 1.9))):  # raised snowflake decals on the flanks
             xs = V.side_x(y, z + 0.1, sx)
@@ -515,17 +521,17 @@ def avalanche_pug():
     for i, (y, z, s) in enumerate(((-2.65, 2.55, 0.66), (-3.0, 3.0, 0.6), (-2.95, 3.5, 0.55), (-2.6, 3.8, 0.5))):
         R(f"Tail{i}", (s, s, s), (0, y, z), ice["base"] if i % 2 == 0 else ice["light"], radius=s * 0.25,
           rot=(0.4 * i, 0, 0))
-    BALL("TailTip", (0.38, 0.38, 0.38), (0, -2.25, 4.1), NEON, seg=10, rings=6, emission=3.0, studs="none")
+    BALL("TailTip", (0.38, 0.38, 0.38), (0, -2.25, 4.1), NEON, seg=10, rings=6, emission=1.8, studs="none")
 
     # ---- FX (Legendary): snowflake orbiters, double aura ring, frost sparkles ----
     for i, deg in enumerate((15, 50, 135, 170, 215, 270, 325)):  # never parked in front of the face
         a = math.radians(deg)
         snowflake(f"Orbit{i}_", (math.cos(a) * 3.9, -0.3 + math.sin(a) * 3.9, 2.4 + (i % 3) * 1.15), 0.95,
-                  NEON, yaw=a - math.pi / 2, strength=3.0, thick=0.18)
-    ring_of("AuraOuter", 26, 3.45, 0.04, (0.72, 0.36, 0.1), [NEON, ice["light"]], ctr=(0, -0.3), strength=3.0)
-    ring_of("AuraInner", 18, 2.85, 0.04, (0.5, 0.26, 0.08), [NEON_L], ctr=(0, -0.3), strength=2.0, phase=0.1)
+                  NEON, yaw=a - math.pi / 2, strength=1.6, thick=0.2)
+    ring_of("AuraOuter", 26, 3.45, 0.04, (0.72, 0.36, 0.1), [NEON, "#3FD4FF"], ctr=(0, -0.3), strength=1.5)
+    ring_of("AuraInner", 18, 2.85, 0.04, (0.5, 0.26, 0.08), [NEON_L], ctr=(0, -0.3), strength=1.2, phase=0.1)
     sparkles("Frost", [(-3.0, 1.4, 5.2), (3.1, 1.0, 5.6), (-2.6, -2.4, 4.8), (2.5, -2.6, 1.8), (0.0, 2.9, 6.2),
-                       (-3.4, 0.0, 1.3)], NEON, size=0.26)
+                       (-3.4, 0.0, 1.3)], NEON, size=0.26, strength=2.0)
     return B
 
 
@@ -546,11 +552,12 @@ def skelly_cat():
     V.sell((0, 0.45, 3.75), (2.1, 1.55, 1.6), bone["base"], p=3.2)  # skull-ish cute head
     V.carve(lambda x, y, z: z > 2.0 and y > 1.85)
     V.carve(lambda x, y, z: z < 2.9 and abs(x) > 1.6 and y > -0.5)  # narrower jaw = skull read
-    for sx in (-1, 1):  # stepped cat ears (part of the merged mass)
-        for lvl, xs in enumerate(((0.75, 1.75), (0.75, 1.75), (1.25, 1.75), (1.75, 1.75))):
+    for sx in (-1, 1):  # stepped triangular cat ears (part of the merged mass)
+        for z, xs in ((5.25, (0.75, 1.75)), (5.75, (0.75, 1.75)), (6.25, (1.25, 1.75)), (6.75, (1.25, 1.25))):
             lo, hi = sorted((sx * xs[0], sx * xs[1]))
-            V.box((lo, 0.25 - (0.5 if lvl < 2 else 0), 4.75 + lvl * 0.5), (hi, 0.75, 4.75 + lvl * 0.5), bone["base"])
-    V.paint(lambda x, y, z: z > 4.9 and abs(x) > 1.6, bone["dark"], only={bone["base"]})  # ear tips
+            V.box((lo, 0.25 if z > 6 else -0.25, z), (hi, 0.75, z), bone["base"])
+    V.paint(lambda x, y, z: z > 6.4, bone["dark"], only={bone["base"]})  # ear tips
+    V.paint(lambda x, y, z: y < -0.6 and z < 3.6, bone["dark"], only={bone["base"]})  # shaded back of skull
     V.paint(lambda x, y, z: z < 2.75, bone["dark"], only={bone["base"]})  # jaw shade
     B.add(V.mesh("SkellyCat_Blocks"))
 
@@ -558,13 +565,15 @@ def skelly_cat():
     for sx in (-1, 1):
         ex = sx * 1.0
         seat_front(V, f"Socket{sx}", (1.72, 0.1, 1.8), ex, 3.05, plum["base"], bevel=0.22, seg=2)
-        seat_front(V, f"Eye{sx}", (1.44, 0.14, 1.52), ex, 3.19, "#D9FFF8", dy=0.03, bevel=0.2, seg=2, emission=1.2)
-        seat_front(V, f"Iris{sx}", (1.0, 0.08, 1.08), ex - sx * 0.12, 3.33, MINT, dy=0.1, bevel=0.16, seg=2, emission=3.0)
+        seat_front(V, f"Eye{sx}", (1.44, 0.14, 1.52), ex, 3.19, "#E6FFFA", dy=0.03, bevel=0.2, seg=2)
+        seat_front(V, f"Iris{sx}", (1.0, 0.08, 1.08), ex - sx * 0.12, 3.33, MINT, dy=0.1, bevel=0.16, seg=2, emission=1.4)
         seat_front(V, f"Pupil{sx}", (0.56, 0.08, 0.76), ex - sx * 0.16, 3.47, PUPIL, dy=0.15, bevel=0.12, seg=2)
-        seat_front(V, f"Sparkle{sx}", (0.3, 0.06, 0.3), ex - sx * 0.42, 3.95, WHITE, dy=0.2, emission=2.0)
-        seat_front(V, f"SparkleSmall{sx}", (0.14, 0.06, 0.14), ex + sx * 0.1, 3.5, WHITE, dy=0.2, emission=2.0)
+        seat_front(V, f"Sparkle{sx}", (0.3, 0.06, 0.3), ex - sx * 0.42, 3.95, WHITE, dy=0.2, emission=1.2)
+        seat_front(V, f"SparkleSmall{sx}", (0.14, 0.06, 0.14), ex + sx * 0.1, 3.5, WHITE, dy=0.2, emission=1.2)
         seat_front(V, f"Blush{sx}", (0.5, 0.08, 0.26), sx * 1.55, 2.92, BLUSH)
-        seat_front(V, f"InnerEar{sx}", (0.55, 0.08, 0.8), sx * 1.4, 4.95, "#FF9CC8")
+        seat_front(V, f"InnerEar{sx}", (0.5, 0.08, 0.8), sx * 1.38, 5.6, "#FF9CC8")
+        for w, (dz, dzz) in enumerate(((0.0, 0.15), (0.3, 0.45), (-0.3, -0.2))):  # chunky whiskers
+            bar(f"Whisker{sx}_{w}", (sx * 1.85, 1.75, 2.95 + dz), (sx * 3.05, 1.9, 2.95 + dzz), 0.18, 0.18, plum["light"])
         seat_front(V, f"Nose{sx}", (0.3, 0.1, 0.3), sx * 0.11, 2.86, plum["dark"], rot=(0, sx * 0.7, 0))
         seat_front(V, f"MouthCorner{sx}", (0.34, 0.12, 0.14), sx * 1.12, 2.58, plum["dark"], rot=(0, sx * -0.6, 0))
         R(f"CheekBone{sx}", (0.5, 0.95, 0.6), (sx * 1.92, 1.05, 2.95), bone["light"], radius=0.14)
@@ -580,9 +589,9 @@ def skelly_cat():
     S("BandageB", (1.7, 0.5, 0.14), (0.55, -0.25, tz - 0.04), "#FFC594", bevel=0.04, rot=(0, 0, -0.7))
     S("BandagePad", (0.5, 0.5, 0.12), (0.55, -0.25, tz + 0.06), "#FFF3E6", bevel=0.03)
     by = V.back_y(0.25, 3.75)
-    FACE("Seam", (0.16, 0.08, 1.9), (0.0, by - 0.03, 2.8), bone["deep"])
+    FACE("Seam", (0.18, 0.08, 1.9), (0.0, by - 0.03, 2.9), plum["base"])
     for i in range(4):
-        FACE(f"Stitch{i}", (0.55, 0.08, 0.13), (0.0, by - 0.06, 3.0 + i * 0.45), bone["deep"])
+        FACE(f"Stitch{i}", (0.6, 0.08, 0.16), (0.0, by - 0.06, 3.1 + i * 0.45), plum["base"], rot=(0, 0.25 * (i % 2 * 2 - 1), 0))
 
     # ---- ribcage: chunky bone hoops around the plum core (side + back read) ----
     for r, yy in enumerate((0.45, -0.2, -0.85, -1.5)):
@@ -614,9 +623,9 @@ def skelly_cat():
     for i in range(10):
         a0, a1 = 2 * math.pi * i / 10, 2 * math.pi * (i + 1) / 10
         bar(f"Collar{i}", (math.cos(a0) * 1.45, -0.25 + math.sin(a0) * 1.55, 2.38), (math.cos(a1) * 1.45, -0.25 + math.sin(a1) * 1.55, 2.38),
-            0.3, 0.26, PINK, glow=3.0)
-    BALL("Bell", (0.34, 0.3, 0.34), (0, 1.38, 1.75), GOLD, seg=12, rings=8)
-    FACE("BellSlot", (0.3, 0.08, 0.08), (0, 1.66, 1.6), "#8A5A00")
+            0.3, 0.26, PINK, glow=1.8)
+    BALL("Bell", (0.34, 0.3, 0.34), (0, 1.42, 1.4), GOLD, seg=12, rings=8)
+    FACE("BellSlot", (0.3, 0.08, 0.08), (0, 1.7, 1.25), "#8A5A00")
 
     # ---- bone tail: vertebra chain curling up into a cartoon bone (silhouette feature) ----
     chain = [(-2.45, 1.55, 0.62), (-2.9, 1.95, 0.58), (-3.2, 2.5, 0.55), (-3.25, 3.1, 0.52), (-3.05, 3.65, 0.48),
@@ -630,15 +639,15 @@ def skelly_cat():
     cartoon_bone("TailTip", (0, -2.55, 4.35), (0, -2.3, 5.25), 0.2, 0.27, bone["light"])
 
     # ---- FX (Secret = most glow): rainbow aura ring, inner ring, orbiting little bones, sparkles ----
-    ring_of("Aura", 30, 3.4, 0.04, (0.62, 0.36, 0.12), RAINBOW, ctr=(0, -0.4), strength=3.5)
-    ring_of("AuraInner", 20, 2.85, 0.04, (0.48, 0.24, 0.08), ["#E9FFFB"], ctr=(0, -0.4), strength=2.0, phase=0.1)
+    ring_of("Aura", 30, 3.4, 0.04, (0.62, 0.36, 0.12), RAINBOW, ctr=(0, -0.4), strength=1.6)
+    ring_of("AuraInner", 20, 2.85, 0.04, (0.48, 0.24, 0.08), [MINT], ctr=(0, -0.4), strength=1.2, phase=0.1)
     for i in range(6):
         a = 2 * math.pi * i / 6 + 0.3
         c = Vector((math.cos(a) * 3.7, -0.4 + math.sin(a) * 3.7, 2.4 + (i % 3) * 1.1))
         d = Vector((-math.sin(a), math.cos(a), 0.45)).normalized() * 0.45
-        cartoon_bone(f"OrbitBone{i}_", c - d, c + d, 0.14, 0.18, bone["light"], knob_col=RAINBOW[i], glow=4.0, fx=True)
+        cartoon_bone(f"OrbitBone{i}_", c - d, c + d, 0.14, 0.18, bone["light"], knob_col=RAINBOW[i], glow=2.0, fx=True)
     sparkles("Spark", [(-3.0, 1.5, 5.6), (3.2, 0.8, 5.0), (-2.4, -2.8, 4.4), (2.8, -2.6, 2.0), (0.4, 3.0, 6.0),
-                       (-3.5, -0.2, 1.4), (1.6, -3.4, 5.6), (3.5, 2.2, 3.0)], "#FFFFFF", size=0.26)
+                       (-3.5, -0.2, 1.4), (1.6, -3.4, 5.6), (3.5, 2.2, 3.0)], "#FFF6A8", size=0.26, strength=2.5)
     return B
 
 
@@ -810,6 +819,9 @@ ASSETS = {
 # =============================================================================================
 # Rendering (bible §10 review renders + transparent UI hero icons)
 # =============================================================================================
+SUN, FILL = 3.5, 1.0  # close-up pet review: bible §10 sun 5.0 clips white/cream pets in Standard view
+
+
 def _bounds(objs):
     bpy.context.view_layer.update()
     lo, hi = Vector((1e9,) * 3), Vector((-1e9,) * 3)
@@ -837,7 +849,7 @@ def _scene(samples, res, transparent):
     world.use_nodes = True
     bg = world.node_tree.nodes["Background"]
     bg.inputs[0].default_value = (0.33, 0.64, 1.0, 1) if not transparent else (0.75, 0.85, 1.0, 1)
-    bg.inputs[1].default_value = 1.0 if not transparent else 0.55
+    bg.inputs[1].default_value = 0.8 if not transparent else 0.55
     return sc
 
 
@@ -880,7 +892,7 @@ def _camera(loc, target, lens):
 
 def _floor():
     if "PreviewFloor" not in bpy.data.objects:
-        vb.solid("PreviewFloor", (80, 80, 1.0), (0, 0, -1.0), "#F3DFB2", bevel=0.0)
+        vb.solid("PreviewFloor", (80, 80, 1.0), (0, 0, -1.0), "#6CC24A", bevel=0.0)
 
 
 def _azim_dir(az_deg, el_deg):
@@ -899,8 +911,8 @@ def render_views(name, objs, samples, views=(("front", 0), ("side", 90), ("back"
     for label, az in views:
         _clear_rig()
         d = _azim_dir(az + 30, 50)
-        _light("Sun", "SUN", 5.0, d, color=(1.0, 0.96, 0.9))
-        _light("Fill", "SUN", 1.2, _azim_dir(az - 120, 25), color=(0.85, 0.92, 1.0), angle=0.4)
+        _light("Sun", "SUN", SUN, d, color=(1.0, 0.96, 0.9))
+        _light("Fill", "SUN", FILL, _azim_dir(az - 120, 25), color=(0.85, 0.92, 1.0), angle=0.4)
         dist = size * 3.3
         cam_dir = _azim_dir(az, 12)
         tgt = Vector((ctr.x, ctr.y, lo.z + (hi.z - lo.z) * 0.47))
@@ -1014,8 +1026,8 @@ def lineup(samples):
     _scene(samples, (1280, 720), False)
     _floor()
     _clear_rig()
-    _light("Sun", "SUN", 5.0, _azim_dir(30, 50), color=(1.0, 0.96, 0.9))
-    _light("Fill", "SUN", 1.2, _azim_dir(-120, 25), color=(0.85, 0.92, 1.0), angle=0.4)
+    _light("Sun", "SUN", SUN, _azim_dir(30, 50), color=(1.0, 0.96, 0.9))
+    _light("Fill", "SUN", FILL, _azim_dir(-120, 25), color=(0.85, 0.92, 1.0), angle=0.4)
     _camera((0, 30, 9.5), (0, 0, 3.0), 38)
     p = os.path.join(PREV, "pets_lineup.png")
     os.makedirs(PREV, exist_ok=True)

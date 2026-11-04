@@ -384,9 +384,22 @@ def setup_render(samples=28, res=(1280, 720), transparent=False, icon=False):
     world = scene.world or bpy.data.worlds.new("World")
     scene.world = world
     world.use_nodes = True
-    bg = world.node_tree.nodes["Background"]
+    nt = world.node_tree
+    bg = nt.nodes["Background"]
     bg.inputs[0].default_value = (0.33, 0.64, 1.0, 1)
-    bg.inputs[1].default_value = 0.5 if not icon else 0.35
+    bg.inputs[1].default_value = 0.5 if not icon else 0.35  # ambient light contribution
+    if "CamSky" not in nt.nodes:  # bright sky seen by the camera, softer sky light on the model
+        cam_bg = nt.nodes.new("ShaderNodeBackground")
+        cam_bg.name = "CamSky"
+        cam_bg.inputs[0].default_value = (0.33, 0.64, 1.0, 1)
+        cam_bg.inputs[1].default_value = 1.0
+        lp = nt.nodes.new("ShaderNodeLightPath")
+        mix = nt.nodes.new("ShaderNodeMixShader")
+        out = nt.nodes["World Output"]
+        nt.links.new(lp.outputs["Is Camera Ray"], mix.inputs[0])
+        nt.links.new(bg.outputs[0], mix.inputs[1])
+        nt.links.new(cam_bg.outputs[0], mix.inputs[2])
+        nt.links.new(mix.outputs[0], out.inputs["Surface"])
     for o in [o for o in scene.objects if o.type == "LIGHT"]:
         bpy.data.objects.remove(o)
     if icon:
@@ -958,10 +971,10 @@ def meteor_launcher():
         BP.append(beam(f"MLCageSpoke{j}", (cx_ * 0.92, cy_ * 0.92, z0 - 4.0), (dx_, dy_, z0 - 4.3), 0.3, 0.3, WH["dark"]))
     crystal = B("MLCrystal", (1.7, 1.7, 1.9), (0, 0, cz), "#C45BFF", segments=6, rings=2, studs="none")
     crystal.data.polygons.foreach_set("use_smooth", [False] * len(crystal.data.polygons))
-    BP.append(N(crystal, 4))
+    BP.append(N(crystal, 2.5))
     inner = B("MLCrystalHeart", (0.9, 0.9, 2.5), (0, 0, cz), "#F3C4FF", segments=4, rings=2, studs="none", rot=(0, 0, math.radians(30)))
     inner.data.polygons.foreach_set("use_smooth", [False] * len(inner.data.polygons))
-    BP.append(N(inner, 5))
+    BP.append(N(inner, 3.5))
     for j in range(3):
         a = 120 * j + 90
         cx_, cy_ = polar(a, 1.55)

@@ -999,7 +999,7 @@ def waterfall(f3, f4, rnd):
                 C("FallIcicle", 0.05, 0.4, L, (xc - w / 2 + 0.8 + j * 1.7, fy - 1.3, zt + 0.25 - L), ICE_GLASS, sides=4, studs="none")
         elif i % 2 == 0:
             for j in range(3):  # foam blocks where the water lands
-                R("Foam", (2.0, 1.4, 0.7), (xc - 3 + j * 3, fy - 1.6, prev_z + 0.1), CLOUD, radius=0.3)
+                S("Foam", (2.0, 1.4, 0.7), (xc - 3 + j * 3, fy - 1.6, prev_z + 0.1), CLOUD, bevel=0.2)
         prev_z = zt
     zt, fy = fronts[-1]
     # ice-cave spring at the top
@@ -1108,8 +1108,8 @@ def valley_ground():
     def tone(cx, cy, h):
         if h == RIM_Z:
             return GRASS_D if int(cx // 30 + cy // 20) % 3 == 0 else GRASS
-        k = math.sin(cx * 0.031) + math.cos(cy * 0.027 + cx * 0.012) * 1.2 + 0.5 * math.sin((cx - cy) * 0.05)
-        return (GRASS_D, GRASS, GRASS, GRASS_L)[max(0, min(3, int(k + 1.6)))]
+        k = math.sin(cx * 0.019) + math.cos(cy * 0.017 + cx * 0.008) * 1.2
+        return (GRASS_D, GRASS, GRASS, GRASS_L)[max(0, min(3, int(k + 1.7)))]
 
     for j in range(ny):
         cy = GY0 + (j + 0.5) * CELL
@@ -1142,7 +1142,7 @@ def valley_ground():
                                 horiz = ey in (y0, y1)
                                 L = (x1 - x0) if horiz else CELL
                                 S("TerrLip", (L + 0.3, 0.6, 0.3) if horiz else (0.6, L + 0.3, 0.3),
-                                  (ex, ey, h - 0.9), GRASS_D, bevel=0.04)
+                                  (ex, ey, h - 0.9), GRASS_D, bevel=0.0)
                                 if srnd.random() < 0.45 and h - 0.9 > 0.8:
                                     st = srnd.uniform(0.9, 1.5)
                                     ox = srnd.uniform(-L / 2 + 1, L / 2 - 1)
@@ -1594,11 +1594,10 @@ def vignettes(rnd):
     # flower beds along the hub exits and the lift-plaza terraces
     for sx in (-1, 1):
         reg(kit.flower_bed(nm("Bed"), (sx * 84, HUB[1] - 7), (sx * 96, HUB[1] - 7), z=0.0, rnd=rnd))
-        reg(kit.flower_bed(nm("Bed"), (sx * 84, HUB[1] + 7), (sx * 96, HUB[1] + 7), z=0.0, rnd=rnd))
         reg(kit.flower_bed(nm("Bed"), (sx * 78, -24), (sx * 92, -24), z=1.5, rnd=rnd,
                            colors=(GOLD, PINK, "#FFFFFF") if sx < 0 else (PINK, "#B678EA", GOLD)))
-        reg(kit.flower_bed(nm("Bed"), (sx * 108, -24), (sx * 122, -24), z=1.5, rnd=rnd,
-                           colors=(GOLD, PINK, "#FFFFFF") if sx < 0 else (PINK, "#B678EA", GOLD)))
+        for k in range(3):
+            flower_patch("LiftFlowers", sx * (108 + k * 6), -24 + (k % 2), 1.5, rnd, cols=(PINK, GOLD, WHITE), n=5)
         reg(kit.rock_garden(nm("RockG"), (sx * 100, -8), z=1.5, rnd=rnd))
         round_tree("LiftTree", sx * 118, -6, 1.5, 11, rnd, leaf=GRASS_L)
         round_tree("LiftTree", sx * 80, -10, 1.5, 9, rnd, leaf=GRASS)
@@ -1664,7 +1663,11 @@ def base_rim(rnd):
         if i < len(BASES) - 1:
             nx_, ny_ = BASES[i + 1]
             gx, gy = (bx + nx_) / 2, (by + ny_) / 2
-            reg(kit.flower_bed(nm("RimBed"), (gx - 1, gy - 6), (gx - 1, gy + 7), z=RIM_Z, rnd=rnd))
+            if i % 2 == 0:
+                reg(kit.flower_bed(nm("RimBed"), (gx - 1, gy - 6), (gx - 1, gy + 7), z=RIM_Z, rnd=rnd))
+            else:
+                for k in range(3):
+                    flower_patch("RimFlowers", gx - 1, gy - 5 + k * 5, RIM_Z, rnd, cols=(PINK, GOLD, WHITE), n=5)
             round_tree("RimTree", gx + 3, gy - 14, RIM_Z, 11, rnd, leaf=GRASS if i % 2 else GRASS_D, fruit=GOLD if i % 2 else None)
             reg(kit.rock_garden(nm("RimRock"), (gx + 3, gy + 6), z=RIM_Z, rnd=rnd))
     # back ridge pines + rocks (frames the bases from the south)

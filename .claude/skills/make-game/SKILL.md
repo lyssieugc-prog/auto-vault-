@@ -68,7 +68,7 @@ through `Net` with `Guard` validation, all economy server-side. Add tests to
 Rojo-sync scripts; import FBX chunks and place them from `layout.json` via saved `run_code`
 scripts in `games/<slug>/studio/`; build ScreenGuis from Figma. Never publish.
 **Edit-mode rule (owner, L-11):** the imported map/bases/props live in Workspace and every UI
-screen exists in StarterGui (Rojo `*.model.json` with mock data) so the owner sees map + UI in
+screen exists in StarterGui (built by a shared Luau UI module from an Edit-mode `studio/` script, or Rojo `*.model.json`, with mock data) so the owner sees map + UI in
 Edit mode without pressing Play; ship `studio/preview_screen.luau` to flip screens.
 If Studio MCP is unavailable, mark integration "blocked" and continue with everything else.
 

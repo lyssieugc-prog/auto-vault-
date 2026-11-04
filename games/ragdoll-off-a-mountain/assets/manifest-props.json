@@ -42,48 +42,6 @@
     ]
   },
   {
-    "name": "Cannon4_MegaMortar",
-    "file": "assets/export/props/Cannon4_MegaMortar.fbx",
-    "tris": 12540,
-    "meshes": {
-      "Cannon4_MegaMortar_Body": 12008,
-      "Cannon4_MegaMortar_Neon": 532
-    },
-    "parts": 238,
-    "kind": "cannon",
-    "size": [
-      11.58,
-      11.62,
-      12.5
-    ],
-    "attachments": [
-      "Muzzle",
-      "Pivot",
-      "Seat"
-    ]
-  },
-  {
-    "name": "Cannon5_MeteorLauncher",
-    "file": "assets/export/props/Cannon5_MeteorLauncher.fbx",
-    "tris": 6976,
-    "meshes": {
-      "Cannon5_MeteorLauncher_Body": 4948,
-      "Cannon5_MeteorLauncher_Neon": 2028
-    },
-    "parts": 97,
-    "kind": "cannon",
-    "size": [
-      8.3,
-      19.97,
-      17.03
-    ],
-    "attachments": [
-      "Muzzle",
-      "Pivot",
-      "Seat"
-    ]
-  },
-  {
     "name": "Cannon1_PartyPopper",
     "file": "assets/export/props/Cannon1_PartyPopper.fbx",
     "tris": 7820,
@@ -102,6 +60,181 @@
       "Muzzle",
       "Pivot",
       "Seat"
+    ]
+  },
+  {
+    "name": "Cannon4_MegaMortar",
+    "file": "assets/export/props/Cannon4_MegaMortar.fbx",
+    "tris": 13004,
+    "meshes": {
+      "Cannon4_MegaMortar_Body": 12472,
+      "Cannon4_MegaMortar_Neon": 532
+    },
+    "parts": 243,
+    "kind": "cannon",
+    "size": [
+      11.58,
+      11.62,
+      12.43
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  },
+  {
+    "name": "Cannon5_MeteorLauncher",
+    "file": "assets/export/props/Cannon5_MeteorLauncher.fbx",
+    "tris": 7636,
+    "meshes": {
+      "Cannon5_MeteorLauncher_Body": 5104,
+      "Cannon5_MeteorLauncher_Neon": 2532
+    },
+    "parts": 125,
+    "kind": "cannon",
+    "size": [
+      9.2,
+      21.05,
+      17.92
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  },
+  {
+    "name": "RebirthStatue",
+    "file": "assets/export/props/RebirthStatue.fbx",
+    "tris": 13508,
+    "meshes": {
+      "RebirthStatue_Body": 13016,
+      "RebirthStatue_Neon": 492
+    },
+    "parts": 196,
+    "kind": "hub_prop",
+    "size": [
+      14.42,
+      14.25,
+      27.78
+    ],
+    "attachments": [
+      "PromptAnchor"
+    ]
+  },
+  {
+    "name": "EggStand",
+    "file": "assets/export/props/EggStand.fbx",
+    "tris": 6612,
+    "meshes": {
+      "EggStand_Body": 4936,
+      "Accent": 1220,
+      "EggStand_Neon": 456
+    },
+    "parts": 95,
+    "kind": "hub_prop",
+    "size": [
+      11.6,
+      12.3,
+      16.9
+    ],
+    "attachments": [
+      "EggSpot",
+      "PromptAnchor"
+    ]
+  },
+  {
+    "name": "CannonShop",
+    "file": "assets/export/props/CannonShop.fbx",
+    "tris": 8888,
+    "meshes": {
+      "CannonShop_Body": 7992,
+      "CannonShop_Neon": 896
+    },
+    "parts": 159,
+    "kind": "hub_prop",
+    "size": [
+      17.78,
+      11.69,
+      14.72
+    ],
+    "attachments": [
+      "PromptAnchor"
+    ]
+  },
+  {
+    "name": "UpgradeStand",
+    "file": "assets/export/props/UpgradeStand.fbx",
+    "tris": 8780,
+    "meshes": {
+      "UpgradeStand_Body": 8596,
+      "UpgradeStand_Neon": 184
+    },
+    "parts": 140,
+    "kind": "hub_prop",
+    "size": [
+      13.72,
+      14.75,
+      17.08
+    ],
+    "attachments": [
+      "PromptAnchor"
+    ]
+  },
+  {
+    "name": "SeasonBoard",
+    "file": "assets/export/props/SeasonBoard.fbx",
+    "tris": 3440,
+    "meshes": {
+      "SeasonBoard_Body": 3152,
+      "Screen": 44,
+      "SeasonBoard_Neon": 244
+    },
+    "parts": 61,
+    "kind": "hub_prop",
+    "size": [
+      18.31,
+      3.65,
+      16.5
+    ],
+    "attachments": []
+  },
+  {
+    "name": "Leaderboard",
+    "file": "assets/export/props/Leaderboard.fbx",
+    "tris": 2684,
+    "meshes": {
+      "Leaderboard_Body": 2516,
+      "Screen": 44,
+      "Leaderboard_Neon": 124
+    },
+    "parts": 56,
+    "kind": "hub_prop",
+    "size": [
+      12.4,
+      6.03,
+      17.86
+    ],
+    "attachments": []
+  },
+  {
+    "name": "DailyChest",
+    "file": "assets/export/props/DailyChest.fbx",
+    "tris": 3260,
+    "meshes": {
+      "DailyChest_Body": 3204,
+      "DailyChest_Neon": 56
+    },
+    "parts": 65,
+    "kind": "hub_prop",
+    "size": [
+      7.6,
+      6.8,
+      7.05
+    ],
+    "attachments": [
+      "PromptAnchor"
     ]
   }
 ]
