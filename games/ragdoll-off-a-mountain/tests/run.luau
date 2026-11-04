@@ -156,9 +156,13 @@ describe("RagdollScore", function()
 		expect(last.combo).toBe(Config.scoring.comboMax)
 	end)
 	it("crits double severity", function()
-		local run = score:newRun({ startedAt = 0, critChance = 1, rng = function()
-			return 0
-		end })
+		local run = score:newRun({
+			startedAt = 0,
+			critChance = 1,
+			rng = function()
+				return 0
+			end,
+		})
 		local e = score:impact(run, "Head", 45, 1)
 		expect(e.severity).toBe(2)
 		expect(e.critical).toBe(true)

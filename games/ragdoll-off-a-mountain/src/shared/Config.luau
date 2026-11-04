@@ -331,30 +331,72 @@ Config.periodicQuests = {
 		weekly = { length = 604800, offset = 345600 }, -- Monday 00:00 UTC
 	},
 	quests = {
-		{ id = "d_bones", period = "daily", stat = "bones", goal = 100, text = "Break 100 bones", reward = {
-			currency = "Cash",
-			amount = 1000,
-		} },
-		{ id = "d_launch", period = "daily", stat = "launches", goal = 10, text = "Launch 10 times", reward = {
-			currency = "Gems",
-			amount = 5,
-		} },
-		{ id = "d_combo", period = "daily", stat = "combo2", goal = 1, text = "Land a x2 combo", reward = {
-			currency = "Cash",
-			amount = 2000,
-		} },
-		{ id = "w_bones", period = "weekly", stat = "bones", goal = 5000, text = "Break 5,000 bones", reward = {
-			currency = "Gems",
-			amount = 50,
-		} },
-		{ id = "w_skeleton", period = "weekly", stat = "fullSkeleton", goal = 1, text = "Full Skeleton once", reward = {
-			currency = "Gems",
-			amount = 100,
-		} },
-		{ id = "w_hatch", period = "weekly", stat = "eggsHatched", goal = 25, text = "Hatch 25 eggs", reward = {
-			currency = "Gems",
-			amount = 40,
-		} },
+		{
+			id = "d_bones",
+			period = "daily",
+			stat = "bones",
+			goal = 100,
+			text = "Break 100 bones",
+			reward = {
+				currency = "Cash",
+				amount = 1000,
+			},
+		},
+		{
+			id = "d_launch",
+			period = "daily",
+			stat = "launches",
+			goal = 10,
+			text = "Launch 10 times",
+			reward = {
+				currency = "Gems",
+				amount = 5,
+			},
+		},
+		{
+			id = "d_combo",
+			period = "daily",
+			stat = "combo2",
+			goal = 1,
+			text = "Land a x2 combo",
+			reward = {
+				currency = "Cash",
+				amount = 2000,
+			},
+		},
+		{
+			id = "w_bones",
+			period = "weekly",
+			stat = "bones",
+			goal = 5000,
+			text = "Break 5,000 bones",
+			reward = {
+				currency = "Gems",
+				amount = 50,
+			},
+		},
+		{
+			id = "w_skeleton",
+			period = "weekly",
+			stat = "fullSkeleton",
+			goal = 1,
+			text = "Full Skeleton once",
+			reward = {
+				currency = "Gems",
+				amount = 100,
+			},
+		},
+		{
+			id = "w_hatch",
+			period = "weekly",
+			stat = "eggsHatched",
+			goal = 25,
+			text = "Hatch 25 eggs",
+			reward = {
+				currency = "Gems",
+				amount = 40,
+			},
+		},
 	},
 	xpPerQuest = 50,
 }

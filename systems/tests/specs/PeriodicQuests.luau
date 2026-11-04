@@ -11,9 +11,27 @@ return function(t)
 			local q = PeriodicQuests.new({
 				periods = { daily = { length = DAY }, weekly = { length = 7 * DAY, offset = 345600 } },
 				quests = {
-					{ id = "d_bones", period = "daily", stat = "bones", goal = 100, reward = { currency = "Cash", amount = 1 } },
-					{ id = "d_bones2", period = "daily", stat = "bones", goal = 150, reward = { currency = "Cash", amount = 2 } },
-					{ id = "w_bones", period = "weekly", stat = "bones", goal = 500, reward = { currency = "Gems", amount = 5 } },
+					{
+						id = "d_bones",
+						period = "daily",
+						stat = "bones",
+						goal = 100,
+						reward = { currency = "Cash", amount = 1 },
+					},
+					{
+						id = "d_bones2",
+						period = "daily",
+						stat = "bones",
+						goal = 150,
+						reward = { currency = "Cash", amount = 2 },
+					},
+					{
+						id = "w_bones",
+						period = "weekly",
+						stat = "bones",
+						goal = 500,
+						reward = { currency = "Gems", amount = 5 },
+					},
 				},
 				now = clock.now,
 			})

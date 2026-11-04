@@ -10,7 +10,14 @@ return function(t)
 			end
 			premium[25] = { item = "Pet" }
 			premium[50] = { item = "BigPet" }
-			return SeasonPass.new({ seasonId = "S1", tiers = 50, baseXp = 100, xpGrowth = 20, free = free, premium = premium })
+			return SeasonPass.new({
+				seasonId = "S1",
+				tiers = 50,
+				baseXp = 100,
+				xpGrowth = 20,
+				free = free,
+				premium = premium,
+			})
 		end
 		it("builds a cumulative curve and reports tiers reached", function()
 			local pass = make()

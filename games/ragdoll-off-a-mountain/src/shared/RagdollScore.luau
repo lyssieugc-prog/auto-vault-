@@ -130,12 +130,7 @@ function RagdollScore:impact(run, partName: any, speed: any, t: any)
 		severity *= 2
 		run.crits += 1
 	end
-	local cash = broken
-		* self.parts[partName].value
-		* severity
-		* combo
-		* run.peakMultiplier
-		* run.cashMultiplier
+	local cash = broken * self.parts[partName].value * severity * combo * run.peakMultiplier * run.cashMultiplier
 	run.cash += cash
 	return {
 		part = partName,

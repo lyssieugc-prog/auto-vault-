@@ -468,30 +468,54 @@ for remote, method in simple do
 end
 
 local oneArg = {
-	SelectPeak = { method = "selectPeak", valid = function(v)
-		return Guard.integer(v, 1, #Config.peaks)
-	end },
-	BuyUpgrade = { method = "buyUpgrade", valid = function(v)
-		return Guard.string(v, 20)
-	end },
-	Hatch = { method = "hatch", valid = function(v)
-		return Guard.string(v, 20)
-	end },
-	Equip = { method = "equip", valid = function(v)
-		return Guard.string(v, 20)
-	end },
-	Unequip = { method = "unequip", valid = function(v)
-		return Guard.string(v, 20)
-	end },
-	ClaimPlaytime = { method = "claimPlaytime", valid = function(v)
-		return Guard.integer(v, 1, #Config.rewards.playtime)
-	end },
-	ClaimQuest = { method = "claimQuest", valid = function(v)
-		return Guard.string(v, 40)
-	end },
-	RedeemCode = { method = "redeemCode", valid = function(v)
-		return Guard.string(v, 64)
-	end },
+	SelectPeak = {
+		method = "selectPeak",
+		valid = function(v)
+			return Guard.integer(v, 1, #Config.peaks)
+		end,
+	},
+	BuyUpgrade = {
+		method = "buyUpgrade",
+		valid = function(v)
+			return Guard.string(v, 20)
+		end,
+	},
+	Hatch = {
+		method = "hatch",
+		valid = function(v)
+			return Guard.string(v, 20)
+		end,
+	},
+	Equip = {
+		method = "equip",
+		valid = function(v)
+			return Guard.string(v, 20)
+		end,
+	},
+	Unequip = {
+		method = "unequip",
+		valid = function(v)
+			return Guard.string(v, 20)
+		end,
+	},
+	ClaimPlaytime = {
+		method = "claimPlaytime",
+		valid = function(v)
+			return Guard.integer(v, 1, #Config.rewards.playtime)
+		end,
+	},
+	ClaimQuest = {
+		method = "claimQuest",
+		valid = function(v)
+			return Guard.string(v, 40)
+		end,
+	},
+	RedeemCode = {
+		method = "redeemCode",
+		valid = function(v)
+			return Guard.string(v, 64)
+		end,
+	},
 }
 for remote, def in oneArg do
 	Net.invoke(remote, function(player, arg)

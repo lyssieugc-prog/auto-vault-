@@ -668,10 +668,11 @@ function GameLogic:snapshot(userId)
 		cashMultiplier = self.currency:multiplier(userId, "Cash"),
 		inventory = self.inventory:serialize(userId),
 		upgrades = upgrades,
-		peak = { selected = profile.selectedPeak, unlocked = self:unlockedPeak(userId), nextCost = self.upgrades:cost(
-			userId,
-			"Peak"
-		) },
+		peak = {
+			selected = profile.selectedPeak,
+			unlocked = self:unlockedPeak(userId),
+			nextCost = self.upgrades:cost(userId, "Peak"),
+		},
 		cannon = { level = self.upgrades:value(userId, "Cannon"), nextCost = self.upgrades:cost(userId, "Cannon") },
 		hitPower = self:hitPower(userId),
 		base = { plot = self.plots:plotOf(userId), stage = profile.bestStage },

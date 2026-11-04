@@ -68,10 +68,23 @@ local function buildDevHud(): ScreenGui
 	screen.Name = "HUD"
 	screen.ResetOnSpawn = false
 	screen:SetAttribute("DevFallback", true)
-	devLabel(screen, "DevBanner", "DEV HUD — replace with Figma UI", UDim2.fromScale(0.35, 0), UDim2.fromScale(0.3, 0.04))
+	devLabel(
+		screen,
+		"DevBanner",
+		"DEV HUD — replace with Figma UI",
+		UDim2.fromScale(0.35, 0),
+		UDim2.fromScale(0.3, 0.04)
+	)
 	devLabel(screen, "Cash", "0", UDim2.fromScale(0.4, 0.05), UDim2.fromScale(0.2, 0.06))
 	devLabel(screen, "Gems", "0", UDim2.fromScale(0.62, 0.05), UDim2.fromScale(0.1, 0.06))
-	devButton(screen, "LaunchButton", "HOLD TO LAUNCH", UDim2.fromScale(0.4, 0.82), UDim2.fromScale(0.2, 0.1), "#FF8A1F")
+	devButton(
+		screen,
+		"LaunchButton",
+		"HOLD TO LAUNCH",
+		UDim2.fromScale(0.4, 0.82),
+		UDim2.fromScale(0.2, 0.1),
+		"#FF8A1F"
+	)
 	local bar = devLabel(screen, "ChargeBar", "", UDim2.fromScale(0.4, 0.78), UDim2.fromScale(0.2, 0.03))
 	local fill = Instance.new("Frame")
 	fill.Name = "Fill"
