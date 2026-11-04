@@ -1,0 +1,18 @@
+[
+  {
+    "name": "PebblePup",
+    "file": "assets/export/pets/PebblePup.fbx",
+    "tris": 7012,
+    "tris_per_mesh": {
+      "Body": 6968,
+      "Neon": 44
+    },
+    "parts": 88,
+    "kind": "pet",
+    "meshes": [
+      "PebblePup_Body",
+      "PebblePup_Neon"
+    ],
+    "status": "PENDING owner approval"
+  }
+]

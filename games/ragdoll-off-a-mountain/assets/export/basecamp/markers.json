@@ -1,0 +1,138 @@
+{
+  "origin": "pad top centre",
+  "pad": [
+    48,
+    40
+  ],
+  "front": "+Y (toward the mountain)",
+  "units": "studs",
+  "axes": "Blender Z-up; Roblox: X same, Blender +Y -> Roblox -Z, Blender Z -> Roblox Y",
+  "markers": {
+    "Spawn": {
+      "pos": [
+        0.0,
+        7.5,
+        0.22
+      ],
+      "facing": [
+        0,
+        1,
+        0
+      ],
+      "note": "on the path in front of the building"
+    },
+    "LiftPad": {
+      "pos": [
+        16.5,
+        13.5,
+        0.85
+      ],
+      "radius": 3.0,
+      "note": "touch to ride the lift to your highest peak"
+    },
+    "ClinicBed": {
+      "pos": [
+        -16.6,
+        12.5,
+        2.4
+      ],
+      "facing": [
+        1,
+        0,
+        0
+      ],
+      "note": "respawn pose lies along +x"
+    },
+    "PetPedestal1": {
+      "pos": [
+        -10.5,
+        9.0,
+        1.87
+      ]
+    },
+    "PetPedestal2": {
+      "pos": [
+        -6.5,
+        9.0,
+        1.87
+      ]
+    },
+    "PetPedestal3": {
+      "pos": [
+        6.5,
+        9.0,
+        1.87
+      ]
+    },
+    "PetPedestal4": {
+      "pos": [
+        10.5,
+        9.0,
+        1.87
+      ]
+    },
+    "TrophyBoard": {
+      "pos": [
+        -8.5,
+        17.04,
+        3.675
+      ],
+      "size": [
+        6.4,
+        3.85
+      ],
+      "normal": [
+        0,
+        1,
+        0
+      ],
+      "object": "TrophyBoard",
+      "face": "Front (+Y in Blender)"
+    },
+    "OwnerSign": {
+      "pos": [
+        5.05,
+        18.1,
+        1.95
+      ],
+      "size": [
+        3.2,
+        1.6
+      ],
+      "normal": [
+        0,
+        1,
+        0
+      ],
+      "object": "OwnerSign",
+      "face": "Front (+Y in Blender)"
+    }
+  },
+  "stageDoors": {
+    "1": [
+      0.0,
+      0.5,
+      0.35
+    ],
+    "2": [
+      0,
+      0.6,
+      0.7
+    ],
+    "3": [
+      2.4,
+      -4.0,
+      1.5
+    ],
+    "4": [
+      0,
+      -4.0,
+      1.4
+    ],
+    "5": [
+      0,
+      -0.20000000000000018,
+      0.55
+    ]
+  }
+}

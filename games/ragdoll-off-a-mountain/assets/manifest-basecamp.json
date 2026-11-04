@@ -1,0 +1,332 @@
+[
+  {
+    "name": "BaseCamp_Kit",
+    "file": "assets/export/basecamp/BaseCamp_Kit.fbx",
+    "glb": "assets/export/basecamp/BaseCamp_Kit.glb",
+    "tris": 17664,
+    "parts": 360,
+    "kind": "basecamp",
+    "meshes": [
+      {
+        "name": "BaseCamp_Kit_Clinic_Body",
+        "model": "Clinic",
+        "tris": 4628
+      },
+      {
+        "name": "BaseCamp_Kit_Lift_Body",
+        "model": "Lift",
+        "tris": 2596
+      },
+      {
+        "name": "BaseCamp_Kit_Lift_Neon",
+        "model": "Lift",
+        "tris": 312
+      },
+      {
+        "name": "BaseCamp_Kit_Yard_Body",
+        "model": "Yard",
+        "tris": 9752
+      },
+      {
+        "name": "BaseCamp_Kit_Yard_Neon",
+        "model": "Yard",
+        "tris": 288
+      },
+      {
+        "name": "OwnerSign",
+        "model": "Yard",
+        "tris": 44
+      },
+      {
+        "name": "TrophyBoard",
+        "model": "Yard",
+        "tris": 44
+      }
+    ]
+  },
+  {
+    "name": "BaseCamp_Stage1",
+    "file": "assets/export/basecamp/BaseCamp_Stage1.fbx",
+    "glb": "assets/export/basecamp/BaseCamp_Stage1.glb",
+    "tris": 7556,
+    "parts": 169,
+    "kind": "basecamp",
+    "meshes": [
+      {
+        "name": "BaseCamp_Stage1_Campsite_Body",
+        "model": "Campsite",
+        "tris": 5324
+      },
+      {
+        "name": "BaseCamp_Stage1_Campsite_Neon",
+        "model": "Campsite",
+        "tris": 44
+      },
+      {
+        "name": "BaseCamp_Stage1_Tent_Body",
+        "model": "Tent",
+        "tris": 2088
+      },
+      {
+        "name": "BaseCamp_Stage1_Tent_Neon",
+        "model": "Tent",
+        "tris": 100
+      }
+    ],
+    "stage": 1,
+    "title": "Trail Tent"
+  },
+  {
+    "name": "BaseCamp_Stage2",
+    "file": "assets/export/basecamp/BaseCamp_Stage2.fbx",
+    "glb": "assets/export/basecamp/BaseCamp_Stage2.glb",
+    "tris": 20368,
+    "parts": 465,
+    "kind": "basecamp",
+    "meshes": [
+      {
+        "name": "BaseCamp_Stage2_Cabin_Body",
+        "model": "Cabin",
+        "tris": 8808
+      },
+      {
+        "name": "BaseCamp_Stage2_Cabin_Glass",
+        "model": "Cabin",
+        "tris": 308
+      },
+      {
+        "name": "BaseCamp_Stage2_Cabin_Neon",
+        "model": "Cabin",
+        "tris": 388
+      },
+      {
+        "name": "BaseCamp_Stage2_CabinRoof_Body",
+        "model": "CabinRoof",
+        "tris": 2908
+      },
+      {
+        "name": "BaseCamp_Stage2_Porch_Body",
+        "model": "Porch",
+        "tris": 3288
+      },
+      {
+        "name": "BaseCamp_Stage2_Yard_Body",
+        "model": "Yard",
+        "tris": 4668
+      }
+    ],
+    "stage": 2,
+    "title": "Log Cabin"
+  },
+  {
+    "name": "BaseCamp_Stage3",
+    "file": "assets/export/basecamp/BaseCamp_Stage3.fbx",
+    "glb": "assets/export/basecamp/BaseCamp_Stage3.glb",
+    "tris": 28220,
+    "parts": 504,
+    "kind": "basecamp",
+    "meshes": [
+      {
+        "name": "BaseCamp_Stage3_LodgeFront_Body",
+        "model": "LodgeFront",
+        "tris": 4056
+      },
+      {
+        "name": "BaseCamp_Stage3_LodgeInterior_Body",
+        "model": "LodgeInterior",
+        "tris": 5248
+      },
+      {
+        "name": "BaseCamp_Stage3_LodgeInterior_Neon",
+        "model": "LodgeInterior",
+        "tris": 132
+      },
+      {
+        "name": "BaseCamp_Stage3_LodgeRoof_Body",
+        "model": "LodgeRoof",
+        "tris": 4660
+      },
+      {
+        "name": "BaseCamp_Stage3_LodgeRoof_Glass",
+        "model": "LodgeRoof",
+        "tris": 88
+      },
+      {
+        "name": "BaseCamp_Stage3_LodgeShell_Body",
+        "model": "LodgeShell",
+        "tris": 7536
+      },
+      {
+        "name": "BaseCamp_Stage3_LodgeShell_Glass",
+        "model": "LodgeShell",
+        "tris": 484
+      },
+      {
+        "name": "BaseCamp_Stage3_LodgeShell_Neon",
+        "model": "LodgeShell",
+        "tris": 200
+      },
+      {
+        "name": "BaseCamp_Stage3_Yard_Body",
+        "model": "Yard",
+        "tris": 5608
+      },
+      {
+        "name": "BaseCamp_Stage3_Yard_Neon",
+        "model": "Yard",
+        "tris": 208
+      }
+    ],
+    "stage": 3,
+    "title": "Ski Lodge"
+  },
+  {
+    "name": "BaseCamp_Stage4",
+    "file": "assets/export/basecamp/BaseCamp_Stage4.fbx",
+    "glb": "assets/export/basecamp/BaseCamp_Stage4.glb",
+    "tris": 29764,
+    "parts": 621,
+    "kind": "basecamp",
+    "meshes": [
+      {
+        "name": "BaseCamp_Stage4_ChaletFront_Body",
+        "model": "ChaletFront",
+        "tris": 11828
+      },
+      {
+        "name": "BaseCamp_Stage4_ChaletFront_Glass",
+        "model": "ChaletFront",
+        "tris": 616
+      },
+      {
+        "name": "BaseCamp_Stage4_ChaletFront_Neon",
+        "model": "ChaletFront",
+        "tris": 332
+      },
+      {
+        "name": "BaseCamp_Stage4_ChaletRoof_Body",
+        "model": "ChaletRoof",
+        "tris": 5416
+      },
+      {
+        "name": "BaseCamp_Stage4_ChaletRoof_Glass",
+        "model": "ChaletRoof",
+        "tris": 44
+      },
+      {
+        "name": "BaseCamp_Stage4_ChaletShell_Body",
+        "model": "ChaletShell",
+        "tris": 3916
+      },
+      {
+        "name": "BaseCamp_Stage4_TrophyTower_Body",
+        "model": "TrophyTower",
+        "tris": 3256
+      },
+      {
+        "name": "BaseCamp_Stage4_TrophyTower_Glass",
+        "model": "TrophyTower",
+        "tris": 220
+      },
+      {
+        "name": "BaseCamp_Stage4_Yard_Body",
+        "model": "Yard",
+        "tris": 3936
+      },
+      {
+        "name": "BaseCamp_Stage4_Yard_Neon",
+        "model": "Yard",
+        "tris": 200
+      }
+    ],
+    "stage": 4,
+    "title": "Alpine Chalet"
+  },
+  {
+    "name": "BaseCamp_Stage5",
+    "file": "assets/export/basecamp/BaseCamp_Stage5.fbx",
+    "glb": "assets/export/basecamp/BaseCamp_Stage5.glb",
+    "tris": 26340,
+    "parts": 562,
+    "kind": "basecamp",
+    "meshes": [
+      {
+        "name": "BaseCamp_Stage5_HallFacade_Body",
+        "model": "HallFacade",
+        "tris": 4932
+      },
+      {
+        "name": "BaseCamp_Stage5_HallFacade_Glass",
+        "model": "HallFacade",
+        "tris": 44
+      },
+      {
+        "name": "BaseCamp_Stage5_HallFacade_Neon",
+        "model": "HallFacade",
+        "tris": 288
+      },
+      {
+        "name": "BaseCamp_Stage5_HallInterior_Body",
+        "model": "HallInterior",
+        "tris": 584
+      },
+      {
+        "name": "BaseCamp_Stage5_HallInterior_Neon",
+        "model": "HallInterior",
+        "tris": 88
+      },
+      {
+        "name": "BaseCamp_Stage5_HallRoof_Body",
+        "model": "HallRoof",
+        "tris": 4084
+      },
+      {
+        "name": "BaseCamp_Stage5_HallShell_Body",
+        "model": "HallShell",
+        "tris": 6380
+      },
+      {
+        "name": "BaseCamp_Stage5_HallShell_Glass",
+        "model": "HallShell",
+        "tris": 528
+      },
+      {
+        "name": "BaseCamp_Stage5_Spire_Body",
+        "model": "Spire",
+        "tris": 2712
+      },
+      {
+        "name": "BaseCamp_Stage5_Spire_Neon",
+        "model": "Spire",
+        "tris": 356
+      },
+      {
+        "name": "BaseCamp_Stage5_Towers_Body",
+        "model": "Towers",
+        "tris": 2464
+      },
+      {
+        "name": "BaseCamp_Stage5_Towers_Glass",
+        "model": "Towers",
+        "tris": 352
+      },
+      {
+        "name": "BaseCamp_Stage5_Towers_Neon",
+        "model": "Towers",
+        "tris": 88
+      },
+      {
+        "name": "BaseCamp_Stage5_Yard_Body",
+        "model": "Yard",
+        "tris": 3352
+      },
+      {
+        "name": "BaseCamp_Stage5_Yard_Neon",
+        "model": "Yard",
+        "tris": 88
+      }
+    ],
+    "stage": 5,
+    "title": "Summit Hall"
+  }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "name": "Cannon4_MegaMortar",
+    "file": "assets/export/props/Cannon4_MegaMortar.fbx",
+    "tris": 12540,
+    "meshes": {
+      "Cannon4_MegaMortar_Body": 12008,
+      "Cannon4_MegaMortar_Neon": 532
+    },
+    "parts": 238,
+    "kind": "cannon",
+    "size": [
+      11.58,
+      11.62,
+      12.5
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  },
+  {
+    "name": "Cannon5_MeteorLauncher",
+    "file": "assets/export/props/Cannon5_MeteorLauncher.fbx",
+    "tris": 6976,
+    "meshes": {
+      "Cannon5_MeteorLauncher_Body": 4948,
+      "Cannon5_MeteorLauncher_Neon": 2028
+    },
+    "parts": 97,
+    "kind": "cannon",
+    "size": [
+      8.3,
+      19.97,
+      17.03
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  },
+  {
+    "name": "Cannon1_PartyPopper",
+    "file": "assets/export/props/Cannon1_PartyPopper.fbx",
+    "tris": 8468,
+    "meshes": {
+      "Cannon1_PartyPopper_Body": 8148,
+      "Cannon1_PartyPopper_Neon": 320
+    },
+    "parts": 126,
+    "kind": "cannon",
+    "size": [
+      9.99,
+      11.3,
+      12.44
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  },
+  {
+    "name": "Cannon2_BarrelBlaster",
+    "file": "assets/export/props/Cannon2_BarrelBlaster.fbx",
+    "tris": 8680,
+    "meshes": {
+      "Cannon2_BarrelBlaster_Body": 8552,
+      "Cannon2_BarrelBlaster_Neon": 128
+    },
+    "parts": 143,
+    "kind": "cannon",
+    "size": [
+      8.9,
+      11.94,
+      12.34
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  },
+  {
+    "name": "Cannon3_RocketRig",
+    "file": "assets/export/props/Cannon3_RocketRig.fbx",
+    "tris": 8656,
+    "meshes": {
+      "Cannon3_RocketRig_Body": 7872,
+      "Cannon3_RocketRig_Neon": 784
+    },
+    "parts": 148,
+    "kind": "cannon",
+    "size": [
+      7.9,
+      12.26,
+      12.45
+    ],
+    "attachments": [
+      "Muzzle",
+      "Pivot",
+      "Seat"
+    ]
+  }
+]
