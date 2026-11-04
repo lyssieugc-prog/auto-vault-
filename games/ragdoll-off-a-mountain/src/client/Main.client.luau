@@ -313,15 +313,17 @@ local function bindTap(name: string, callback: () -> ())
 	end
 end
 
-for buttonName, screenName in {
-	ShopButton = "Shop",
-	PetsButton = "Pets",
-	IndexButton = "EggHatch",
-	UpgradesButton = "CannonShop",
-	RewardsButton = "DailyRewards",
-	SeasonButton = "Season1Pass",
-	X2CashButton = "Shop",
-} do
+for buttonName, screenName in
+	{
+		ShopButton = "Shop",
+		PetsButton = "Pets",
+		IndexButton = "EggHatch",
+		UpgradesButton = "CannonShop",
+		RewardsButton = "DailyRewards",
+		SeasonButton = "Season1Pass",
+		X2CashButton = "Shop",
+	}
+do
 	bindTap(buttonName, function()
 		openScreen(screenName)
 	end)
@@ -348,7 +350,9 @@ bindIn("Codes", "RedeemButton", function()
 	local response = Remotes.RedeemCode:InvokeServer(box and box.Text or "")
 	local result = gui.Codes:FindFirstChild("Result", true)
 	if result and result:IsA("TextLabel") then
-		result.Text = if response and response.result then "REDEEMED!" else string.upper(tostring(response and response.error))
+		result.Text = if response and response.result
+			then "REDEEMED!"
+			else string.upper(tostring(response and response.error))
 	end
 end)
 bindIn("EggHatch", "HatchButton", function()

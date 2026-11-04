@@ -118,8 +118,17 @@ local function text(parent: Instance, name: string, value: string, pos: UDim2, s
 end
 
 -- Glossy pill button with a darker bottom lip and a white gloss stripe.
-local function button(parent: Instance, name: string, label: string, pos: UDim2, size: UDim2, color: Color3?, lip: Color3?)
-	local holder = new("Frame", { Name = name .. "Holder", Position = pos, Size = size, BackgroundTransparency = 1 }, parent)
+local function button(
+	parent: Instance,
+	name: string,
+	label: string,
+	pos: UDim2,
+	size: UDim2,
+	color: Color3?,
+	lip: Color3?
+)
+	local holder =
+		new("Frame", { Name = name .. "Holder", Position = pos, Size = size, BackgroundTransparency = 1 }, parent)
 	local lipFrame = new("Frame", {
 		Name = "Lip",
 		Position = UDim2.fromScale(0, 0.1),
@@ -280,7 +289,11 @@ local function progressBar(parent: Instance, name: string, pos: UDim2, size: UDi
 	local bar = new("Frame", { Name = name, Position = pos, Size = size, BackgroundColor3 = C.panelRaised }, parent)
 	corner(bar, 0.5)
 	stroke(bar, 3, C.stroke, true)
-	local f = new("Frame", { Name = "Fill", Size = UDim2.fromScale(math.clamp(fill, 0, 1), 1), BackgroundColor3 = C.gold }, bar)
+	local f = new(
+		"Frame",
+		{ Name = "Fill", Size = UDim2.fromScale(math.clamp(fill, 0, 1), 1), BackgroundColor3 = C.gold },
+		bar
+	)
 	corner(f, 0.5)
 	gradient(f, C.gold, C.orange)
 	for i, x in { -0.02, 0.98 } do -- bone-shaped end caps
@@ -333,24 +346,84 @@ function UIScreens.buildHUD(parent: Instance, Config): ScreenGui
 	}, gui)
 	corner(peakPill, 0.5)
 	stroke(peakPill, 3, C.stroke, true)
-	text(peakPill, "Text", "🏔️ " .. peak.name .. "  x" .. peak.multiplier, UDim2.fromScale(0.04, 0.08), UDim2.fromScale(0.92, 0.84))
-	progressBar(gui, "NextGoalBar", UDim2.fromScale(0.36, 0.17), UDim2.fromScale(0.28, 0.035), 0.42, "Next: Frostbite Cliffs 50.4K / 120K")
+	text(
+		peakPill,
+		"Text",
+		"🏔️ " .. peak.name .. "  x" .. peak.multiplier,
+		UDim2.fromScale(0.04, 0.08),
+		UDim2.fromScale(0.92, 0.84)
+	)
+	progressBar(
+		gui,
+		"NextGoalBar",
+		UDim2.fromScale(0.36, 0.17),
+		UDim2.fromScale(0.28, 0.035),
+		0.42,
+		"Next: Frostbite Cliffs 50.4K / 120K"
+	)
 
 	-- left rail
-	for i, info in { { "ShopButton", "SHOP", C.red, C.redDark }, { "PetsButton", "PETS", C.purple, C.purple:Lerp(C.stroke, 0.3) }, { "IndexButton", "INDEX", C.blue, C.blue:Lerp(C.stroke, 0.3) }, { "UpgradesButton", "UPGRADES", C.green, C.greenLip } } do
-		button(gui, info[1], info[2], UDim2.fromScale(0.015, 0.28 + (i - 1) * 0.1), UDim2.fromScale(0.09, 0.085), info[3], info[4])
+	for i, info in
+		{
+			{ "ShopButton", "SHOP", C.red, C.redDark },
+			{ "PetsButton", "PETS", C.purple, C.purple:Lerp(C.stroke, 0.3) },
+			{ "IndexButton", "INDEX", C.blue, C.blue:Lerp(C.stroke, 0.3) },
+			{ "UpgradesButton", "UPGRADES", C.green, C.greenLip },
+		}
+	do
+		button(
+			gui,
+			info[1],
+			info[2],
+			UDim2.fromScale(0.015, 0.28 + (i - 1) * 0.1),
+			UDim2.fromScale(0.09, 0.085),
+			info[3],
+			info[4]
+		)
 	end
 	-- right rail: context-named x2 Cash ladder (x2 -> x128), rewards
-	local ladder = button(gui, "X2CashButton", "x2 CASH", UDim2.fromScale(0.895, 0.28), UDim2.fromScale(0.09, 0.1), C.gold, C.orange)
+	local ladder = button(
+		gui,
+		"X2CashButton",
+		"x2 CASH",
+		UDim2.fromScale(0.895, 0.28),
+		UDim2.fromScale(0.09, 0.1),
+		C.gold,
+		C.orange
+	)
 	text(ladder, "Tier", "Owned: x1 · Next: x2", UDim2.fromScale(-0.2, 1.05), UDim2.fromScale(1.4, 0.3))
-	button(gui, "RewardsButton", "REWARDS", UDim2.fromScale(0.895, 0.44), UDim2.fromScale(0.09, 0.085), C.purple, C.purple:Lerp(C.stroke, 0.3))
+	button(
+		gui,
+		"RewardsButton",
+		"REWARDS",
+		UDim2.fromScale(0.895, 0.44),
+		UDim2.fromScale(0.09, 0.085),
+		C.purple,
+		C.purple:Lerp(C.stroke, 0.3)
+	)
 	button(gui, "SeasonButton", "SEASON 1", UDim2.fromScale(0.895, 0.54), UDim2.fromScale(0.09, 0.085), C.ice, C.blue)
 	local boosts = text(gui, "Boosts", "x2 Cash 9:42", UDim2.fromScale(0.78, 0.11), UDim2.fromScale(0.2, 0.04), C.lime)
 	boosts.TextXAlignment = Enum.TextXAlignment.Right
 
 	-- launch controls (bottom centre)
-	button(gui, "LiftButton", "⬆ LIFT", UDim2.fromScale(0.27, 0.84), UDim2.fromScale(0.1, 0.09), C.blue, C.blue:Lerp(C.stroke, 0.3))
-	button(gui, "LaunchButton", "HOLD TO LAUNCH!", UDim2.fromScale(0.39, 0.83), UDim2.fromScale(0.22, 0.12), C.orange, C.redDark)
+	button(
+		gui,
+		"LiftButton",
+		"⬆ LIFT",
+		UDim2.fromScale(0.27, 0.84),
+		UDim2.fromScale(0.1, 0.09),
+		C.blue,
+		C.blue:Lerp(C.stroke, 0.3)
+	)
+	button(
+		gui,
+		"LaunchButton",
+		"HOLD TO LAUNCH!",
+		UDim2.fromScale(0.39, 0.83),
+		UDim2.fromScale(0.22, 0.12),
+		C.orange,
+		C.redDark
+	)
 	progressBar(gui, "ChargeBar", UDim2.fromScale(0.39, 0.78), UDim2.fromScale(0.22, 0.035), 0.65, "POWER")
 	local event = new("Frame", {
 		Name = "EventBanner",
@@ -384,9 +457,29 @@ function UIScreens.buildCannonShop(parent: Instance, Config): ScreenGui
 	for i = 2, #Config.cannons do
 		local cannon = Config.cannons[i]
 		local x = ((i - 2) % 5) * 0.2
-		local c = card(body, "CannonCard" .. (i - 1), cannon.name, if i == 2 then C.green elseif i == 3 then C.blue else C.purple, UDim2.fromScale(x + 0.005, 0.05), UDim2.fromScale(0.19, 0.85))
-		progressBar(c, "Speed", UDim2.fromScale(0.08, 0.75), UDim2.fromScale(0.84, 0.07), cannon.speed / 250, cannon.speed .. " SPEED")
-		button(c, "BuyButton", "$" .. abbreviate(costs[i - 1]), UDim2.fromScale(0.08, 0.85), UDim2.fromScale(0.84, 0.12))
+		local c = card(
+			body,
+			"CannonCard" .. (i - 1),
+			cannon.name,
+			if i == 2 then C.green elseif i == 3 then C.blue else C.purple,
+			UDim2.fromScale(x + 0.005, 0.05),
+			UDim2.fromScale(0.19, 0.85)
+		)
+		progressBar(
+			c,
+			"Speed",
+			UDim2.fromScale(0.08, 0.75),
+			UDim2.fromScale(0.84, 0.07),
+			cannon.speed / 250,
+			cannon.speed .. " SPEED"
+		)
+		button(
+			c,
+			"BuyButton",
+			"$" .. abbreviate(costs[i - 1]),
+			UDim2.fromScale(0.08, 0.85),
+			UDim2.fromScale(0.84, 0.12)
+		)
 		if i == 2 then
 			tag(c, "OWNED", C.lime, UDim2.fromScale(-0.08, -0.04))
 		elseif i == 3 then
@@ -399,22 +492,57 @@ end
 function UIScreens.buildShop(parent: Instance): ScreenGui
 	local gui = screen(parent, "Shop")
 	local body = window(gui, "SHOP", C.red)
-	local featured = card(body, "Featured", "Avalanche Pug", RARITY.Legendary, UDim2.fromScale(0, 0.02), UDim2.fromScale(0.44, 0.78))
+	local featured =
+		card(body, "Featured", "Avalanche Pug", RARITY.Legendary, UDim2.fromScale(0, 0.02), UDim2.fromScale(0.44, 0.78))
 	tag(featured, "LIMITED!", C.red, UDim2.fromScale(-0.05, -0.03))
 	text(featured, "Countdown", "ENDS IN 23:59:12", UDim2.fromScale(0.1, 0.74), UDim2.fromScale(0.8, 0.08), C.gold)
 	button(featured, "BuyButton", "R$ CONFIG", UDim2.fromScale(0.15, 0.85), UDim2.fromScale(0.7, 0.12))
 	for i, info in { { "Small", "2,500 Cash" }, { "Medium", "15K Cash" }, { "Best", "120K Cash" } } do
-		local offer = card(body, "Offer" .. info[1], info[2], if i == 3 then C.gold else C.blue, UDim2.fromScale(0.47, 0.02 + (i - 1) * 0.27), UDim2.fromScale(0.3, 0.25))
+		local offer = card(
+			body,
+			"Offer" .. info[1],
+			info[2],
+			if i == 3 then C.gold else C.blue,
+			UDim2.fromScale(0.47, 0.02 + (i - 1) * 0.27),
+			UDim2.fromScale(0.3, 0.25)
+		)
 		button(offer, "BuyButton", "R$ CONFIG", UDim2.fromScale(0.55, 0.62), UDim2.fromScale(0.42, 0.32))
 		if i == 3 then
 			tag(offer, "BEST DEAL!", C.gold, UDim2.fromScale(0.6, -0.1))
 		end
 	end
-	local promo = card(body, "PremiumPromo", "Season 1 Pass", C.ice, UDim2.fromScale(0.79, 0.02), UDim2.fromScale(0.21, 0.78))
+	local promo =
+		card(body, "PremiumPromo", "Season 1 Pass", C.ice, UDim2.fromScale(0.79, 0.02), UDim2.fromScale(0.21, 0.78))
 	button(promo, "BuyButton", "R$ CONFIG", UDim2.fromScale(0.08, 0.85), UDim2.fromScale(0.84, 0.12))
-	local strip = new("Frame", { Name = "RarityStrip", Position = UDim2.fromScale(0, 0.84), Size = UDim2.fromScale(1, 0.14), BackgroundTransparency = 1 }, body)
-	for i, info in { { "Common", "1 in 1.7" }, { "Rare", "1 in 10" }, { "Epic", "1 in 25" }, { "Legendary", "1 in 111" }, { "Mythic", "1 in 1,111" } } do
-		local chip = new("Frame", { Name = info[1], Position = UDim2.fromScale((i - 1) * 0.2 + 0.005, 0), Size = UDim2.fromScale(0.19, 1), BackgroundColor3 = RARITY[info[1]] }, strip)
+	local strip = new(
+		"Frame",
+		{
+			Name = "RarityStrip",
+			Position = UDim2.fromScale(0, 0.84),
+			Size = UDim2.fromScale(1, 0.14),
+			BackgroundTransparency = 1,
+		},
+		body
+	)
+	for i, info in
+		{
+			{ "Common", "1 in 1.7" },
+			{ "Rare", "1 in 10" },
+			{ "Epic", "1 in 25" },
+			{ "Legendary", "1 in 111" },
+			{ "Mythic", "1 in 1,111" },
+		}
+	do
+		local chip = new(
+			"Frame",
+			{
+				Name = info[1],
+				Position = UDim2.fromScale((i - 1) * 0.2 + 0.005, 0),
+				Size = UDim2.fromScale(0.19, 1),
+				BackgroundColor3 = RARITY[info[1]],
+			},
+			strip
+		)
 		corner(chip, 0.3)
 		stroke(chip, 2, C.stroke, true)
 		text(chip, "Odds", info[1] .. " " .. info[2], UDim2.fromScale(0.04, 0.1), UDim2.fromScale(0.92, 0.8))
@@ -425,9 +553,30 @@ end
 function UIScreens.buildPets(parent: Instance, Config): ScreenGui
 	local gui = screen(parent, "Pets")
 	local body = window(gui, "CRASH BUDDIES", C.purple)
-	local grid = new("ScrollingFrame", { Name = "Grid", Size = UDim2.fromScale(0.64, 1), BackgroundTransparency = 1, ScrollBarThickness = 6, CanvasSize = UDim2.fromScale(0, 1.4) }, body)
+	local grid = new(
+		"ScrollingFrame",
+		{
+			Name = "Grid",
+			Size = UDim2.fromScale(0.64, 1),
+			BackgroundTransparency = 1,
+			ScrollBarThickness = 6,
+			CanvasSize = UDim2.fromScale(0, 1.4),
+		},
+		body
+	)
 	new("UIGridLayout", { CellSize = UDim2.fromScale(0.23, 0.3), CellPadding = UDim2.fromScale(0.02, 0.03) }, grid)
-	for i, id in { "PebblePup", "Goatling", "BackpackBeaver", "HelmetHedgehog", "BoulderBull", "AvalanchePug", "ThunderYak", "SkellyCat" } do
+	for i, id in
+		{
+			"PebblePup",
+			"Goatling",
+			"BackpackBeaver",
+			"HelmetHedgehog",
+			"BoulderBull",
+			"AvalanchePug",
+			"ThunderYak",
+			"SkellyCat",
+		}
+	do
 		local def = Config.pets[id]
 		local c = card(grid, "Pet" .. i, def.name, RARITY[def.rarity], UDim2.new(), UDim2.new())
 		text(c, "Power", "+" .. def.power .. " HIT", UDim2.fromScale(0.05, 0.78), UDim2.fromScale(0.9, 0.16), C.gold)
@@ -435,7 +584,16 @@ function UIScreens.buildPets(parent: Instance, Config): ScreenGui
 			tag(c, "EQUIPPED", C.lime, UDim2.fromScale(-0.1, -0.05))
 		end
 	end
-	local detail = new("Frame", { Name = "DetailPanel", Position = UDim2.fromScale(0.67, 0), Size = UDim2.fromScale(0.33, 1), BackgroundColor3 = C.panelRaised }, body)
+	local detail = new(
+		"Frame",
+		{
+			Name = "DetailPanel",
+			Position = UDim2.fromScale(0.67, 0),
+			Size = UDim2.fromScale(0.33, 1),
+			BackgroundColor3 = C.panelRaised,
+		},
+		body
+	)
 	corner(detail, 0.08)
 	stroke(detail, 3, C.stroke, true)
 	text(detail, "Name", "Avalanche Pug", UDim2.fromScale(0.05, 0.03), UDim2.fromScale(0.9, 0.1), RARITY.Legendary)
@@ -449,19 +607,50 @@ function UIScreens.buildEggHatch(parent: Instance, Config): ScreenGui
 	local gui = screen(parent, "EggHatch")
 	local body = window(gui, "TRAILHEAD EGG", C.green, UDim2.fromScale(0.5, 0.62))
 	card(body, "Egg", "Trailhead Egg", C.green, UDim2.fromScale(0.3, 0), UDim2.fromScale(0.4, 0.55))
-	local strip = new("Frame", { Name = "OddsStrip", Position = UDim2.fromScale(0, 0.58), Size = UDim2.fromScale(1, 0.16), BackgroundTransparency = 1 }, body)
+	local strip = new(
+		"Frame",
+		{
+			Name = "OddsStrip",
+			Position = UDim2.fromScale(0, 0.58),
+			Size = UDim2.fromScale(1, 0.16),
+			BackgroundTransparency = 1,
+		},
+		body
+	)
 	local total = 0
 	for _, r in Config.rarities do
 		total += r.weight
 	end
 	for i, r in Config.rarities do
-		local chip = new("Frame", { Name = r.name, Position = UDim2.fromScale((i - 1) / 7 + 0.003, 0), Size = UDim2.fromScale(1 / 7 - 0.006, 1), BackgroundColor3 = RARITY[r.name] }, strip)
+		local chip = new(
+			"Frame",
+			{
+				Name = r.name,
+				Position = UDim2.fromScale((i - 1) / 7 + 0.003, 0),
+				Size = UDim2.fromScale(1 / 7 - 0.006, 1),
+				BackgroundColor3 = RARITY[r.name],
+			},
+			strip
+		)
 		corner(chip, 0.2)
 		stroke(chip, 2, C.stroke, true)
 		local n = total / r.weight
-		text(chip, "Odds", "1 in " .. (if n < 10 then string.format("%.1f", n) else abbreviate(math.floor(n + 0.5))), UDim2.fromScale(0.04, 0.1), UDim2.fromScale(0.92, 0.8))
+		text(
+			chip,
+			"Odds",
+			"1 in " .. (if n < 10 then string.format("%.1f", n) else abbreviate(math.floor(n + 0.5))),
+			UDim2.fromScale(0.04, 0.1),
+			UDim2.fromScale(0.92, 0.8)
+		)
 	end
-	text(body, "PityCounter", "Legendary guaranteed in 75", UDim2.fromScale(0.1, 0.76), UDim2.fromScale(0.8, 0.08), C.gold)
+	text(
+		body,
+		"PityCounter",
+		"Legendary guaranteed in 75",
+		UDim2.fromScale(0.1, 0.76),
+		UDim2.fromScale(0.8, 0.08),
+		C.gold
+	)
 	button(body, "HatchButton", "HATCH  $150", UDim2.fromScale(0.3, 0.86), UDim2.fromScale(0.4, 0.13))
 	return gui
 end
@@ -470,12 +659,45 @@ function UIScreens.buildSeason(parent: Instance, Config): ScreenGui
 	local gui = screen(parent, "Season1Pass")
 	local body = window(gui, "SEASON 1: AVALANCHE", C.ice)
 	progressBar(body, "XPBar", UDim2.fromScale(0.02, 0.02), UDim2.fromScale(0.7, 0.07), 0.6, "TIER 7  ·  84 / 220 XP")
-	button(body, "PremiumButton", "PREMIUM  R$ CONFIG", UDim2.fromScale(0.74, 0), UDim2.fromScale(0.26, 0.11), C.gold, C.orange)
-	local scroll = new("ScrollingFrame", { Name = "Tiers", Position = UDim2.fromScale(0, 0.15), Size = UDim2.fromScale(1, 0.85), BackgroundTransparency = 1, CanvasSize = UDim2.fromScale(8.5, 0), ScrollBarThickness = 6 }, body)
+	button(
+		body,
+		"PremiumButton",
+		"PREMIUM  R$ CONFIG",
+		UDim2.fromScale(0.74, 0),
+		UDim2.fromScale(0.26, 0.11),
+		C.gold,
+		C.orange
+	)
+	local scroll = new(
+		"ScrollingFrame",
+		{
+			Name = "Tiers",
+			Position = UDim2.fromScale(0, 0.15),
+			Size = UDim2.fromScale(1, 0.85),
+			BackgroundTransparency = 1,
+			CanvasSize = UDim2.fromScale(8.5, 0),
+			ScrollBarThickness = 6,
+		},
+		body
+	)
 	for tier = 1, Config.season.tiers do
 		local x = (tier - 1) * 0.17
-		local free = card(scroll, "Free" .. tier, "Tier " .. tier, if tier <= 6 then C.green else C.blue, UDim2.fromScale(x / 8.5 * 1, 0), UDim2.fromScale(0.15 / 8.5, 0.46))
-		local prem = card(scroll, "Premium" .. tier, "Premium " .. tier, C.gold, UDim2.fromScale(x / 8.5, 0.52), UDim2.fromScale(0.15 / 8.5, 0.46))
+		local free = card(
+			scroll,
+			"Free" .. tier,
+			"Tier " .. tier,
+			if tier <= 6 then C.green else C.blue,
+			UDim2.fromScale(x / 8.5 * 1, 0),
+			UDim2.fromScale(0.15 / 8.5, 0.46)
+		)
+		local prem = card(
+			scroll,
+			"Premium" .. tier,
+			"Premium " .. tier,
+			C.gold,
+			UDim2.fromScale(x / 8.5, 0.52),
+			UDim2.fromScale(0.15 / 8.5, 0.46)
+		)
 		if tier <= 6 then
 			tag(free, "CLAIMED", C.lime, UDim2.fromScale(0.3, 0.4))
 		end
@@ -488,9 +710,19 @@ function UIScreens.buildDaily(parent: Instance, Config): ScreenGui
 	local gui = screen(parent, "DailyRewards")
 	local body = window(gui, "DAILY REWARDS", C.gold)
 	for day, reward in Config.rewards.daily do
-		local label = if reward.currency then abbreviate(reward.amount) .. " " .. reward.currency elseif reward.boost then "x2 Cash 15m" else "Backpack Beaver + 50 Gems"
+		local label = if reward.currency
+			then abbreviate(reward.amount) .. " " .. reward.currency
+			elseif reward.boost then "x2 Cash 15m"
+			else "Backpack Beaver + 50 Gems"
 		local big = day == 7
-		local c = card(body, "Day" .. day, "DAY " .. day, if big then C.purple elseif day <= 2 then C.green else C.blue, UDim2.fromScale(if big then 0.76 else ((day - 1) % 3) * 0.25, if big then 0 else (day - 1) // 3 * 0.5), UDim2.fromScale(if big then 0.24 else 0.23, if big then 0.98 else 0.46))
+		local c = card(
+			body,
+			"Day" .. day,
+			"DAY " .. day,
+			if big then C.purple elseif day <= 2 then C.green else C.blue,
+			UDim2.fromScale(if big then 0.76 else ((day - 1) % 3) * 0.25, if big then 0 else (day - 1) // 3 * 0.5),
+			UDim2.fromScale(if big then 0.24 else 0.23, if big then 0.98 else 0.46)
+		)
 		text(c, "Reward", label, UDim2.fromScale(0.05, 0.76), UDim2.fromScale(0.9, 0.16), C.gold)
 		if day <= 2 then
 			tag(c, "CLAIMED", C.lime, UDim2.fromScale(0.3, 0.3))
@@ -506,12 +738,33 @@ function UIScreens.buildQuests(parent: Instance, Config): ScreenGui
 	local gui = screen(parent, "Quests")
 	local body = window(gui, "QUESTS", C.green)
 	for i, q in Config.periodicQuests.quests do
-		local row = new("Frame", { Name = q.id, Position = UDim2.fromScale(0, (i - 1) * 0.165), Size = UDim2.fromScale(1, 0.15), BackgroundColor3 = C.panelRaised }, body)
+		local row = new(
+			"Frame",
+			{
+				Name = q.id,
+				Position = UDim2.fromScale(0, (i - 1) * 0.165),
+				Size = UDim2.fromScale(1, 0.15),
+				BackgroundColor3 = C.panelRaised,
+			},
+			body
+		)
 		corner(row, 0.25)
 		stroke(row, 2, C.stroke, true)
-		text(row, "Text", (if q.period == "daily" then "DAILY · " else "WEEKLY · ") .. q.text, UDim2.fromScale(0.02, 0.1), UDim2.fromScale(0.44, 0.8))
+		text(
+			row,
+			"Text",
+			(if q.period == "daily" then "DAILY · " else "WEEKLY · ") .. q.text,
+			UDim2.fromScale(0.02, 0.1),
+			UDim2.fromScale(0.44, 0.8)
+		)
 		progressBar(row, "Progress", UDim2.fromScale(0.48, 0.25), UDim2.fromScale(0.3, 0.5), 0.5, "50%")
-		button(row, "ClaimButton", "+" .. q.reward.amount .. " " .. q.reward.currency, UDim2.fromScale(0.8, 0.12), UDim2.fromScale(0.19, 0.76))
+		button(
+			row,
+			"ClaimButton",
+			"+" .. q.reward.amount .. " " .. q.reward.currency,
+			UDim2.fromScale(0.8, 0.12),
+			UDim2.fromScale(0.19, 0.76)
+		)
 	end
 	return gui
 end
@@ -519,18 +772,61 @@ end
 function UIScreens.buildRebirth(parent: Instance, Config): ScreenGui
 	local gui = screen(parent, "Rebirth")
 	local body = window(gui, "REBIRTH", C.purple, UDim2.fromScale(0.46, 0.6))
-	text(body, "Cost", "COST: $" .. abbreviate(Config.rebirth.baseCost), UDim2.fromScale(0.1, 0.02), UDim2.fromScale(0.8, 0.14), C.gold)
-	text(body, "Resets", "RESETS: Cash, Peaks, Cannons, Cash upgrades", UDim2.fromScale(0.05, 0.22), UDim2.fromScale(0.9, 0.12), C.red)
-	text(body, "Keeps", "KEEPS: Pets, Gems, Base camp, Index, Season", UDim2.fromScale(0.05, 0.38), UDim2.fromScale(0.9, 0.12), C.lime)
+	text(
+		body,
+		"Cost",
+		"COST: $" .. abbreviate(Config.rebirth.baseCost),
+		UDim2.fromScale(0.1, 0.02),
+		UDim2.fromScale(0.8, 0.14),
+		C.gold
+	)
+	text(
+		body,
+		"Resets",
+		"RESETS: Cash, Peaks, Cannons, Cash upgrades",
+		UDim2.fromScale(0.05, 0.22),
+		UDim2.fromScale(0.9, 0.12),
+		C.red
+	)
+	text(
+		body,
+		"Keeps",
+		"KEEPS: Pets, Gems, Base camp, Index, Season",
+		UDim2.fromScale(0.05, 0.38),
+		UDim2.fromScale(0.9, 0.12),
+		C.lime
+	)
 	text(body, "Gain", "PERMANENT x1.5 CASH", UDim2.fromScale(0.1, 0.55), UDim2.fromScale(0.8, 0.14), C.gold)
-	button(body, "ConfirmButton", "REBIRTH!", UDim2.fromScale(0.3, 0.8), UDim2.fromScale(0.4, 0.17), C.purple, C.purple:Lerp(C.stroke, 0.35))
+	button(
+		body,
+		"ConfirmButton",
+		"REBIRTH!",
+		UDim2.fromScale(0.3, 0.8),
+		UDim2.fromScale(0.4, 0.17),
+		C.purple,
+		C.purple:Lerp(C.stroke, 0.35)
+	)
 	return gui
 end
 
 function UIScreens.buildCodes(parent: Instance): ScreenGui
 	local gui = screen(parent, "Codes")
 	local body = window(gui, "CODES", C.blue, UDim2.fromScale(0.4, 0.4))
-	local box = new("TextBox", { Name = "CodeBox", PlaceholderText = "Enter code…", Text = "", Font = Enum.Font.FredokaOne, TextScaled = true, Position = UDim2.fromScale(0.05, 0.1), Size = UDim2.fromScale(0.9, 0.3), BackgroundColor3 = C.white, TextColor3 = C.stroke }, body)
+	local box = new(
+		"TextBox",
+		{
+			Name = "CodeBox",
+			PlaceholderText = "Enter code…",
+			Text = "",
+			Font = Enum.Font.FredokaOne,
+			TextScaled = true,
+			Position = UDim2.fromScale(0.05, 0.1),
+			Size = UDim2.fromScale(0.9, 0.3),
+			BackgroundColor3 = C.white,
+			TextColor3 = C.stroke,
+		},
+		body
+	)
 	corner(box, 0.3)
 	stroke(box, 3, C.stroke, true)
 	button(body, "RedeemButton", "REDEEM", UDim2.fromScale(0.3, 0.5), UDim2.fromScale(0.4, 0.3))
@@ -540,7 +836,17 @@ end
 
 function UIScreens.buildTutorial(parent: Instance, Config): ScreenGui
 	local gui = screen(parent, "Tutorial")
-	local bubble = new("Frame", { Name = "Bubble", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.62), Size = UDim2.fromScale(0.4, 0.1), BackgroundColor3 = C.panel }, gui)
+	local bubble = new(
+		"Frame",
+		{
+			Name = "Bubble",
+			AnchorPoint = Vector2.new(0.5, 0),
+			Position = UDim2.fromScale(0.5, 0.62),
+			Size = UDim2.fromScale(0.4, 0.1),
+			BackgroundColor3 = C.panel,
+		},
+		gui
+	)
 	corner(bubble, 0.3)
 	stroke(bubble, 3, C.stroke, true)
 	text(bubble, "Caption", Config.tutorial.steps[2].text, UDim2.fromScale(0.04, 0.1), UDim2.fromScale(0.74, 0.8))
@@ -555,14 +861,32 @@ function UIScreens.buildLoading(parent: Instance): ScreenGui
 	gradient(bg, C.ice, C.blue)
 	text(bg, "Logo", "RAGDOLL OFF A MOUNTAIN 🏔️", UDim2.fromScale(0.15, 0.28), UDim2.fromScale(0.7, 0.18), C.white)
 	progressBar(bg, "Bar", UDim2.fromScale(0.3, 0.62), UDim2.fromScale(0.4, 0.05), 0.35, "Loading mountain… 35%")
-	text(bg, "Tip", "TIP: Hit the bumpers for CRITICAL breaks!", UDim2.fromScale(0.2, 0.72), UDim2.fromScale(0.6, 0.05), C.bone)
-	button(bg, "SkipButton", "SKIP", UDim2.fromScale(0.85, 0.88), UDim2.fromScale(0.1, 0.07), C.red, C.redDark).Parent.Visible = false
+	text(
+		bg,
+		"Tip",
+		"TIP: Hit the bumpers for CRITICAL breaks!",
+		UDim2.fromScale(0.2, 0.72),
+		UDim2.fromScale(0.6, 0.05),
+		C.bone
+	)
+	button(bg, "SkipButton", "SKIP", UDim2.fromScale(0.85, 0.88), UDim2.fromScale(0.1, 0.07), C.red, C.redDark).Parent.Visible =
+		false
 	return gui
 end
 
 function UIScreens.buildAnnouncement(parent: Instance): ScreenGui
 	local gui = screen(parent, "Announcement")
-	local banner = new("Frame", { Name = "Banner", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.25), Size = UDim2.fromScale(0.42, 0.06), BackgroundColor3 = C.purple }, gui)
+	local banner = new(
+		"Frame",
+		{
+			Name = "Banner",
+			AnchorPoint = Vector2.new(0.5, 0),
+			Position = UDim2.fromScale(0.5, 0.25),
+			Size = UDim2.fromScale(0.42, 0.06),
+			BackgroundColor3 = C.purple,
+		},
+		gui
+	)
 	corner(banner, 0.5)
 	stroke(banner, 3, C.stroke, true)
 	text(banner, "Text", "lyssie broke ALL 206 BONES! 💀", UDim2.fromScale(0.04, 0.08), UDim2.fromScale(0.92, 0.84))
