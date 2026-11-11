@@ -1,0 +1,3 @@
+vault_commit=571335a
+vendored=2026-11-11T16:20:15Z
+# To update: re-copy systems/src/* into vendor/vault and bump this file in the same commit.
