@@ -50,10 +50,7 @@ function AnimalMind.new(temperament, conditionMods)
 	for _, key in AnimalMind.ATTRIBUTES do
 		baseline[key] = clamp01((temperament[key] or 0.5) + ((conditionMods and conditionMods[key]) or 0))
 	end
-	local state = {}
-	for key, value in baseline do
-		state[key] = value
-	end
+	local state = table.clone(baseline)
 	-- Arriving at a vet is mildly scary for everyone.
 	state.fear = clamp01(state.fear + 0.1)
 	state.stress = clamp01(state.stress + 0.1)

@@ -37,7 +37,9 @@ local function import(name: string)
 	if script then
 		return require(script.Parent:WaitForChild(name))
 	end
-	return require("./" .. name)
+	-- Lune: path require (aliased so the Roblox std lint does not apply)
+	local requirePath: any = require
+	return requirePath("./" .. name)
 end
 
 local AnimalMind = import("AnimalMind")
@@ -227,11 +229,9 @@ local function gaitFor(b, state: string, ctx, params)
 	end
 	local leaderDist = ctx.leaderDist or 0
 	local gait = "walk"
-	if state == "Excited" then
-		gait = "trot"
-	elseif leaderDist > HEEL * 5 then
+	if state ~= "Excited" and leaderDist > HEEL * 5 then
 		gait = "run"
-	elseif leaderDist > HEEL * 3 then
+	elseif state == "Excited" or leaderDist > HEEL * 3 then
 		gait = "trot"
 	end
 	if params.limp > 0.4 and gait ~= "walk" then

@@ -269,7 +269,6 @@ local function clickedTarget(): string?
 end
 
 local pressing = false
-local pressStart = nil
 local wrapCenter, wrapAngle, pullLastY = nil, nil, nil
 
 UserInputService.InputBegan:Connect(function(input, processed)
@@ -288,7 +287,6 @@ UserInputService.InputBegan:Connect(function(input, processed)
 		return
 	end
 	pressing = true
-	pressStart = os.clock()
 	if step.kind == "open" then
 		local t = clickedTarget()
 		if t then

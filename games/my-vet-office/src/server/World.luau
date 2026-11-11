@@ -486,7 +486,7 @@ local function charRoot(userId: number?): BasePart?
 	return char and char:FindFirstChild("HumanoidRootPart")
 end
 
-function World:leaderPart(ownerId: number, appt, npc): BasePart?
+function World:leaderPart(_ownerId: number, appt, npc): BasePart?
 	if (appt.phase == "Called" or appt.phase == "ToRoom") and appt.claimedBy then
 		return charRoot(appt.claimedBy)
 	end

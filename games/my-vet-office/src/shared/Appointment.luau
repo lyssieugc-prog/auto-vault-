@@ -19,7 +19,9 @@ local function import(name: string)
 	if script then
 		return require(script.Parent:WaitForChild(name))
 	end
-	return require("./" .. name)
+	-- Lune: path require (aliased so the Roblox std lint does not apply)
+	local requirePath: any = require
+	return requirePath("./" .. name)
 end
 
 local AnimalMind = import("AnimalMind")

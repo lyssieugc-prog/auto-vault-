@@ -28,7 +28,9 @@ local function import(name: string)
 	if script then
 		return require(script.Parent:WaitForChild(name))
 	end
-	return require("./" .. name)
+	-- Lune: path require (aliased so the Roblox std lint does not apply)
+	local requirePath: any = require
+	return requirePath("./" .. name)
 end
 
 local AnimalMind = import("AnimalMind")
@@ -304,7 +306,7 @@ end
 
 local HANDLERS = {}
 
-function HANDLERS.open(run, step, action, payload)
+function HANDLERS.open(_run, step, action, payload)
 	if action ~= "open" then
 		return { ok = false, message = "Open the " .. step.target .. " first" }
 	end
@@ -314,7 +316,7 @@ function HANDLERS.open(run, step, action, payload)
 	return { ok = true, advance = true, event = "Opened" }
 end
 
-function HANDLERS.take(run, step, action, payload)
+function HANDLERS.take(_run, step, action, payload)
 	if action ~= "take" then
 		return { ok = false, message = "Pick up the " .. step.tool }
 	end
@@ -324,14 +326,14 @@ function HANDLERS.take(run, step, action, payload)
 	return { ok = true, advance = true, event = "Took" }
 end
 
-function HANDLERS.approach(run, step, action, payload, ctx)
+function HANDLERS.approach(_run, step, _action, _payload, ctx)
 	if (ctx.vetDist or math.huge) <= step.maxDist then
 		return { ok = true, advance = true }
 	end
 	return { ok = false, message = "Move closer to the patient" }
 end
 
-function HANDLERS.pose(run, step, action, payload, ctx)
+function HANDLERS.pose(run, step, action, _payload, ctx)
 	if action == "requestPose" then
 		run.requestedPose = step.pose
 	end
@@ -648,7 +650,7 @@ function HANDLERS.dose(run, step, action, payload)
 	}
 end
 
-function HANDLERS.wait(run, step, action, payload, ctx)
+function HANDLERS.wait(run, step, _action, _payload, ctx)
 	if ctx.now - run.stepStart >= step.seconds then
 		if run.id == "Thermometer" then
 			local noise = (run.rng() - 0.5) * 0.2
@@ -659,7 +661,7 @@ function HANDLERS.wait(run, step, action, payload, ctx)
 	return { ok = true, event = "Waiting", progress = (ctx.now - run.stepStart) / step.seconds }
 end
 
-function HANDLERS.record(run, step, action)
+function HANDLERS.record(run, _step, action)
 	if action ~= "record" then
 		return { ok = false, message = "Record your findings in the chart" }
 	end
