@@ -130,7 +130,7 @@ function PoseGraph.request(pg, target: string): boolean
 	pg.queue = path
 	if pg.current and #path > 0 then
 		pg.from = pg.current
-		beginEdge(pg, table.remove(pg.queue, 1))
+		beginEdge(pg, table.remove(pg.queue, 1) :: string)
 	end
 	return true
 end
@@ -144,7 +144,7 @@ function PoseGraph.tick(pg, dt: number)
 		pg.from = pg.to
 		table.insert(pg.history, pg.to)
 		if #pg.queue > 0 then
-			beginEdge(pg, table.remove(pg.queue, 1))
+			beginEdge(pg, table.remove(pg.queue, 1) :: string)
 		else
 			pg.current = pg.to
 		end

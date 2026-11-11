@@ -910,6 +910,15 @@ function GameLogic:snapshot(ownerId: number, userId: number)
 			table.insert(appts, Appointment.snapshot(appt))
 		end
 	end
+	local busyRooms = {}
+	for _, appt in clinic.appts do
+		if
+			appt.room and appt.claimedBy and GameLogic.TABLE_PHASES[appt.phase]
+			or (appt.room and (appt.phase == "InRoom" or appt.phase == "ToRoom" or appt.phase == "Called"))
+		then
+			busyRooms[appt.room] = appt.id
+		end
+	end
 	local profile = self.profiles[ownerId]
 	local step = profile and self.tutorial:current(profile.tutorial)
 	return {
@@ -931,6 +940,8 @@ function GameLogic:snapshot(ownerId: number, userId: number)
 			rooms = s.rooms,
 			finishes = s.finishes,
 			finance = Clinic.summary(s),
+			ledger = table.move(s.ledger, math.max(1, #s.ledger - 29), #s.ledger, 1, {}),
+			busyRooms = busyRooms,
 			expenses = Clinic.dailyExpenses(self.clinicConfig, s),
 		},
 		appointments = appts,

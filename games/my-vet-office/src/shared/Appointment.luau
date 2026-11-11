@@ -544,7 +544,12 @@ function Appointment.snapshot(appt)
 			weightLb = appt.patient.weightLb,
 			ageYears = appt.patient.ageYears,
 		},
-		customer = { name = appt.customer.name, complaint = appt.customer.complaint },
+		customer = {
+			name = appt.customer.name,
+			complaint = appt.customer.complaint,
+			personality = appt.customer.personality,
+			patience = appt.customer.patience,
+		},
 		claimedBy = appt.claimedBy,
 		chart = appt.chart,
 		running = appt.running and {

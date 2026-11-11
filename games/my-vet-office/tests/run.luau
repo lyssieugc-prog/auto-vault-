@@ -13,6 +13,7 @@ local Clinic = require("../src/shared/Clinic")
 local Config = require("../src/shared/Config")
 local GameLogic = require("../src/shared/GameLogic")
 local PoseGraph = require("../src/shared/PoseGraph")
+local PoseLibrary = require("../src/shared/PoseLibrary")
 local Procedures = require("../src/shared/Procedures")
 local Species = require("../src/shared/Species")
 local TestKit = require("../vendor/vault/tests/TestKit")
@@ -327,6 +328,83 @@ describe("AnimBlend (animation framework math)", function()
 		expect(full).toBe(3)
 		expect(tiers[1]).toBe("full")
 		expect(tiers[8]).toBe("low")
+	end)
+end)
+
+---------------------------------------------------------------------------------------------
+describe("PoseLibrary (procedural poses + gait)", function()
+	local bones = PoseLibrary.boneList(Species.rigs.Quadruped)
+	local boneSet = {}
+	for _, b in bones do
+		boneSet[b] = true
+	end
+	it("every pose only uses real rig bones, with sane angles", function()
+		for name, pose in PoseLibrary.poses do
+			for bone, rot in pose.bones do
+				assert(boneSet[bone], name .. " uses unknown bone " .. bone)
+				for _, axis in { "p", "y", "r" } do
+					local v = rot[axis] or 0
+					assert(math.abs(v) <= 160, name .. "." .. bone .. " angle " .. v)
+				end
+			end
+			assert(pose.root.h <= 0 and pose.root.h >= -0.8, name .. " root height")
+		end
+	end)
+	it("every pose the species can do exists in the library", function()
+		for sname, sp in Species.species do
+			for _, pose in sp.poses do
+				assert(PoseLibrary.poses[pose], sname .. " pose " .. pose)
+			end
+		end
+	end)
+	it("pose blending is continuous (no joint jumps between frames)", function()
+		local prev = PoseLibrary.blend("Stand", "LieSternal", 0, bones)
+		for i = 1, 60 do
+			local t = i / 60
+			t = t * t * (3 - 2 * t)
+			local cur = PoseLibrary.blend("Stand", "LieSternal", t, bones)
+			for _, b in bones do
+				assert(math.abs(cur.bones[b].p - prev.bones[b].p) < 6, "jump on " .. b)
+			end
+			prev = cur
+		end
+		expect(prev.root.h).toBeNear(PoseLibrary.poses.LieSternal.root.h, 1e-9)
+	end)
+	it("leg cycle: planted paw moves back at constant speed with zero lift", function()
+		local duty = PoseLibrary.DUTY.walk
+		local last = nil
+		local speeds = {}
+		for i = 0, 20 do
+			local phase = i / 20 * duty * 0.99
+			local x, lift = PoseLibrary.legCycle(phase, duty)
+			expect(lift).toBe(0)
+			if last then
+				table.insert(speeds, last - x)
+			end
+			last = x
+		end
+		for _, v in speeds do
+			expect(v).toBeNear(speeds[1], 1e-9)
+		end
+		local _, swingLift = PoseLibrary.legCycle(duty + (1 - duty) / 2, duty)
+		expect(swingLift).toBeNear(1, 1e-9)
+		-- continuous at the stance→swing and swing→stance seams
+		local a = PoseLibrary.legCycle(duty - 1e-6, duty)
+		local b = PoseLibrary.legCycle(duty + 1e-6, duty)
+		expect(a).toBeNear(b, 1e-3)
+		local c = PoseLibrary.legCycle(1 - 1e-6, duty)
+		local d = PoseLibrary.legCycle(0, duty)
+		expect(c).toBeNear(d, 1e-3)
+	end)
+	it("gait phases give 4-beat walk and diagonal-pair trot", function()
+		local g = Species.rigs.Quadruped.gaitPhases
+		expect(g.trot.FL).toBe(g.trot.BR)
+		expect(g.trot.FR).toBe(g.trot.BL)
+		local seen = {}
+		for _, v in g.walk do
+			assert(not seen[v], "walk beats overlap")
+			seen[v] = true
+		end
 	end)
 end)
 

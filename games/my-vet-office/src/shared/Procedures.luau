@@ -687,6 +687,7 @@ function Procedures.input(run, action: string, payload, ctx)
 	if r.advance then
 		advance(run, ctx.now)
 	end
+	r.nextStep = run.stepIndex
 	r.done = run.done
 	if run.done then
 		r.results = run.results

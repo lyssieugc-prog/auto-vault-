@@ -1,1 +1,18 @@
-{ "fileKey": "", "fileUrl": "", "version": "", "frames": {} }
+{
+  "fileKey": "",
+  "fileUrl": "",
+  "version": "",
+  "status": "blocked-on-figma",
+  "note": "2026-11-11: no Figma file created. The Figma MCP server instructions were present but its tools (create_new_file/create_session/use_figma/get_screenshot) were not callable from the UI-designer session. Build from ui-spec.md once the tools can be called; fill in the fileKey, fileUrl and node ids then.",
+  "spec": "games/my-vet-office/figma/ui-spec.md",
+  "tokens": "games/my-vet-office/figma/tokens.override.json",
+  "frames": {},
+  "plannedFrames": [
+    "HUD", "HUD/Phone",
+    "VetComputer/Patients", "VetComputer/Chart", "VetComputer/Diagnose", "VetComputer/Treat",
+    "VetComputer/Inventory", "VetComputer/Staff", "VetComputer/Finance", "VetComputer/Progress",
+    "VetComputer/Phone",
+    "ExamOverlay", "ExamOverlay/Dose", "ExamOverlay/Phone",
+    "Magnifier", "Invoice", "BuildMode", "Dialogue"
+  ]
+}
