@@ -1,0 +1,62 @@
+{
+  "$description": "My Vet Office! — game-specific token overrides on top of figma/tokens.json. Owner direction (2026-11-11): 'Avoid generic Roblox simulator UI with enormous colorful buttons everywhere. Interfaces should resemble simplified real veterinary software while remaining easy for younger players to understand.' Warm clinic practice-management look. PENDING owner approval.",
+  "color": {
+    "canvas": "#F6F1E9",
+    "panel": "#FFFDF9",
+    "panelAlt": "#F1EBE1",
+    "panelRealistic": "#2A2F3A",
+    "line": "#E3DACB",
+    "lineStrong": "#CFC3AF",
+    "textPrimary": "#1F2A30",
+    "textMuted": "#5B6670",
+    "textOnAccent": "#FFFFFF",
+    "teal": "#177E80",
+    "tealDark": "#0F5F61",
+    "tealSoft": "#D7EFEC",
+    "coral": "#E8735E",
+    "coralDark": "#C2493A",
+    "coralSoft": "#FBE3DC",
+    "amber": "#E9A23B",
+    "amberText": "#8A5A0B",
+    "amberSoft": "#FCEFD6",
+    "green": "#3E9B5F",
+    "greenText": "#2C7445",
+    "greenSoft": "#DDF0E2",
+    "star": "#F2B33D",
+    "starEmpty": "#E3DACB",
+    "lockedFill": "#ECE7DF",
+    "lockedText": "#8A8F94",
+    "paper": "#FFFEFA",
+    "stickyNote": "#FFE58A",
+    "hudGlass": "#FFFDF9",
+    "hudGlassTransparency": 0.06,
+    "dim": "#1F2A30",
+    "dimTransparency": 0.65
+  },
+  "font": {
+    "title": { "figma": "Nunito ExtraBold", "roblox": "Font.new('rbxasset://fonts/families/Nunito.json', Enum.FontWeight.ExtraBold)", "fallbackRoblox": "Enum.Font.BuilderSansExtraBold" },
+    "heading": { "figma": "Nunito Bold", "roblox": "Font.new('rbxasset://fonts/families/Nunito.json', Enum.FontWeight.Bold)", "fallbackRoblox": "Enum.Font.BuilderSansBold" },
+    "body": { "figma": "Nunito SemiBold", "roblox": "Font.new('rbxasset://fonts/families/Nunito.json', Enum.FontWeight.SemiBold)", "fallbackRoblox": "Enum.Font.BuilderSansMedium" },
+    "mono": { "figma": "Roboto Mono Medium", "roblox": "Enum.Font.RobotoMono" },
+    "$note": "Verify Nunito weights in Studio (Font picker); if a weight is missing use the BuilderSans fallback. No text strokes on this game's UI (house stroke rule waived by owner direction)."
+  },
+  "type": {
+    "desktop1080": { "display": 40, "h1": 32, "h2": 24, "body": 20, "small": 16, "min": 16 },
+    "phone390": { "h1": 20, "h2": 17, "body": 15, "small": 14, "min": 14 }
+  },
+  "radius": { "panel": 16, "card": 12, "button": 10, "pill": 999, "$note": "px at 1080p; convert to UICorner scale = radius / min(w,h) per roblox-mapping.md" },
+  "stroke": { "card": 1, "panelOuter": 1, "focus": 3, "textSmall": 0, "textLarge": 0 },
+  "shadow": { "panel": "0 8 24 #1F2A30 @18%", "card": "0 2 6 #1F2A30 @10%", "$roblox": "9-slice ImageLabel 'Shadow' behind frame" },
+  "spacing": { "unit": 8, "safeMargin1080": 48, "robloxTopbarReserve": 72 },
+  "button": { "lipPx": 3, "glossOpacity": 0, "pressScale": 0.97, "hoverScale": 1.02, "hoverTiltDeg": 0, "heightL": 56, "heightM": 48, "heightS": 44 },
+  "motion": {
+    "openSeconds": 0.22,
+    "openFromScale": 0.96,
+    "openEasing": "Quad.Out",
+    "closeSeconds": 0.15,
+    "toastInSeconds": 0.25,
+    "staggerSeconds": 0.04,
+    "sunburst": "none"
+  },
+  "touch": { "minTargetPx": 44 }
+}

@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "name": "GoldenRetriever",
+      "type": "rigged_pet",
+      "status": "PENDING owner approval",
+      "source": "games/my-vet-office/blender/golden_retriever.py",
+      "fbx": "games/my-vet-office/assets/export/golden_retriever.fbx",
+      "glb": "games/my-vet-office/assets/export/golden_retriever.glb",
+      "tris": 11816,
+      "tris_max_part": 1228,
+      "parts": 34,
+      "pieces_before_join": 197,
+      "bones": 34,
+      "rig": "rigid per-bone meshes <Bone>_Geo, 100% weights -> Motor6D",
+      "scale": "1 unit = 1 stud; 1.59 x 5.12 x 3.31 studs",
+      "previews": [
+        "games/my-vet-office/assets/previews/golden_retriever_front.png",
+        "games/my-vet-office/assets/previews/golden_retriever_side.png",
+        "games/my-vet-office/assets/previews/golden_retriever_back.png",
+        "games/my-vet-office/assets/previews/golden_retriever_34.png",
+        "games/my-vet-office/assets/previews/golden_retriever_sit.png",
+        "games/my-vet-office/assets/previews/golden_retriever_sit_side.png",
+        "games/my-vet-office/assets/previews/golden_retriever_lie.png",
+        "games/my-vet-office/assets/previews/golden_retriever_lie_side.png"
+      ],
+      "roblox_asset_id": null
+    },
+    {
+      "name": "ExamTable",
+      "type": "prop",
+      "status": "PENDING owner approval",
+      "source": "games/my-vet-office/blender/exam_room_props.py",
+      "fbx": "games/my-vet-office/assets/export/exam_table.fbx",
+      "glb": "games/my-vet-office/assets/export/exam_table.glb",
+      "tris": 5304,
+      "pieces_before_join": 77,
+      "previews": [
+        "games/my-vet-office/assets/previews/exam_table_front.png",
+        "games/my-vet-office/assets/previews/exam_table_side.png",
+        "games/my-vet-office/assets/previews/exam_table_back.png",
+        "games/my-vet-office/assets/previews/exam_table_34.png",
+        "games/my-vet-office/assets/previews/exam_room_context.png"
+      ],
+      "roblox_asset_id": null
+    },
+    {
+      "name": "EquipmentCabinet",
+      "type": "prop",
+      "status": "PENDING owner approval",
+      "source": "games/my-vet-office/blender/exam_room_props.py",
+      "fbx": "games/my-vet-office/assets/export/equipment_cabinet.fbx",
+      "glb": "games/my-vet-office/assets/export/equipment_cabinet.glb",
+      "tris": 2668,
+      "pieces_before_join": 60,
+      "previews": [
+        "games/my-vet-office/assets/previews/equipment_cabinet_closed.png",
+        "games/my-vet-office/assets/previews/equipment_cabinet_open.png",
+        "games/my-vet-office/assets/previews/equipment_cabinet_side.png"
+      ],
+      "roblox_asset_id": null
+    },
+    {
+      "name": "CabinetDoor",
+      "type": "prop",
+      "status": "PENDING owner approval",
+      "source": "games/my-vet-office/blender/exam_room_props.py",
+      "fbx": "games/my-vet-office/assets/export/equipment_cabinet.fbx",
+      "glb": "games/my-vet-office/assets/export/equipment_cabinet.glb",
+      "tris": 772,
+      "pieces_before_join": 17,
+      "previews": [
+        "games/my-vet-office/assets/previews/equipment_cabinet_open.png"
+      ],
+      "roblox_asset_id": null,
+      "pivot": "hinge axis (-1.58, 1.36, 0), rotate about +Z"
+    },
+    {
+      "name": "Stethoscope",
+      "type": "prop",
+      "status": "PENDING owner approval",
+      "source": "games/my-vet-office/blender/exam_room_props.py",
+      "fbx": "games/my-vet-office/assets/export/stethoscope.fbx",
+      "glb": "games/my-vet-office/assets/export/stethoscope.glb",
+      "tris": 908,
+      "pieces_before_join": 14,
+      "previews": [
+        "games/my-vet-office/assets/previews/vet_tools_front.png",
+        "games/my-vet-office/assets/previews/vet_tools_back.png"
+      ],
+      "roblox_asset_id": null,
+      "pivot": "grip point (Tool Handle)"
+    },
+    {
+      "name": "Otoscope",
+      "type": "prop",
+      "status": "PENDING owner approval",
+      "source": "games/my-vet-office/blender/exam_room_props.py",
+      "fbx": "games/my-vet-office/assets/export/otoscope.fbx",
+      "glb": "games/my-vet-office/assets/export/otoscope.glb",
+      "tris": 976,
+      "pieces_before_join": 14,
+      "previews": [
+        "games/my-vet-office/assets/previews/vet_tools_front.png",
+        "games/my-vet-office/assets/previews/vet_tools_back.png"
+      ],
+      "roblox_asset_id": null,
+      "pivot": "grip point (Tool Handle)"
+    },
+    {
+      "name": "Thermometer",
+      "type": "prop",
+      "status": "PENDING owner approval",
+      "source": "games/my-vet-office/blender/exam_room_props.py",
+      "fbx": "games/my-vet-office/assets/export/thermometer.fbx",
+      "glb": "games/my-vet-office/assets/export/thermometer.glb",
+      "tris": 636,
+      "pieces_before_join": 11,
+      "previews": [
+        "games/my-vet-office/assets/previews/vet_tools_front.png",
+        "games/my-vet-office/assets/previews/vet_tools_back.png"
+      ],
+      "roblox_asset_id": null,
+      "pivot": "grip point (Tool Handle)"
+    },
+    {
+      "name": "BandageRoll",
+      "type": "prop",
+      "status": "PENDING owner approval",
+      "source": "games/my-vet-office/blender/exam_room_props.py",
+      "fbx": "games/my-vet-office/assets/export/bandage_roll.fbx",
+      "glb": "games/my-vet-office/assets/export/bandage_roll.glb",
+      "tris": 852,
+      "pieces_before_join": 11,
+      "previews": [
+        "games/my-vet-office/assets/previews/vet_tools_front.png",
+        "games/my-vet-office/assets/previews/vet_tools_back.png"
+      ],
+      "roblox_asset_id": null,
+      "pivot": "grip point (Tool Handle)"
+    }
+  ]
+}
