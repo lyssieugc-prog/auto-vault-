@@ -100,6 +100,19 @@ def exam_table():
         for k, (dx, dy) in enumerate(((-0.24, 0.2), (-0.09, 0.3), (0.09, 0.3), (0.24, 0.2))):
             a(box(f"Paw{j}Toe{k}", (0.15, 0.17, 0.035), (*rot(dx, dy), 3.355), C["teal_l"], r=0.05, seg=2,
                   rot=(0, 0, rz)))
+    # back apron: towel bar with a folded towel + clinic label plate (no blank back side)
+    for x in (-0.2, 1.6):
+        a(box(f"TowelBracket{x:+.1f}", (0.1, 0.24, 0.1), (x, -1.5, 2.8), C["steel_d"], r=0.02))
+    a(tube("TowelBar", 0.05, 2.0, (0.7, -1.6, 2.8), C["steel_l"], sides=8, rot=(0, 90, 0), roughness=METAL))
+    a(box("TowelFront", (1.1, 0.06, 0.7), (0.75, -1.68, 2.48), C["coral"], r=0.03))
+    a(box("TowelBack", (1.1, 0.06, 0.5), (0.75, -1.55, 2.56), C["coral_d"], r=0.03))
+    a(box("TowelFold", (1.1, 0.18, 0.1), (0.75, -1.61, 2.82), C["coral"], r=0.05, seg=2))
+    for k in range(2):
+        a(box(f"TowelStripe{k}", (1.12, 0.07, 0.06), (0.75, -1.69, 2.24 + k * 0.12), C["white"], r=0.01))
+    a(box("LabelPlate", (1.0, 0.06, 0.24), (-1.7, -1.43, 2.83), C["white"], r=0.03))
+    a(box("LabelCrossV", (0.07, 0.04, 0.18), (-2.05, -1.47, 2.83), C["coral"], r=0.01))
+    a(box("LabelCrossH", (0.18, 0.04, 0.07), (-2.05, -1.47, 2.83), C["coral"], r=0.01))
+    a(box("LabelText", (0.55, 0.04, 0.06), (-1.6, -1.47, 2.83), C["teal_d"], r=0.01))
     # rubber corner bumpers + end handles
     for sx in (-1, 1):
         for sy in (-1, 1):
@@ -122,8 +135,8 @@ def cabinet():
     a(box("Back", (W, 0.12, H), (0, 0.06, H / 2), C["white"], r=0.03))
     for s in (-1, 1):
         a(box(f"Side{s}", (0.16, D, H), (s * (W / 2 - 0.08), D / 2, H / 2), C["teal"], r=0.04))
-    a(box("Bottom", (W, D, 0.2), (0, D / 2, 0.1), C["teal_d"], r=0.04))
-    a(box("Top", (W, D, 0.16), (0, D / 2, H - 0.08), C["teal"], r=0.04))
+    a(box("Bottom", (W + 0.04, D + 0.02, 0.2), (0, D / 2, 0.1), C["teal_d"], r=0.04))
+    a(box("Top", (W + 0.04, D + 0.02, 0.16), (0, D / 2, H - 0.08), C["teal"], r=0.04))
     a(box("Cornice", (W + 0.3, D + 0.25, 0.2), (0, (D + 0.25) / 2, H + 0.1), C["teal_d"], r=0.05))
     a(box("CorniceLip", (W + 0.4, 0.1, 0.12), (0, D + 0.3, H + 0.1), C["coral"], r=0.03))
     # red-cross sign on the crown
@@ -267,10 +280,8 @@ def bandage_roll():
     a(ring("RollEdgeL", 0.39, 0.04, 0.05, (-0.24, 0, 0), C["coral"], sides=18, rot=(0, 90, 0)))
     a(ring("RollEdgeR", 0.39, 0.04, 0.05, (0.24, 0, 0), C["coral"], sides=18, rot=(0, 90, 0)))
     a(ring("Core", 0.15, 0.04, 0.52, (0, 0, 0), C["tan"], sides=14, rot=(0, 90, 0)))
-    for k in range(3):  # wrap layers on the outside (layered detail, not a plain cylinder)
-        ang = math.radians(30 + k * 100)
-        a(box(f"WrapStep{k}", (0.5, 0.18, 0.03), (0, math.cos(ang) * 0.415, math.sin(ang) * 0.415), C["white"],
-              r=0.01, rot=(math.degrees(-ang) + 90, 0, 0)))
+    # loose outer layer where the tail peels off (one intentional step, not random tabs)
+    a(box("LooseEnd", (0.5, 0.34, 0.035), (0, 0.3, -0.31), C["white"], r=0.01, rot=(-45, 0, 0)))
     # unrolled tail lying forward + its coral stripes + butterfly clip
     a(box("Tail", (0.46, 0.8, 0.04), (0, 0.42, -0.4), C["cream"], r=0.01, rot=(-8, 0, 0)))
     for x in (-0.16, 0.16):
@@ -366,9 +377,9 @@ def render(out_dir=vc.PREVIEW_DIR, samples=24, with_dog=True):
     vc.setup_render(samples=samples)
     tray = box("Tray", (5.2, 2.6, 0.12), (0.2, 0, 0.06), C["steel"], r=0.05)
     s, _ = build_one("Stethoscope")
-    place(s, (-1.6, 0, 1.75))
+    place(s, (-1.6, 0, 2.02))
     o, _ = build_one("Otoscope")
-    place(o, (-0.3, 0.1, 0.68))
+    place(o, (-0.3, 0.1, 0.68), rot_z=60)
     t, _ = build_one("Thermometer")
     place(t, (0.75, 0.0, 1.14))
     b, _ = build_one("BandageRoll")
@@ -389,7 +400,7 @@ def render(out_dir=vc.PREVIEW_DIR, samples=24, with_dog=True):
         cab, _ = build_one("EquipmentCabinet")
         door, _ = build_one("CabinetDoor")
         for ob in (cab, door):
-            ob.location = (ob.location[0] + 1.0, ob.location[1] - 4.2, ob.location[2] + 0.0)
+            ob.location = (ob.location[0] - 5.2, ob.location[1] - 4.2, ob.location[2] + 0.0)
         door.rotation_euler = (0, 0, math.radians(70))
         s, _ = build_one("Stethoscope")
         place(s, (2.1, -0.2, 3.42), rot=(90, 0, 70))
@@ -400,8 +411,8 @@ def render(out_dir=vc.PREVIEW_DIR, samples=24, with_dog=True):
         vc.setup_render(samples=samples)
         wall = box("PreviewWall", (20, 0.3, 10), (0, -4.35, 5), "#FFF6EA", r=0.0)
         wall.hide_select = True
-        tgt = (0.4, -0.8, 3.0)
-        outs.append(vc.shoot(os.path.join(out_dir, "exam_room_context.png"), vc.orbit(tgt, 15, 30, 16), tgt, lens=45))
+        tgt = (-1.2, -0.8, 2.8)
+        outs.append(vc.shoot(os.path.join(out_dir, "exam_room_context.png"), vc.orbit(tgt, 17, 24, 14), tgt, lens=45))
     return outs
 
 
